@@ -3,46 +3,37 @@ import { Handle, Position, type NodeProps, type Node } from '@xyflow/react'
 import clsx from 'clsx'
 import type { ApprovalNodeData } from '../../types'
 import { Badge } from '../ui'
+import { useWorkflowStore } from '../../store'
 
 type ApprovalNodeType = Node<ApprovalNodeData>
 
-export const ApprovalNode = memo(function ApprovalNode({
-  data,
-  selected,
-}: NodeProps<ApprovalNodeType>) {
+export const ApprovalNode = memo(function ApprovalNode({ id, data, selected }: NodeProps<ApprovalNodeType>) {
+  const isHighlighted = useWorkflowStore((s) => s.highlightedNodeId === id)
+
   return (
     <div
       className={clsx(
-        'w-[200px] bg-gray-800 rounded-lg shadow-lg border transition-all duration-150',
-        selected
-          ? 'border-orange-500 ring-2 ring-orange-500/40'
-          : 'border-gray-700 hover:border-gray-500',
+        'w-[210px] bg-gray-900 rounded-xl border transition-all duration-150',
+        'shadow-lg hover:shadow-orange-900/20',
+        isHighlighted && 'node-highlighted border-orange-400 ring-2 ring-orange-400/50',
+        !isHighlighted && selected && 'border-orange-500 ring-2 ring-orange-500/30',
+        !isHighlighted && !selected && 'border-gray-700/80 hover:border-gray-600',
       )}
     >
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="!bg-orange-500 !border-orange-400 !w-3 !h-3"
-      />
-      <div className="px-3 pt-3 pb-3">
-        <div className="mb-2">
+      <Handle type="target" position={Position.Top} className="!bg-orange-500 !border-orange-900 !w-3 !h-3" />
+      <div className="px-3.5 pt-3.5 pb-3.5">
+        <div className="mb-2.5">
           <Badge color="orange">Approval</Badge>
         </div>
-        <p className="text-sm font-semibold text-white truncate leading-snug">
+        <p className="text-[13px] font-semibold text-white leading-snug truncate">
           {data.title || 'Untitled'}
         </p>
-        <p className="text-xs text-orange-400/80 mt-1.5">{data.approverRole}</p>
+        <p className="text-xs text-orange-400/90 mt-1.5 font-medium">{data.approverRole}</p>
         {data.autoApproveThreshold > 0 && (
-          <p className="text-xs text-gray-500 mt-0.5">
-            Auto-approve {data.autoApproveThreshold}%
-          </p>
+          <p className="text-xs text-gray-600 mt-0.5">Auto-approve at {data.autoApproveThreshold}%</p>
         )}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!bg-orange-500 !border-orange-400 !w-3 !h-3"
-      />
+      <Handle type="source" position={Position.Bottom} className="!bg-orange-500 !border-orange-900 !w-3 !h-3" />
     </div>
   )
 })

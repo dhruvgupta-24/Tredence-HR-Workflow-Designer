@@ -17,6 +17,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   simulationLog: [],
   isSimulating: false,
   automations: [],
+  highlightedNodeId: null,
   past: [],
   future: [],
 
@@ -56,6 +57,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   setValidationErrors: (errors) => set({ validationErrors: errors }),
   setSimulationLog: (log) => set({ simulationLog: log }),
   setIsSimulating: (v) => set({ isSimulating: v }),
+  setHighlightedNodeId: (id) => set({ highlightedNodeId: id }),
 
   // --- Automations ---
   setAutomations: (automations) => set({ automations }),

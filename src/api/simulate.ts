@@ -12,7 +12,7 @@ export async function simulateWorkflow(
   nodes: WorkflowNode[],
   edges: Edge[],
 ): Promise<SimulationResult> {
-  await new Promise((r) => setTimeout(r, 400))
+  await new Promise((r) => setTimeout(r, 300))
 
   const startNode = nodes.find((n) => n.type === 'start')
   if (!startNode) return { success: false, error: 'No Start node found' }
@@ -45,6 +45,7 @@ export async function simulateWorkflow(
       step: index + 1,
       label: buildStepLabel(node),
       nodeType: node.type ?? 'unknown',
+      nodeId: id,           // now included for highlight animation
     }
   })
 
@@ -60,12 +61,12 @@ function buildStepLabel(node: WorkflowNode): string {
     }
     case 'task': {
       const d = data as TaskNodeData
-      return `Task assigned: "${d.title}" to ${d.assignee || 'Unassigned'}`
+      return `Task assigned: "${d.title}" → ${d.assignee || 'Unassigned'}`
     }
     case 'approval': {
       const d = data as ApprovalNodeData
-      const suffix = d.autoApproveThreshold > 0 ? ` (auto-approve at ${d.autoApproveThreshold}%)` : ''
-      return `Approval requested from ${d.approverRole}${suffix}`
+      const auto = d.autoApproveThreshold > 0 ? ` (auto at ${d.autoApproveThreshold}%)` : ''
+      return `Approval required: ${d.approverRole}${auto}`
     }
     case 'automated': {
       const d = data as AutomatedNodeData
@@ -73,7 +74,7 @@ function buildStepLabel(node: WorkflowNode): string {
     }
     case 'end': {
       const d = data as EndNodeData
-      return `Workflow completed: "${d.endMessage || d.title}"`
+      return `Completed: "${d.endMessage || d.title}"`
     }
     default:
       return `Processed: ${String(data.title)}`

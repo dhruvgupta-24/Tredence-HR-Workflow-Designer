@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useWorkflowStore } from '../store'
 
-export function useUndoRedo() {
+export function useUndoRedo(setShowShortcuts?: (open: boolean) => void) {
   const undo = useWorkflowStore((s) => s.undo)
   const redo = useWorkflowStore((s) => s.redo)
   const selectedNodeId = useWorkflowStore((s) => s.selectedNodeId)
@@ -12,7 +12,6 @@ export function useUndoRedo() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
-      // Do not intercept when typing in form controls
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return
 
       if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === 'z') {
@@ -27,10 +26,12 @@ export function useUndoRedo() {
         removeNode(selectedNodeId)
       } else if (e.key === 'Escape') {
         setSelectedNode(null)
+      } else if (e.key === '?' && setShowShortcuts) {
+        setShowShortcuts(true)
       }
     }
 
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [undo, redo, selectedNodeId, removeNode, saveSnapshot, setSelectedNode])
+  }, [undo, redo, selectedNodeId, removeNode, saveSnapshot, setSelectedNode, setShowShortcuts])
 }

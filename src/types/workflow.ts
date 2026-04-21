@@ -16,6 +16,7 @@ export interface SimulationStep {
   step: number
   label: string
   nodeType: string
+  nodeId: string        // which node is executing at this step
 }
 
 // Result returned by POST /simulate
@@ -34,6 +35,7 @@ export interface WorkflowState {
   simulationLog: SimulationStep[]
   isSimulating: boolean
   automations: AutomationAction[]
+  highlightedNodeId: string | null   // animated playback highlight
 
   // Node actions
   addNode: (node: WorkflowNode) => void
@@ -55,6 +57,7 @@ export interface WorkflowState {
   setValidationErrors: (errors: string[]) => void
   setSimulationLog: (log: SimulationStep[]) => void
   setIsSimulating: (v: boolean) => void
+  setHighlightedNodeId: (id: string | null) => void
 
   // Automations
   setAutomations: (automations: AutomationAction[]) => void

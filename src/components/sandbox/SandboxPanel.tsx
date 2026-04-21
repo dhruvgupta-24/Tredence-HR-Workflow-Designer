@@ -3,6 +3,12 @@ import { useWorkflowStore } from '../../store'
 import { Button } from '../ui'
 import { ExecutionLog } from './ExecutionLog'
 
+const STEPS_GUIDE = [
+  'Drag node types onto the canvas',
+  'Connect nodes by pulling from handles',
+  'Click Run Workflow to simulate',
+]
+
 export function SandboxPanel() {
   const { runSimulation, isSimulating, validationErrors, simulationLog } = useSimulate()
   const setValidationErrors = useWorkflowStore((s) => s.setValidationErrors)
@@ -20,9 +26,9 @@ export function SandboxPanel() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="px-4 pt-4 pb-3 border-b border-gray-800 flex-shrink-0">
-        <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-3">
-          Sandbox
+      <div className="px-4 pt-5 pb-4 border-b border-gray-800/80 flex-shrink-0">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-600 mb-3">
+          Simulation Sandbox
         </p>
         <Button
           variant="primary"
@@ -33,11 +39,16 @@ export function SandboxPanel() {
         >
           {isSimulating ? (
             <span className="flex items-center gap-2">
-              <span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
-              Running...
+              <span className="w-3 h-3 border border-white/60 border-t-white rounded-full animate-spin" />
+              Simulating…
             </span>
           ) : (
-            'Run Workflow'
+            <span className="flex items-center gap-2">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5,3 19,12 5,21"/>
+              </svg>
+              Run Workflow
+            </span>
           )}
         </Button>
 
@@ -45,7 +56,7 @@ export function SandboxPanel() {
           <button
             type="button"
             onClick={clearResults}
-            className="w-full mt-2 text-xs text-gray-600 hover:text-gray-400 transition-colors"
+            className="w-full mt-2 py-1 text-[11px] text-gray-600 hover:text-gray-400 transition-colors"
           >
             Clear results
           </button>
@@ -57,16 +68,16 @@ export function SandboxPanel() {
         {/* Validation errors */}
         {hasErrors && (
           <div className="space-y-2 mb-4">
-            <p className="text-xs uppercase tracking-wide text-red-400 font-semibold mb-2">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-red-500 mb-2">
               Validation Errors
             </p>
             {validationErrors.map((err, i) => (
               <div
                 key={i}
-                className="flex items-start gap-2 text-xs text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2"
+                className="flex items-start gap-2 text-xs text-red-300 bg-red-500/8 border border-red-500/20 rounded-lg px-3 py-2.5"
               >
-                <span className="flex-shrink-0 mt-px text-red-400">!</span>
-                <span>{err}</span>
+                <span className="flex-shrink-0 mt-0.5 text-red-400 font-bold">!</span>
+                <span className="leading-relaxed">{err}</span>
               </div>
             ))}
           </div>
@@ -75,24 +86,45 @@ export function SandboxPanel() {
         {/* Execution log */}
         {hasLog && <ExecutionLog steps={simulationLog} />}
 
-        {/* Empty state */}
+        {/* Polished empty state */}
         {!hasResults && !isSimulating && (
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center px-2">
-              <div className="text-2xl mb-2 opacity-20">▷</div>
-              <p className="text-xs text-gray-600 leading-relaxed">
-                Build a workflow then click Run to simulate execution
-              </p>
+          <div className="h-full flex flex-col items-center justify-center py-8">
+            {/* Icon */}
+            <div className="w-11 h-11 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-center mb-4 shadow-inner">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="10,8 16,12 10,16" fill="#4b5563" stroke="none"/>
+              </svg>
+            </div>
+
+            <p className="text-[13px] font-semibold text-gray-500 mb-1">
+              Ready to simulate
+            </p>
+            <p className="text-[11px] text-gray-700 mb-5 text-center leading-relaxed">
+              Build or load a workflow, then run it to see animated step-by-step execution.
+            </p>
+
+            {/* Guide steps */}
+            <div className="space-y-2.5 w-full max-w-[200px]">
+              {STEPS_GUIDE.map((step, i) => (
+                <div key={i} className="flex items-center gap-2.5">
+                  <div className="w-4 h-4 rounded-full bg-gray-800 border border-gray-700/60 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[9px] font-mono text-gray-500">{i + 1}</span>
+                  </div>
+                  <span className="text-[11px] text-gray-600 leading-tight">{step}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Loading state */}
+        {/* Simulating state */}
         {isSimulating && (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
-              <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-              <p className="text-xs text-gray-500">Simulating workflow...</p>
+              <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-xs font-medium text-gray-400">Executing workflow…</p>
+              <p className="text-[10px] text-gray-600 mt-1">Watch nodes highlight on canvas</p>
             </div>
           </div>
         )}

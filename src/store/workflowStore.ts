@@ -20,6 +20,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   highlightedNodeId: null,
   past: [],
   future: [],
+  fitViewCounter: 0,
 
   // --- Node actions ---
   addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
@@ -109,4 +110,6 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
       past: [],
       future: [],
     }),
-}))
+
+  triggerFitView: () => set((s) => ({ fitViewCounter: s.fitViewCounter + 1 })),
+}));

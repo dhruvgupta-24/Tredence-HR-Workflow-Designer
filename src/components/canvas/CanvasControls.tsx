@@ -21,6 +21,7 @@ export function CanvasControls({ onShortcutsOpen }: Props) {
   const setEdges = useWorkflowStore((s) => s.setEdges)
   const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
   const setValidationErrors = useWorkflowStore((s) => s.setValidationErrors)
+  const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
   const autoArrange = useAutoArrange()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -33,6 +34,7 @@ export function CanvasControls({ onShortcutsOpen }: Props) {
       (importedNodes: WorkflowNode[], importedEdges: Edge[]) => {
         setNodes(importedNodes)
         setEdges(importedEdges)
+        triggerFitView()
       },
       (err: string) => setValidationErrors([`Import failed: ${err}`]),
     )

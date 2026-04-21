@@ -76,6 +76,7 @@ export default function WorkflowBuilderPage() {
   const setSelectedNode = useWorkflowStore((s) => s.setSelectedNode)
   const setNodes = useWorkflowStore((s) => s.setNodes)
   const setEdges = useWorkflowStore((s) => s.setEdges)
+  const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
 
   const [showShortcuts, setShowShortcuts] = useState(false)
 
@@ -88,6 +89,7 @@ export default function WorkflowBuilderPage() {
       const tpl = TEMPLATES[0]!
       setNodes(tpl.nodes as WorkflowNode[])
       setEdges(tpl.edges as Edge[])
+      triggerFitView()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

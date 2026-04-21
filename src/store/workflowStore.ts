@@ -13,7 +13,12 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   automations: [],
 
   addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
-  updateNodeData: (_id, _data) => {},
+  updateNodeData: (id, data) =>
+    set((s) => ({
+      nodes: s.nodes.map((n) =>
+        n.id === id ? { ...n, data: { ...n.data, ...data } } : n
+      ),
+    })),
   removeNode: (id) =>
     set((s) => ({
       nodes: s.nodes.filter((n) => n.id !== id),

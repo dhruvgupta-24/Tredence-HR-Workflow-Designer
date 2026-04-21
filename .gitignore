@@ -16,3 +16,8 @@ docs/GIT_WORKFLOW.md
 trim-icons.js
 resize.mjs
 gen-ico.mjs
+
+.vercel
+
+# Private interview prep - local only
+INTERVIEW_QNA.md

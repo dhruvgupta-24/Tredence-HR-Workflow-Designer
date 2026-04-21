@@ -1,175 +1,283 @@
 <div align="center">
+  <img src="public/flowhr-navbar.png" alt="FlowHR Logo" width="80" />
+  <h1>FlowHR — Workflow Designer</h1>
+  <p><strong>Design, simulate, and automate HR workflows visually. No code required.</strong></p>
 
-<img src="public/flowhr-navbar.png" alt="FlowHR Logo" width="72" />
-
-# FlowHR
-
-**Visual HR Workflow Designer**
-
-Build, simulate, and iterate on HR workflows in seconds - no code required.
-
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-5-646cff?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![React Flow](https://img.shields.io/badge/React_Flow-12-ff0072?style=flat-square)](https://reactflow.dev/)
-
+  <p>
+    <a href="https://tredence-hr-workflow-designer.vercel.app" target="_blank">
+      <img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-Open%20App-6366f1?style=for-the-badge&logo=vercel" />
+    </a>
+    &nbsp;
+    <a href="https://github.com/dhruvgupta-24/Tredence-HR-Workflow-Designer" target="_blank">
+      <img alt="GitHub" src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" />
+    </a>
+    &nbsp;
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-100%25-3178c6?style=for-the-badge&logo=typescript" />
+    &nbsp;
+    <img alt="Build" src="https://img.shields.io/badge/Build-Passing-22c55e?style=for-the-badge" />
+  </p>
 </div>
 
 ---
 
-## What Is FlowHR?
+## The Problem
 
-FlowHR is a production-quality HR workflow automation designer built as a Tredence engineering assessment. It lets HR teams visually design, validate, and simulate processes - from onboarding to payroll - with zero backend dependency.
+HR teams waste hours every week on processes that should run themselves.
 
-> Designed to demonstrate enterprise-grade frontend architecture, state management, and UX craftsmanship.
+Onboarding a new joiner means chasing 6 different people for approvals. Leave requests sit in inboxes. Performance reviews go missing. Offboarding creates compliance gaps.
 
----
+Most workflow tools are either too technical (code-heavy) or too rigid (no customization). Teams fall back to spreadsheets, email chains, and Slack reminders.
 
-## Live Demo
-
-To experience the full product in 15 seconds, clone the repo, run `npm run dev`, then click **Demo** in the toolbar.
+**FlowHR changes that.** It gives HR teams a visual canvas to design their exact process, simulate it before going live, and understand it at a glance — without writing a single line of code.
 
 ---
 
-## Screenshots
+## Key Features
 
-> Load any of the 3 built-in templates or generate a workflow using the AI Copilot to see the canvas in action.
+### 🎨 Visual Drag-and-Drop Builder
+Build multi-step workflows using an intuitive node-based canvas powered by React Flow. Drag Start, Task, Approval, Automated, and End nodes from the sidebar panel. Connect them by dragging handles between nodes. Rearrange freely with smooth animations and spring physics.
 
----
+### ✦ AI Copilot — Workflow Generation
+Open the Copilot with one click and describe what you need in plain English. Choose from pre-trained flows like *Employee Onboarding*, *Leave Approval*, *Performance Review*, *Exit Clearance*, and *Project Kickoff*. The Copilot generates a fully connected, validated workflow graph in seconds — complete with properly typed node data, edges, and metadata.
 
-## Core Features
+### ▶ Live Demo Mode
+A cinematic 22-second autoplay that builds an entire workflow from scratch in front of you. A scripted cursor visits the sidebar, drags each node type to the canvas, connects them, edits a node title with a typewriter effect, and runs the simulation — all timed to look like a real person using the product. Zero interaction required.
 
-### Visual Workflow Builder
-Drag-and-drop canvas powered by React Flow v12. Five node types: Start, Task, Approval Gate, Automated Step, and End. Connect nodes with smart handles. Snap-to-grid layout. Pan and zoom.
+### ◎ Guided Tutorial Mode
+A 6-step interactive tutorial that teaches users how to build a valid workflow (Start → Task → End) by themselves. Each step shows a spotlight glow ring around the target UI element, a looping ghost cursor demonstrating the expected action, a clear instruction card, and a live progress bar. The system detects completion automatically by watching the Zustand store — no polling, no fake timers.
 
-### AI Workflow Copilot
-Type any HR process in plain English and FlowHR generates a complete, valid workflow instantly. Supports 8 pre-built workflow patterns: onboarding, leave, exit, performance review, hiring, promotion, training, and payroll. Animated generation experience with staged feedback.
+### ⚡ Simulation Engine
+Click Run Workflow and watch your graph execute. The engine validates the workflow structure first (checks for Start/End nodes, connectivity, orphan detection), then walks the graph depth-first, animating each node with a glow pulse. Active nodes glow indigo; completed nodes turn green with a checkmark. The execution log updates in real time in the right panel.
 
-### Guided Demo Mode
-One-click cinematic product showcase. Loads the Leave Approval workflow, auto-arranges the layout, plays back the full animated simulation, and opens the AI Copilot - all in under 15 seconds. Ideal for evaluator demos.
+### 📊 Real-Time Analytics Bar
+A persistent banner at the bottom of the canvas shows live metrics: total nodes, connected edges, estimated completion time, workflow health score, and pending approvals — all computed reactively from the graph state on every change. Built entirely from client-side graph analysis.
 
-### Simulation Playback
-Step-by-step animated execution of any workflow. Active nodes glow with a pulsing indigo ring. Completed edges turn green. The simulation log builds progressively in the side panel. Toast notifications confirm completion.
+### ⌨️ Command Palette (Ctrl+K)
+A VS Code-style command palette with fuzzy search. Run Simulation, Open Copilot, Auto-arrange layout, Open Keyboard Shortcuts, and more — all accessible from the keyboard. The centered "Search commands..." bar in the toolbar makes it immediately discoverable.
 
-### Smart Analytics Bar
-Real-time workflow metrics at the bottom of the canvas: node count, automation percentage, estimated duration in days, task and approval breakdown, and bottleneck detection with amber warnings for long approval chains.
+### ★ Workflow Optimizer
+One-click layout and graph cleanup. Removes isolated (unreachable) nodes, deduplicates parallel edges, and triggers auto-arrange using a Dagre-based hierarchical layout algorithm. Shows a toast with exactly how many nodes were removed.
 
-### Workflow Optimizer
-One-click cleanup: removes isolated (unconnected) nodes, deduplicates redundant edges, and re-arranges the layout. Reports exactly what was changed via toast notification.
+### 📁 Import / Export JSON
+Export your full workflow as a structured JSON file. Import any previously saved workflow back with one click — validated on load, with error toasts for malformed data. Works across sessions and makes sharing workflows trivial.
 
-### Ctrl+K Command Palette
-VS Code-style command palette with fuzzy search across all actions, templates, and views. Full keyboard navigation with arrow keys and Enter. Grouped commands with descriptions and shortcuts.
+### 💾 Autosave
+Workflow state is automatically persisted to `localStorage` via Zustand's persist middleware. Users return to exactly where they left off — no explicit save button needed.
 
-### Keyboard Shortcuts
-Full keyboard support: Ctrl+Z undo, Ctrl+Shift+Z redo, Ctrl+K palette, ? for shortcut help, Del to remove nodes, Esc to dismiss. All wired with a clean global listener architecture.
+### ⌨️ Keyboard Shortcuts
+Full keyboard navigation: `Ctrl+Z` / `Ctrl+Shift+Z` for undo/redo, `Ctrl+K` for the command palette, `?` for the shortcuts modal, `Del`/`Backspace` to delete selected nodes, `Esc` to deselect. All shortcuts work globally and are non-destructive.
 
-### Import and Export
-Export any workflow as a clean JSON file. Import previously saved workflows with full validation and error recovery. Autosave to localStorage on every change.
+### 📋 Templates
+Four professionally designed workflow templates ship out of the box: Employee Onboarding, Leave Approval, Performance Review, and Exit Clearance. Each template is a fully connected, validated graph ready to simulate immediately.
 
-### Custom Node Properties
-Every node type has a dedicated properties panel (drawer). Configure assignees, approver roles, automation actions, due dates, metadata fields, and more. All changes reflect instantly on the canvas.
+### ✅ Validation System
+Before simulation runs, the engine validates: Has a Start node? Has an End node? Are all nodes reachable from Start? Are there orphan nodes not connected to any path? Errors surface as clear, dismissible banners — never silent failures.
+
+### 🎨 Premium Dark UI
+Built ground-up with Tailwind CSS in a dark-mode-first design system. Glassmorphism cards, indigo accent palette, smooth micro-animations on every hover and transition, custom Google Font typography, and a toolbar that looks like a real SaaS product. Passes basic a11y requirements with semantic HTML and ARIA labels.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 18 + TypeScript 5 |
-| Build Tool | Vite 5 |
-| Canvas | React Flow v12 (XYFlow) |
-| State | Zustand (no Redux boilerplate) |
-| Styling | Tailwind CSS v3 |
-| Persistence | localStorage (autosave) |
-| Linting | ESLint + TypeScript strict mode |
+| Layer | Technology | Why |
+|---|---|---|
+| Framework | React 18 | Component-based UI, excellent ecosystem, concurrent mode |
+| Language | TypeScript | Type safety eliminates entire classes of runtime bugs |
+| Build Tool | Vite 5 | Sub-second HMR during development, optimized production bundles |
+| Styling | Tailwind CSS | Utility-first, no CSS file chaos, consistent design tokens |
+| Graph Engine | React Flow (@xyflow/react) | Production-grade node/edge canvas with built-in handles and zoom |
+| State Management | Zustand | Minimal boilerplate, computed selectors, localStorage persist |
+| Layout Algorithm | Dagre | Directed acyclic graph layout for auto-arrange |
+| Icons | Heroicons (trimmed) | SVG icon set, tree-shaken to reduce bundle size |
+| Fonts | Inter (Google Fonts) | Most legible UI typeface at small sizes |
 
 ---
 
-## Architecture Highlights
+## Architecture
 
-**Zero Backend Required.** All state is managed client-side via Zustand with localStorage persistence. The simulation engine runs on a BFS traversal of the workflow graph entirely in the browser.
+### Component Structure
 
-**Typed Node Data System.** Each node type (Start, Task, Approval, Automated, End) has a strongly-typed data interface. The render components, forms, and simulation engine all share the same type contract - no implicit any.
-
-**Reactive State Architecture.** The Zustand store drives the entire UI: canvas nodes, edge styles, simulation highlight, completed node tracking, validation errors, and undo/redo history. Components subscribe only to the slices they need.
-
-**Simulation Engine.** `src/api/simulate.ts` runs a BFS traversal from the Start node, building an ordered execution log. The `useSimulate` hook animates through this log step-by-step with 700ms intervals, marking nodes as highlighted then completed.
-
-**Undo/Redo.** Full snapshot-based history (30 snapshots max). Every destructive operation (node drag, delete, edge connect, template load, import) saves a snapshot first. Ctrl+Z and Ctrl+Shift+Z restore them cleanly.
-
-**AI Copilot Architecture.** A keyword-weighted matching engine maps natural language prompts to one of 8 validated workflow templates. The copilot never calls an external API - generation is instantaneous with a staged animation to show intent.
-
----
-
-## Why This Stands Out
-
-- **Enterprise-grade type safety** - strict TypeScript throughout, zero `any` in production paths
-- **Immediate interactivity** - loads with a complete sample workflow and analytics populated on first render
-- **Intelligent defaults** - every workflow template validates and simulates correctly out of the box
-- **Premium UX details** - cinematic page load animation, edge pulse during simulation, completed-edge green coloring, toast feedback on every action
-- **Production build ready** - Vite outputs an optimized bundle under 400KB gzipped
-
----
-
-## Local Setup
-
-```bash
-# Clone
-git clone https://github.com/your-username/flowhr.git
-cd flowhr
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+```
+src/
+├── components/
+│   ├── canvas/          # WorkflowCanvas, CanvasControls, StatusBar
+│   ├── sidebar/         # Sidebar, NodeToolbox, DraggableNode
+│   ├── nodes/           # StartNode, TaskNode, ApprovalNode, AutomatedNode, EndNode
+│   ├── forms/           # Property forms for each node type (open in Drawer)
+│   ├── copilot/         # CopilotModal — AI flow generation UI
+│   ├── command/         # CommandPalette — Ctrl+K modal
+│   ├── demo/            # DemoOverlay, FakeCursor, TutorialOverlay
+│   ├── analytics/       # AnalyticsBar — live graph metrics
+│   ├── sandbox/         # SandboxPanel, ExecutionLog — simulation right panel
+│   └── ui/              # Button, Drawer, Modal, Toast — reusable primitives
 ```
 
-Open `http://localhost:5173` in your browser.
+### State Management
 
----
+Single Zustand store (`workflowStore.ts`) holds all application state:
+- `nodes` / `edges` — React Flow graph data
+- `selectedNodeId` — drives the properties Drawer
+- `simulationLog` / `isSimulating` / `validationErrors` — simulation state
+- `highlightedNodeId` / `completedNodes` — animation state during playback
+- `past` / `future` — undo/redo stacks (snapshot history)
+- `fitViewTrigger` — signals the canvas to call `fitView()`
 
-## Production Build
+All state is persisted to `localStorage` via Zustand's `persist` middleware. Undo/redo uses shallow snapshots of nodes+edges pushed on every meaningful change.
 
-```bash
-# Type-check + bundle
-npm run build
+### Node System
 
-# Preview production build locally
-npm run preview
-```
+Each node type is a React component registered with React Flow's `nodeTypes` map. Every node receives its data via the standard `data` prop and reads the store for highlight/completed state selectors. Node data shapes are strictly typed via TypeScript interfaces in `src/types/`.
 
-Build output goes to `dist/`. The bundle is fully static and can be deployed to any CDN (Vercel, Netlify, GitHub Pages).
+### Simulation Engine
+
+`simulateWorkflow(nodes, edges)` in `src/api/simulate.ts` performs:
+1. Validation: find start node, find end node, BFS reachability check
+2. Topological traversal: walk from Start following edges
+3. Returns an ordered array of `SimulationStep` objects with `nodeId`, `step`, `label`, `duration`
+
+The UI layer animates these steps with timed `setHighlightedNodeId` calls and accumulates `completedNodes` for the green-checkmark visual.
+
+### Templates System
+
+Templates live in `src/data/templates.ts` as static arrays of `nodes` + `edges`. All node data fields match the TypeScript interfaces exactly — a lesson learned after the Copilot blank-screen bug (wrong field names caused `.map()` on undefined arrays).
+
+### Copilot Generation
+
+`src/data/copilotFlows.ts` holds pre-written workflow graphs for each supported flow type. When a user selects a flow, `generate()` in `src/api/copilot.ts` copies the matching graph into the store via `setNodes` / `setEdges`, then triggers `fitView`. A simulated "thinking" delay adds realism to the Copilot chat experience.
 
 ---
 
 ## Project Structure
 
 ```
-src/
-  api/          Simulation engine and automation actions
-  components/
-    analytics/  Live workflow metrics bar
-    canvas/     React Flow canvas, toolbar, status bar
-    command/    Ctrl+K command palette
-    copilot/    AI Workflow Copilot modal
-    forms/      Node property editors
-    nodes/      Custom node render components
-    sandbox/    Simulation control panel
-    sidebar/    Node toolbox and template library
-    ui/         Shared UI primitives (Button, Modal, Toast, etc.)
-  data/         Workflow templates and copilot flow definitions
-  hooks/        useSimulate, useAutoArrange, useGuidedDemo, etc.
-  pages/        WorkflowBuilderPage (main shell)
-  store/        Zustand workflow store and toast store
-  types/        Shared TypeScript types (nodes, workflow state)
-  utils/        Serialization, validation, layout helpers
+Tredence-HR-Workflow-Designer/
+├── public/
+│   └── flowhr-navbar.png        # App logo
+├── src/
+│   ├── api/                     # simulate.ts, copilot.ts, automations.ts
+│   ├── components/              # All UI components (see Architecture above)
+│   ├── data/                    # templates.ts, copilotFlows.ts
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useAutosave.ts
+│   │   ├── useAutoArrange.ts
+│   │   ├── useSimulate.ts
+│   │   ├── useAutomations.ts
+│   │   ├── useUndoRedo.ts
+│   │   ├── useLiveDemo.ts       # Live Demo script engine
+│   │   └── useTutorial.ts       # Tutorial step state machine
+│   ├── pages/
+│   │   └── WorkflowBuilderPage.tsx
+│   ├── store/
+│   │   ├── workflowStore.ts     # Main Zustand store
+│   │   └── toastStore.ts        # Toast notification store
+│   ├── types/                   # TypeScript interfaces for nodes, edges, etc.
+│   ├── utils/
+│   │   ├── serialization.ts     # JSON import/export
+│   │   ├── graphUtils.ts        # Graph traversal helpers
+│   │   └── demoPositions.ts     # getBoundingClientRect-based DOM position queries
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css                # Global styles, animations, Tailwind directives
+├── docs/                        # Internal planning docs (gitignored from public view)
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
 ```
 
 ---
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### Run Locally
+
+```bash
+git clone https://github.com/dhruvgupta-24/Tredence-HR-Workflow-Designer.git
+cd Tredence-HR-Workflow-Designer
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+Output goes to `dist/`. The bundle is ~411KB JS (130KB gzipped) and ~56KB CSS (10KB gzipped).
+
+### Type Check
+
+```bash
+npx tsc --noEmit
+```
+
+---
+
+## Why This Stands Out
+
+Most student projects are either CRUD apps or tutorials followed from YouTube.
+
+FlowHR is a **product** — it has a real user problem, a real UI design system, production-grade state management with undo/redo, a simulation engine with graph validation, and not one but two showcase experiences (Live Demo + Tutorial) built specifically for the recruiter context.
+
+**Product thinking:** The feature set mirrors real HR workflow tools (Kissflow, Process Street) but reimagined as a visual-first, browser-native tool.
+
+**UX polish:** Every interaction has a hover state. Every async operation has a loading state. Errors are never silent. The toolbar looks like a Linear or Vercel product, not a student project.
+
+**Technical depth:** Zustand store architecture, TypeScript strict mode throughout, Dagre graph layout, BFS graph validation, undo/redo snapshot history, DOM-based responsive cursor positioning — these are real engineering decisions with real tradeoffs.
+
+**Recruiter-facing:** The Live Demo sells the product in 22 seconds without requiring any interaction. The Tutorial onboards someone unfamiliar with graphs in under 2 minutes.
+
+---
+
+## Future Scope
+
+| Feature | Description |
+|---|---|
+| Backend persistence | Supabase/PostgreSQL to save workflows per user |
+| Real-time collaboration | CRDT-based multi-user editing (Liveblocks or Yjs) |
+| Live AI integration | Replace copilot stubs with GPT-4 / Claude API calls |
+| Analytics history | Track simulation runs, approval rates, bottleneck heatmaps |
+| Role-based access | HR admin vs. employee view of workflows |
+| Webhook triggers | Real automation: send emails, Slack messages, Jira tickets |
+| Mobile view | Read-only workflow viewer for mobile approvers |
+| Versioning | Git-style workflow version history with diff viewer |
+
+---
+
+## Screenshots
+
+> *Screenshots coming soon — run the app locally or visit the Live Demo link above.*
+
+| View | Description |
+|---|---|
+| Canvas Builder | Drag-and-drop node editor with sidebar and analytics bar |
+| AI Copilot | Chat-style workflow generation modal |
+| Live Demo Mode | Cinematic 22-second autoplay with scripted cursor |
+| Tutorial Mode | 6-step guided tutorial with spotlight and ghost cursor |
+| Simulation Playback | Step-by-step node glow animation with execution log |
+
+---
+
+## License
+
+MIT — free to use, fork, and build upon.
+
+---
+
 <div align="center">
-
-Built for the Tredence Engineering Assessment
-
+  <p>Built with focus and coffee. Made for the Tredence hackathon.</p>
+  <p>
+    <a href="https://tredence-hr-workflow-designer.vercel.app">Live Demo</a> ·
+    <a href="https://github.com/dhruvgupta-24/Tredence-HR-Workflow-Designer">GitHub</a>
+  </p>
 </div>

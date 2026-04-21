@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ReactFlowProvider } from '@xyflow/react'
 import { useWorkflowStore } from '../store'
 import { useAutomations } from '../hooks/useAutomations'
@@ -14,6 +14,8 @@ import { SandboxPanel } from '../components/sandbox'
 import { AnalyticsBar } from '../components/analytics/AnalyticsBar'
 import { CopilotModal } from '../components/copilot/CopilotModal'
 import { CommandPalette } from '../components/command/CommandPalette'
+import { DemoOverlay } from '../components/demo/DemoOverlay'
+import type { DemoPhase } from '../components/demo/DemoOverlay'
 import {
   StartNodeForm,
   TaskNodeForm,
@@ -25,17 +27,16 @@ import { TEMPLATES } from '../data/templates'
 import type { WorkflowNode } from '../types'
 import type { Edge } from '@xyflow/react'
 
-// ── Keyboard shortcuts list ───────────────────────────────────
 const SHORTCUTS = [
   { keys: ['Ctrl', 'K'],          action: 'Open command palette' },
   { keys: ['Ctrl', 'Z'],          action: 'Undo' },
   { keys: ['Ctrl', 'Shift', 'Z'], action: 'Redo' },
   { keys: ['Del', '⌫'],           action: 'Delete selected node' },
-  { keys: ['Esc'],                 action: 'Deselect / close' },
-  { keys: ['?'],                   action: 'Open shortcuts panel' },
+  { keys: ['Esc'],                 action: 'Deselect or close' },
+  { keys: ['?'],                   action: 'Open this panel' },
   { keys: ['Drag'],                action: 'Pan canvas' },
   { keys: ['Scroll'],              action: 'Zoom in/out' },
-  { keys: ['Click'],               action: 'Select node → open properties' },
+  { keys: ['Click node'],          action: 'Open properties panel' },
 ]
 
 function ShortcutsContent() {
@@ -57,7 +58,6 @@ function ShortcutsContent() {
   )
 }
 
-// ── Form router ───────────────────────────────────────────────
 function NodeFormRouter({ nodeId, type }: { nodeId: string; type: string }) {
   switch (type) {
     case 'start':     return <StartNodeForm    nodeId={nodeId} />
@@ -70,30 +70,41 @@ function NodeFormRouter({ nodeId, type }: { nodeId: string; type: string }) {
   }
 }
 
-// ── Main Page ─────────────────────────────────────────────────
 export default function WorkflowBuilderPage() {
   useAutomations()
   useAutosave()
 
   const { runSimulation } = useSimulate()
 
-  const nodes        = useWorkflowStore((s) => s.nodes)
+  const nodes          = useWorkflowStore((s) => s.nodes)
   const selectedNodeId = useWorkflowStore((s) => s.selectedNodeId)
   const setSelectedNode = useWorkflowStore((s) => s.setSelectedNode)
-  const setNodes     = useWorkflowStore((s) => s.setNodes)
-  const setEdges     = useWorkflowStore((s) => s.setEdges)
+  const setNodes       = useWorkflowStore((s) => s.setNodes)
+  const setEdges       = useWorkflowStore((s) => s.setEdges)
   const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
 
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [showCopilot,   setShowCopilot]   = useState(false)
   const [showCommand,   setShowCommand]   = useState(false)
 
-  const { runDemo, isDemoRunning } = useGuidedDemo({
+  // Demo overlay state
+  const [demoPhase,     setDemoPhase]     = useState<DemoPhase>('idle')
+  const [demoLabel,     setDemoLabel]     = useState('')
+  const [demoStep,      setDemoStep]      = useState(0)
+  const [demoTotal,     setDemoTotal]     = useState(0)
+
+  const { runDemo, cancelDemo, isDemoRunning } = useGuidedDemo({
     onOpenCopilot:  () => setShowCopilot(true),
     onCloseCopilot: () => setShowCopilot(false),
+    onPhaseChange:  setDemoPhase,
+    onStepLabel:    (label, num, total) => {
+      setDemoLabel(label)
+      setDemoStep(num)
+      setDemoTotal(total)
+    },
   })
 
-  // Seed Employee Onboarding on first-ever visit
+  // Seed template on first visit
   const seededRef = useRef(false)
   useEffect(() => {
     if (seededRef.current) return
@@ -106,10 +117,9 @@ export default function WorkflowBuilderPage() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Global keyboard shortcuts
   useUndoRedo(setShowShortcuts)
 
-  // Ctrl+K → command palette (separate effect to keep useUndoRedo clean)
+  // Ctrl+K global listener
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
@@ -133,6 +143,7 @@ export default function WorkflowBuilderPage() {
 
   return (
     <div className="app-root flex h-screen bg-gray-950 text-white overflow-hidden">
+
       {/* Left Sidebar */}
       <div className="w-60 flex-shrink-0">
         <Sidebar />
@@ -148,11 +159,31 @@ export default function WorkflowBuilderPage() {
           isDemoRunning={isDemoRunning}
         />
         <StatusBar />
-        <div className="flex-1 min-h-0">
+
+        {/* Canvas + Demo overlay container */}
+        <div className="flex-1 min-h-0 relative">
           <ReactFlowProvider>
             <WorkflowCanvas />
           </ReactFlowProvider>
+
+          {/* Cinematic demo overlay - sits on top of canvas only */}
+          <DemoOverlay
+            phase={demoPhase}
+            stepLabel={demoLabel}
+            stepNumber={demoStep}
+            totalSteps={demoTotal}
+            onTryCopilot={() => {
+              cancelDemo()
+              setDemoPhase('idle')
+              setShowCopilot(true)
+            }}
+            onBuildOwn={() => {
+              cancelDemo()
+              setDemoPhase('idle')
+            }}
+          />
         </div>
+
         <AnalyticsBar />
       </div>
 
@@ -176,7 +207,7 @@ export default function WorkflowBuilderPage() {
       {/* AI Copilot Modal */}
       <CopilotModal isOpen={showCopilot} onClose={() => setShowCopilot(false)} />
 
-      {/* Ctrl+K Command Palette */}
+      {/* Command Palette */}
       <CommandPalette
         isOpen={showCommand}
         onClose={() => setShowCommand(false)}

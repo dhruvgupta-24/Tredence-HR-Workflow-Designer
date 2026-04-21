@@ -6,16 +6,21 @@ import { toast } from '../store/toastStore'
 import { simulateWorkflow } from '../api/simulate'
 import type { WorkflowNode } from '../types'
 import type { Edge } from '@xyflow/react'
+import type { DemoPhase } from '../components/demo/DemoOverlay'
+
+// Leave Approval: clean 6-node linear chain, zero branching, guaranteed to simulate correctly.
+const DEMO_TEMPLATE = TEMPLATES[1]!
 
 interface DemoCallbacks {
   onOpenCopilot: () => void
   onCloseCopilot: () => void
+  onPhaseChange: (phase: DemoPhase) => void
+  onStepLabel: (label: string, num: number, total: number) => void
 }
 
-// Leave Approval is a clean 6-node linear chain - guaranteed valid, no branching complexity.
-const DEMO_TEMPLATE = TEMPLATES[1]!
-
-export function useGuidedDemo({ onOpenCopilot, onCloseCopilot }: DemoCallbacks) {
+export function useGuidedDemo({
+  onOpenCopilot, onCloseCopilot, onPhaseChange, onStepLabel,
+}: DemoCallbacks) {
   const [isDemoRunning, setIsDemoRunning] = useState(false)
 
   const setNodes             = useWorkflowStore((s) => s.setNodes)
@@ -45,34 +50,31 @@ export function useGuidedDemo({ onOpenCopilot, onCloseCopilot }: DemoCallbacks) 
       })
 
     try {
-      // 0 - Announce
-      toast.info('Demo starting...')
-      await wait(500)
-      if (cancelRef.current) return
-
-      // 1 - Load Leave Approval (a clean, linear 6-node workflow)
+      // Phase 1: Intro card (2.6s - matches CSS animation duration)
+      onPhaseChange('intro')
       setNodes(DEMO_TEMPLATE.nodes as WorkflowNode[])
       setEdges(DEMO_TEMPLATE.edges as Edge[])
       setSimulationLog([])
       setValidationErrors([])
       clearCompletedNodes()
       setHighlightedNodeId(null)
-      toast.success('Loaded: Leave Approval')
-      await wait(300)
+
+      await wait(2600) // Let intro animation complete (in 0.4s, hold 1.8s, out 0.4s)
       if (cancelRef.current) return
 
-      // 2 - Fit View smoothly
+      // Phase 2: Running - start captions
+      onPhaseChange('running')
+      onStepLabel('Loading workflow...', 0, 0)
       triggerFitView()
-      await wait(700)
+      await wait(600)
       if (cancelRef.current) return
 
-      // 3 - Auto-arrange for perfect visual layout
       autoArrange()
+      onStepLabel('Arranging layout...', 0, 0)
       await wait(900)
       if (cancelRef.current) return
 
-      // 4 - Run simulation directly against the template nodes/edges
-      //     (bypass store read to avoid any stale state race)
+      // Phase 3: Simulate step by step
       const result = await simulateWorkflow(
         DEMO_TEMPLATE.nodes as WorkflowNode[],
         DEMO_TEMPLATE.edges as Edge[],
@@ -80,39 +82,42 @@ export function useGuidedDemo({ onOpenCopilot, onCloseCopilot }: DemoCallbacks) 
 
       if (!result.success || !result.steps?.length) {
         toast.error('Demo simulation could not run')
+        onPhaseChange('idle')
         return
       }
 
-      // 5 - Animated step-by-step playback
       setIsSimulating(true)
       let prevId: string | null = null
+      const total = result.steps.length
 
       for (const step of result.steps) {
         if (cancelRef.current) break
         if (prevId) addCompletedNode(prevId)
         setHighlightedNodeId(step.nodeId)
-        prevId = step.nodeId
-        await wait(700)
+        onStepLabel(step.label, step.step, total)
+        await wait(800)
       }
 
-      if (prevId) addCompletedNode(prevId)
+      if (prevId ?? result.steps[result.steps.length - 1]?.nodeId) {
+        addCompletedNode(result.steps[result.steps.length - 1]!.nodeId)
+      }
       setHighlightedNodeId(null)
       setIsSimulating(false)
-      toast.success('Simulation complete - 6 steps executed')
-      await wait(900)
+      await wait(400)
       if (cancelRef.current) return
 
-      // 6 - Flash AI Copilot
-      onOpenCopilot()
-      await wait(1800)
-      onCloseCopilot()
-      await wait(400)
+      // Phase 4: Show success card
+      onPhaseChange('success')
 
-      // 7 - Wrap up
-      toast.success('FlowHR Demo complete - ready to build your own workflow')
+      // Auto-dismiss success after 8s if no button clicked
+      await wait(8000)
+      if (!cancelRef.current) {
+        onPhaseChange('idle')
+      }
     } catch (err) {
-      console.error('[Demo] unexpected error:', err)
-      toast.error('Demo encountered an error')
+      console.error('[Demo] error:', err)
+      toast.error('Demo encountered an error - please try again')
+      onPhaseChange('idle')
     } finally {
       setIsDemoRunning(false)
       setIsSimulating(false)
@@ -123,10 +128,13 @@ export function useGuidedDemo({ onOpenCopilot, onCloseCopilot }: DemoCallbacks) 
     setNodes, setEdges, triggerFitView,
     setHighlightedNodeId, addCompletedNode, clearCompletedNodes,
     setSimulationLog, setIsSimulating, setValidationErrors,
-    onOpenCopilot, onCloseCopilot,
+    onOpenCopilot, onCloseCopilot, onPhaseChange, onStepLabel,
   ])
 
-  const cancelDemo = useCallback(() => { cancelRef.current = true }, [])
+  const cancelDemo = useCallback(() => {
+    cancelRef.current = true
+    onPhaseChange('idle')
+  }, [onPhaseChange])
 
   return { runDemo, cancelDemo, isDemoRunning }
 }

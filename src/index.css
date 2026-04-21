@@ -1,4 +1,4 @@
-﻿/* React Flow base styles - must precede @tailwind directives */
+/* React Flow base styles - must precede @tailwind directives */
 @import '@xyflow/react/dist/style.css';
 
 @tailwind base;
@@ -160,3 +160,53 @@
   background: rgba(3, 7, 18, 0.75);
   backdrop-filter: blur(4px);
 }
+
+/* ── Demo Overlay Animations ─────────────────────────────────── */
+
+/* Intro background */
+.demo-intro-bg {
+  animation: demo-bg-in 0.4s ease forwards;
+}
+
+@keyframes demo-bg-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Intro card: slide up, hold, fade out - total 2.6s */
+.demo-intro-card {
+  animation: demo-intro-card 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes demo-intro-card {
+  0%   { opacity: 0; transform: translateY(18px) scale(0.96); }
+  15%  { opacity: 1; transform: translateY(0) scale(1); }
+  72%  { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.98); }
+}
+
+/* Step caption: slides down from top edge */
+.demo-caption {
+  animation: demo-caption-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes demo-caption-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Success background */
+.demo-success-bg {
+  animation: demo-bg-in 0.35s ease forwards;
+}
+
+/* Success card: scale up from slightly small */
+.demo-success-card {
+  animation: demo-success-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes demo-success-in {
+  from { opacity: 0; transform: scale(0.91) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+

@@ -5,7 +5,8 @@ import { useAutomations } from '../hooks/useAutomations'
 import { useUndoRedo } from '../hooks/useUndoRedo'
 import { useAutosave } from '../hooks/useAutosave'
 import { useSimulate } from '../hooks/useSimulate'
-import { useGuidedDemo } from '../hooks/useGuidedDemo'
+import { useLiveDemo } from '../hooks/useLiveDemo'
+import { useTutorial } from '../hooks/useTutorial'
 import { Sidebar } from '../components/sidebar'
 import { WorkflowCanvas, CanvasControls, StatusBar } from '../components/canvas'
 import { Drawer, Modal } from '../components/ui'
@@ -15,28 +16,26 @@ import { AnalyticsBar } from '../components/analytics/AnalyticsBar'
 import { CopilotModal } from '../components/copilot/CopilotModal'
 import { CommandPalette } from '../components/command/CommandPalette'
 import { DemoOverlay } from '../components/demo/DemoOverlay'
-import type { DemoPhase } from '../components/demo/DemoOverlay'
+import { FakeCursor } from '../components/demo/FakeCursor'
+import { TutorialOverlay } from '../components/demo/TutorialOverlay'
+import type { LiveDemoPhase } from '../components/demo/DemoOverlay'
 import {
-  StartNodeForm,
-  TaskNodeForm,
-  ApprovalNodeForm,
-  AutomatedNodeForm,
-  EndNodeForm,
+  StartNodeForm, TaskNodeForm, ApprovalNodeForm, AutomatedNodeForm, EndNodeForm,
 } from '../components/forms'
 import { TEMPLATES } from '../data/templates'
 import type { WorkflowNode } from '../types'
 import type { Edge } from '@xyflow/react'
 
 const SHORTCUTS = [
-  { keys: ['Ctrl', 'K'],          action: 'Open command palette' },
-  { keys: ['Ctrl', 'Z'],          action: 'Undo' },
-  { keys: ['Ctrl', 'Shift', 'Z'], action: 'Redo' },
-  { keys: ['Del', '⌫'],           action: 'Delete selected node' },
-  { keys: ['Esc'],                 action: 'Deselect or close' },
-  { keys: ['?'],                   action: 'Open this panel' },
-  { keys: ['Drag'],                action: 'Pan canvas' },
-  { keys: ['Scroll'],              action: 'Zoom in/out' },
-  { keys: ['Click node'],          action: 'Open properties panel' },
+  { keys: ['Ctrl', 'K'],           action: 'Open command palette' },
+  { keys: ['Ctrl', 'Z'],           action: 'Undo' },
+  { keys: ['Ctrl', 'Shift', 'Z'],  action: 'Redo' },
+  { keys: ['Del', '⌫'],            action: 'Delete selected node' },
+  { keys: ['Esc'],                  action: 'Deselect or close' },
+  { keys: ['?'],                    action: 'Open this panel' },
+  { keys: ['Drag'],                 action: 'Pan canvas' },
+  { keys: ['Scroll'],               action: 'Zoom in/out' },
+  { keys: ['Click node'],           action: 'Open properties panel' },
 ]
 
 function ShortcutsContent() {
@@ -47,9 +46,7 @@ function ShortcutsContent() {
           <span className="text-xs text-gray-400">{action}</span>
           <div className="flex items-center gap-1">
             {keys.map((k) => (
-              <kbd key={k} className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded text-[10px] font-mono text-gray-300 leading-tight">
-                {k}
-              </kbd>
+              <kbd key={k} className="px-2 py-0.5 bg-gray-800 border border-gray-700 rounded text-[10px] font-mono text-gray-300 leading-tight">{k}</kbd>
             ))}
           </div>
         </div>
@@ -65,8 +62,7 @@ function NodeFormRouter({ nodeId, type }: { nodeId: string; type: string }) {
     case 'approval':  return <ApprovalNodeForm nodeId={nodeId} />
     case 'automated': return <AutomatedNodeForm nodeId={nodeId} />
     case 'end':       return <EndNodeForm      nodeId={nodeId} />
-    default:
-      return <p className="text-xs text-gray-500">No properties for this node type.</p>
+    default:          return <p className="text-xs text-gray-500">No properties for this node type.</p>
   }
 }
 
@@ -87,22 +83,19 @@ export default function WorkflowBuilderPage() {
   const [showCopilot,   setShowCopilot]   = useState(false)
   const [showCommand,   setShowCommand]   = useState(false)
 
-  // Demo overlay state
-  const [demoPhase,     setDemoPhase]     = useState<DemoPhase>('idle')
-  const [demoLabel,     setDemoLabel]     = useState('')
-  const [demoStep,      setDemoStep]      = useState(0)
-  const [demoTotal,     setDemoTotal]     = useState(0)
+  // Live Demo state
+  const [demoPhase, setDemoPhase]   = useState<LiveDemoPhase>('idle')
+  const [demoLabel, setDemoLabel]   = useState('')
 
-  const { runDemo, cancelDemo, isDemoRunning } = useGuidedDemo({
+  const { runDemo, cancelDemo, isRunning: isLiveDemoRunning, cursor } = useLiveDemo({
+    onPhaseChange:  setDemoPhase,
+    onStepLabel:    setDemoLabel,
     onOpenCopilot:  () => setShowCopilot(true),
     onCloseCopilot: () => setShowCopilot(false),
-    onPhaseChange:  setDemoPhase,
-    onStepLabel:    (label, num, total) => {
-      setDemoLabel(label)
-      setDemoStep(num)
-      setDemoTotal(total)
-    },
   })
+
+  // Tutorial state
+  const tutorial = useTutorial()
 
   // Seed template on first visit
   const seededRef = useRef(false)
@@ -119,7 +112,6 @@ export default function WorkflowBuilderPage() {
 
   useUndoRedo(setShowShortcuts)
 
-  // Ctrl+K global listener
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
@@ -133,13 +125,8 @@ export default function WorkflowBuilderPage() {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  const selectedNode = selectedNodeId
-    ? nodes.find((n) => n.id === selectedNodeId)
-    : undefined
-
-  const drawerTitle = selectedNode
-    ? String(selectedNode.data.title || selectedNode.type || 'Node')
-    : ''
+  const selectedNode = selectedNodeId ? nodes.find((n) => n.id === selectedNodeId) : undefined
+  const drawerTitle  = selectedNode ? String(selectedNode.data.title || selectedNode.type || 'Node') : ''
 
   return (
     <div className="app-root flex h-screen bg-gray-950 text-white overflow-hidden">
@@ -149,54 +136,46 @@ export default function WorkflowBuilderPage() {
         <Sidebar />
       </div>
 
-      {/* Center - Toolbar + Status + Canvas + Analytics */}
+      {/* Center */}
       <div className="flex-1 min-w-0 flex flex-col">
         <CanvasControls
           onShortcutsOpen={() => setShowShortcuts(true)}
           onCopilotOpen={() => setShowCopilot(true)}
           onCommandOpen={() => setShowCommand(true)}
-          onDemoRun={() => void runDemo()}
-          isDemoRunning={isDemoRunning}
+          onLiveDemoRun={() => void runDemo()}
+          onTutorialStart={() => tutorial.startTutorial()}
+          isLiveDemoRunning={isLiveDemoRunning}
+          isTutorialActive={tutorial.isActive}
         />
         <StatusBar />
 
-        {/* Canvas + Demo overlay container */}
+        {/* Canvas + overlays */}
         <div className="flex-1 min-h-0 relative">
           <ReactFlowProvider>
             <WorkflowCanvas />
           </ReactFlowProvider>
 
-          {/* Cinematic demo overlay - sits on top of canvas only */}
+          {/* Live Demo overlay */}
           <DemoOverlay
             phase={demoPhase}
             stepLabel={demoLabel}
-            stepNumber={demoStep}
-            totalSteps={demoTotal}
-            onTryCopilot={() => {
-              cancelDemo()
-              setDemoPhase('idle')
-              setShowCopilot(true)
-            }}
-            onBuildOwn={() => {
-              cancelDemo()
-              setDemoPhase('idle')
-            }}
+            onSkipIntro={() => { /* intro auto-continues after 2.6s */ }}
+            onTryCopilot={() => { cancelDemo(); setDemoPhase('idle'); setShowCopilot(true) }}
+            onBuildOwn={() => { cancelDemo(); setDemoPhase('idle') }}
           />
         </div>
 
         <AnalyticsBar />
       </div>
 
-      {/* Right Panel - Simulation Sandbox */}
+      {/* Right Panel */}
       <div className="w-80 flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950">
         <SandboxPanel />
       </div>
 
       {/* Properties Drawer */}
       <Drawer isOpen={!!selectedNode} onClose={() => setSelectedNode(null)} title={drawerTitle}>
-        {selectedNode && (
-          <NodeFormRouter nodeId={selectedNode.id} type={selectedNode.type ?? ''} />
-        )}
+        {selectedNode && <NodeFormRouter nodeId={selectedNode.id} type={selectedNode.type ?? ''} />}
       </Drawer>
 
       {/* Keyboard Shortcuts Modal */}
@@ -215,6 +194,23 @@ export default function WorkflowBuilderPage() {
         onOpenCopilot={() => { setShowCommand(false); setShowCopilot(true) }}
         onOpenShortcuts={() => { setShowCommand(false); setShowShortcuts(true) }}
       />
+
+      {/* Tutorial overlay - fixed bottom-right card */}
+      <TutorialOverlay
+        isActive={tutorial.isActive}
+        isDone={tutorial.isDone}
+        step={tutorial.step}
+        totalSteps={tutorial.totalSteps}
+        stepTitle={tutorial.stepTitle}
+        stepHint={tutorial.stepHint}
+        stepIcon={tutorial.stepIcon}
+        onCancel={tutorial.cancelTutorial}
+        onBuildOwn={tutorial.cancelTutorial}
+        onTryCopilot={() => { tutorial.cancelTutorial(); setShowCopilot(true) }}
+      />
+
+      {/* Fake cursor for Live Demo */}
+      <FakeCursor state={cursor} />
 
       {/* Toast notifications */}
       <ToastContainer />

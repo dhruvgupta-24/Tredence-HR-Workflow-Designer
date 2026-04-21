@@ -2,7 +2,7 @@
 ## HR Workflow Designer
 
 > Sequential prompt checklist. Send one prompt at a time. Do not skip. Do not combine phases.
-> Read AGENT_RULES.md and PROJECT_PROGRESS.md before every session.
+> Read docs/AGENT_RULES.md and docs/PROJECT_PROGRESS.md before every session.
 
 ---
 
@@ -32,11 +32,11 @@ Do NOT add Supabase to any prompt unless the agent explicitly evaluates localSto
 
 ## How to Use This File
 
-1. Find your current prompt number in PROJECT_PROGRESS.md.
+1. Find your current prompt number in docs/PROJECT_PROGRESS.md.
 2. Copy the full prompt block below exactly as written.
 3. Paste into a new or existing agent chat.
 4. Wait for agent to complete and commit before sending the next prompt.
-5. After completion, update PROJECT_PROGRESS.md with the prompt number and commit hash.
+5. After completion, update docs/PROJECT_PROGRESS.md with the prompt number and commit hash.
 
 Fresh chat checkpoints are marked with: `[FRESH CHAT RECOMMENDED]`
 Stop points after risky work are marked with: `[STOP - VERIFY BEFORE CONTINUING]`
@@ -48,7 +48,7 @@ Stop points after risky work are marked with: `[STOP - VERIFY BEFORE CONTINUING]
 ### Prompt 01 - Vite Init + Dependencies
 
 ```
-Read AGENT_RULES.md and PROJECT_PROGRESS.md first.
+Read docs/AGENT_RULES.md and docs/PROJECT_PROGRESS.md first.
 
 Task: Initialize the project.
 
@@ -71,7 +71,7 @@ Task: Initialize the project.
 10. Run `npm run dev` - confirm it starts without errors.
 11. Run `npm run build` - confirm it builds without errors.
 12. Commit: "chore: initial project scaffold with vite react ts tailwind"
-13. Update PROJECT_PROGRESS.md: set current phase to P0, prompt 01 complete.
+13. Update docs/PROJECT_PROGRESS.md: set current phase to P0, prompt 01 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -83,7 +83,7 @@ Tell me only steps that require manual action.
 ### Prompt 02 - Folder Structure + Type Stubs
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 0 Prompt 01 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 0 Prompt 01 is complete.
 
 Task: Create the full folder structure with stub files.
 
@@ -157,7 +157,7 @@ src/
 
 Fill src/types/nodes.ts with all TypeScript interfaces from TECH_ARCHITECTURE.md (BaseNodeData, StartNodeData, TaskNodeData, ApprovalNodeData, AutomatedNodeData, EndNodeData, NodeData union, WorkflowNode).
 
-Fill src/types/workflow.ts with WorkflowState interface and SimulationStep interface from SYSTEM_DESIGN.md.
+Fill src/types/workflow.ts with WorkflowState interface and SimulationStep interface from docs/SYSTEM_DESIGN.md.
 
 Fill src/types/api.ts with AutomationAction interface: { id: string; label: string; params: string[] }
 
@@ -169,7 +169,7 @@ Run: npx tsc --noEmit
 Fix any type errors before committing.
 
 Commit: "chore: full folder structure and type definitions"
-Update PROJECT_PROGRESS.md: prompt 02 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 02 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -183,7 +183,7 @@ Tell me only steps that require manual action.
 ### Prompt 03 - Zustand Store + Node Defaults
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 0 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 0 is complete.
 
 Task: Build the Zustand store and node defaults.
 
@@ -228,7 +228,7 @@ Task: Build the Zustand store and node defaults.
 4. Run: npx tsc --noEmit. Fix all errors.
 
 Commit: "feat: zustand store and node defaults"
-Update PROJECT_PROGRESS.md: Phase 1, prompt 03 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 1, prompt 03 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -244,7 +244,7 @@ Tell me only steps that require manual action.
 [FRESH CHAT RECOMMENDED if context from Phase 0/1 is heavy]
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 1 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 1 is complete.
 
 Task: Build the app layout shell and routing.
 
@@ -285,7 +285,7 @@ Task: Build the app layout shell and routing.
 9. Run: npx tsc --noEmit. Fix all errors.
 
 Commit: "feat: app layout shell and UI primitives"
-Update PROJECT_PROGRESS.md: prompt 04 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 04 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -297,7 +297,7 @@ Tell me only steps that require manual action.
 ### Prompt 05 - Sidebar + Draggable Node Toolbox
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm prompt 04 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm prompt 04 is complete.
 
 Task: Build the left sidebar and draggable node toolbox.
 
@@ -333,7 +333,7 @@ Task: Build the left sidebar and draggable node toolbox.
 6. Verify drag starts without console errors (dragging a node type from sidebar should not throw).
 
 Commit: "feat: sidebar and draggable node toolbox"
-Update PROJECT_PROGRESS.md: prompt 05 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 05 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -345,7 +345,7 @@ Tell me only steps that require manual action.
 ### Prompt 06 - WorkflowCanvas + Drop + Connect
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm prompt 05 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm prompt 05 is complete.
 
 Task: Build the WorkflowCanvas with full drag-drop and connect wiring.
 
@@ -389,7 +389,7 @@ Task: Build the WorkflowCanvas with full drag-drop and connect wiring.
 7. Test: draw an edge between two hypothetical nodes (use browser).
 
 Commit: "feat: workflow canvas with drag-drop and connect"
-Update PROJECT_PROGRESS.md: prompt 06 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 06 complete.
 ```
 
 **Gate:** Nodes appear on canvas on drop. Edges can be drawn. Empty state shows/hides correctly.
@@ -406,7 +406,7 @@ Update PROJECT_PROGRESS.md: prompt 06 complete.
 [FRESH CHAT RECOMMENDED]
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 2 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 2 is complete.
 
 Task: Build all 5 custom node components for React Flow.
 
@@ -470,7 +470,7 @@ Node type colors (for badge and ring accent):
 9. Verify all 5 node types render on canvas with correct colors and handles.
 
 Commit: "feat: all 5 custom node components"
-Update PROJECT_PROGRESS.md: prompt 07 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 07 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -484,7 +484,7 @@ Tell me only steps that require manual action.
 ### Prompt 08 - Drawer Shell + FormField + KeyValueEditor
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 3 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 3 is complete.
 
 Task: Build the Drawer, FormField, and KeyValueEditor.
 
@@ -521,7 +521,7 @@ Task: Build the Drawer, FormField, and KeyValueEditor.
 6. Test: click a node on canvas, drawer slides in. Click X, drawer slides out.
 
 Commit: "feat: drawer shell, FormField, KeyValueEditor"
-Update PROJECT_PROGRESS.md: prompt 08 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 08 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -533,7 +533,7 @@ Tell me only steps that require manual action.
 ### Prompt 09 - Node Edit Forms (Start + Task + Approval)
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm prompt 08 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm prompt 08 is complete.
 
 Task: Build StartNodeForm, TaskNodeForm, ApprovalNodeForm.
 
@@ -577,7 +577,7 @@ Rules for all forms:
 6. Test: edit the title in the form. The node preview on canvas should update live.
 
 Commit: "feat: Start, Task, Approval node edit forms"
-Update PROJECT_PROGRESS.md: prompt 09 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 09 complete.
 ```
 
 **Gate:** Editing form fields updates the node preview on canvas in real time. Zero TS errors.
@@ -590,7 +590,7 @@ Update PROJECT_PROGRESS.md: prompt 09 complete.
 ### Prompt 10 - Node Edit Forms (Automated + End) + Drawer Finalization
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm prompt 09 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm prompt 09 is complete.
 
 Task: Build AutomatedNodeForm, EndNodeForm, and finalize the Drawer.
 
@@ -635,7 +635,7 @@ Task: Build AutomatedNodeForm, EndNodeForm, and finalize the Drawer.
 9. Test: select EndNode, toggle showSummary, verify node preview updates.
 
 Commit: "feat: Automated and End node forms, drawer complete"
-Update PROJECT_PROGRESS.md: prompt 10 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 10 complete.
 ```
 
 **Gate:** All 5 forms work live. Dynamic param fields render correctly. Zero TS errors.
@@ -647,7 +647,7 @@ Update PROJECT_PROGRESS.md: prompt 10 complete.
 ### Prompt 11 - Mock Simulate API + Topological Walk
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 4 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 4 is complete.
 
 Task: Build the mock simulate API.
 
@@ -680,7 +680,7 @@ Task: Build the mock simulate API.
 4. Run: npx tsc --noEmit. Fix all errors.
 
 Commit: "feat: mock simulate API with topological walk"
-Update PROJECT_PROGRESS.md: Phase 5, prompt 11 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 5, prompt 11 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -694,7 +694,7 @@ Tell me only steps that require manual action.
 ### Prompt 12 - Sandbox Panel + Execution Log
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 5 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 5 is complete.
 
 Task: Build the sandbox panel and execution log UI.
 
@@ -731,7 +731,7 @@ Task: Build the sandbox panel and execution log UI.
 6. Test full run flow: build a 3-node graph (start -> task -> end), click Run, see execution log.
 
 Commit: "feat: sandbox panel and simulation execution log"
-Update PROJECT_PROGRESS.md: Phase 6, prompt 12 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 6, prompt 12 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -748,14 +748,14 @@ Tell me only steps that require manual action.
 ### Prompt 13 - Graph Validation Engine
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 6 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 6 is complete.
 
 Task: Build the graph validation engine.
 
 1. Fill src/utils/validation.ts:
    export function validateWorkflow(nodes: WorkflowNode[], edges: Edge[]): string[]
 
-   Implement ALL rules from SYSTEM_DESIGN.md:
+   Implement ALL rules from docs/SYSTEM_DESIGN.md:
    - "Workflow must have a Start node" (no node with type 'start')
    - "Workflow must have an End node" (no node with type 'end')
    - "Node '{data.title}' is not connected" (node has no edges as source or target)
@@ -784,7 +784,7 @@ Task: Build the graph validation engine.
    - Draw a cycle -> see cycle error
 
 Commit: "feat: graph validation engine with all 6 rules"
-Update PROJECT_PROGRESS.md: Phase 7, prompt 13 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 7, prompt 13 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -800,7 +800,7 @@ Tell me only steps that require manual action.
 [FRESH CHAT RECOMMENDED]
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 7 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 7 is complete.
 
 Task: Add undo/redo and keyboard shortcuts.
 
@@ -834,7 +834,7 @@ Task: Add undo/redo and keyboard shortcuts.
 7. Test: press Delete with node selected. Confirm node removed.
 
 Commit: "feat: undo redo and keyboard shortcuts"
-Update PROJECT_PROGRESS.md: Phase 8, prompt 14 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 8, prompt 14 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -848,7 +848,7 @@ Tell me only steps that require manual action.
 ### Prompt 15 - Export + Import + localStorage Autosave
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 8 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 8 is complete.
 
 Task: Add export, import, and localStorage autosave.
 
@@ -883,7 +883,7 @@ Task: Add export, import, and localStorage autosave.
 7. Test: build workflow, export JSON, refresh page (autosave should restore it), import the JSON file.
 
 Commit: "feat: export import JSON and localStorage autosave"
-Update PROJECT_PROGRESS.md: Phase 9, prompt 15 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 9, prompt 15 complete.
 
 Tell me only steps that require manual action.
 ```
@@ -899,7 +899,7 @@ Tell me only steps that require manual action.
 [FRESH CHAT RECOMMENDED]
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 9 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 9 is complete.
 
 Task: First visual polish pass - node interactions and empty states.
 
@@ -931,7 +931,7 @@ Task: First visual polish pass - node interactions and empty states.
 7. Verify: hover deletes appear on all 5 node types. Empty state shows on fresh canvas.
 
 Commit: "style: node hover actions, empty states, typography polish"
-Update PROJECT_PROGRESS.md: prompt 16 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 16 complete.
 ```
 
 **Gate:** Hover delete works on all 5 nodes. Toolbar counts are accurate. Spacing is consistent.
@@ -941,7 +941,7 @@ Update PROJECT_PROGRESS.md: prompt 16 complete.
 ### Prompt 17 - Theme Finalization + Responsive Check + Animations
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm prompt 16 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm prompt 16 is complete.
 
 Task: Final theme pass, animations, and responsive check.
 
@@ -973,7 +973,7 @@ Task: Final theme pass, animations, and responsive check.
 6. Set viewport to 1280px in browser. Confirm no overflow.
 
 Commit: "style: theme finalization, micro-animations, responsive check"
-Update PROJECT_PROGRESS.md: prompt 17 complete.
+Update docs/PROJECT_PROGRESS.md: prompt 17 complete.
 ```
 
 **Gate:** App looks premium at 1280px and 1440px. All animations smooth. No overflow.
@@ -985,7 +985,7 @@ Update PROJECT_PROGRESS.md: prompt 17 complete.
 ### Prompt 18 - TypeScript Zero-Error Audit + Lint
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 10 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 10 is complete.
 
 Task: Full code quality pass. No new features.
 
@@ -1021,7 +1021,7 @@ Task: Full code quality pass. No new features.
 6. Verify: npx tsc --noEmit exits 0. npm run lint exits 0 (or with 0 errors).
 
 Commit: "chore: typescript zero-error audit and lint pass"
-Update PROJECT_PROGRESS.md: Phase 11, prompt 18 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 11, prompt 18 complete.
 ```
 
 **Gate:** `npx tsc --noEmit` exits 0. `npm run lint` exits 0. Zero console.log in src/. Zero em dashes.
@@ -1036,7 +1036,7 @@ Update PROJECT_PROGRESS.md: Phase 11, prompt 18 complete.
 ### Prompt 19 - React Flow Render Optimization
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 11 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 11 is complete.
 
 Task: Prevent unnecessary re-renders and optimize drag-drop performance.
 
@@ -1070,7 +1070,7 @@ Task: Prevent unnecessary re-renders and optimize drag-drop performance.
    If bundle is large: check if any large library is imported unnecessarily.
 
 Commit: "perf: memoize node components and optimize store selectors"
-Update PROJECT_PROGRESS.md: Phase 12, prompt 19 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 12, prompt 19 complete.
 ```
 
 **Gate:** `npm run build` exits 0. No large bundle warnings. Node components are memoized.
@@ -1082,7 +1082,7 @@ Update PROJECT_PROGRESS.md: Phase 12, prompt 19 complete.
 ### Prompt 20 - Mock Workflow Seed Data
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 12 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 12 is complete.
 
 Task: Add a sample/demo workflow that loads on first visit.
 
@@ -1108,7 +1108,7 @@ Task: Add a sample/demo workflow that loads on first visit.
 5. Test: on fresh page load, demo workflow appears. Run simulation produces 5 steps.
 
 Commit: "feat: mock onboarding workflow seed data and load demo button"
-Update PROJECT_PROGRESS.md: Phase 13, prompt 20 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 13, prompt 20 complete.
 ```
 
 **Gate:** Demo workflow loads on first visit. All 5 nodes connected. Simulation returns 5 steps.
@@ -1122,7 +1122,7 @@ Update PROJECT_PROGRESS.md: Phase 13, prompt 20 complete.
 [FRESH CHAT RECOMMENDED]
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 13 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 13 is complete.
 
 Task: Write the final recruiter-ready README.md.
 
@@ -1149,7 +1149,7 @@ Rules:
 Also update TECH_ARCHITECTURE.md line that says "React Flow v11" to "React Flow v12 (@xyflow/react)".
 
 Commit: "docs: recruiter-ready README and architecture doc update"
-Update PROJECT_PROGRESS.md: Phase 14, prompt 21 complete.
+Update docs/PROJECT_PROGRESS.md: Phase 14, prompt 21 complete.
 
 MANUAL STEP REQUIRED:
   Action: Take a screenshot of the running app and save as screenshots/app-preview.png in the project root.
@@ -1166,7 +1166,7 @@ MANUAL STEP REQUIRED:
 ### Prompt 22 - Final Quality Gate + Production Build
 
 ```
-Read PROJECT_PROGRESS.md first. Confirm Phase 14 is complete.
+Read docs/PROJECT_PROGRESS.md first. Confirm Phase 14 is complete.
 
 Task: Final quality gate and production build.
 
@@ -1207,7 +1207,7 @@ Task: Final quality gate and production build.
    git add .
    git commit -m "chore: submission ready"
 
-8. Update PROJECT_PROGRESS.md: all phases complete, final commit hash recorded.
+8. Update docs/PROJECT_PROGRESS.md: all phases complete, final commit hash recorded.
 9. Update CHAT_HANDOFF.md: mark project as COMPLETE.
 
 Commit: "chore: submission ready"
@@ -1261,7 +1261,7 @@ MANUAL STEP REQUIRED:
 | 14 | Yes - new phase, new context |
 | 21 | Yes - docs phase, clean context preferred |
 
-Rule: If agent responses feel slow, truncated, or start repeating itself, start a new chat. Paste CHAT_HANDOFF.md as first message.
+Rule: If agent responses feel slow, truncated, or start repeating itself, start a new chat. Paste docs/CHAT_HANDOFF.md as first message.
 
 ---
 

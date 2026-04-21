@@ -2,6 +2,7 @@
 ## HR Workflow Designer
 
 > Single source of truth. Update this file after every completed prompt before doing anything else.
+> Location: docs/PROJECT_PROGRESS.md
 
 ---
 
@@ -9,13 +10,13 @@
 
 | Field | Value |
 |---|---|
-| Current Phase | NOT STARTED |
-| Current Prompt | None |
-| Next Prompt | Prompt 01 - Vite Init |
-| Last Commit | None |
-| Last Commit Hash | None |
+| Current Phase | P0 - Scaffold (complete) |
+| Current Prompt | Prompt 02 done |
+| Next Prompt | Prompt 03 - Zustand Store + Node Defaults |
+| Last Commit | chore: reorganize docs into docs folder |
+| Last Commit Hash | (update after commit) |
 | Blocker | None |
-| Overall Progress | 0 / 22 prompts |
+| Overall Progress | 2 / 22 prompts |
 
 ---
 
@@ -23,7 +24,7 @@
 
 | Phase | Prompts | Status | Notes |
 |---|---|---|---|
-| P0 - Scaffold | 01, 02 | Pending | |
+| P0 - Scaffold | 01, 02 | Complete | Scaffold + full folder structure done |
 | P1 - Store | 03 | Pending | |
 | P2 - Canvas + Sidebar | 04, 05, 06 | Pending | |
 | P3 - Node Components | 07 | Pending | |
@@ -46,8 +47,8 @@
 
 | Prompt | Description | Status | Commit | Date |
 |---|---|---|---|---|
-| 01 | Vite init + dependencies + Tailwind | Pending | - | - |
-| 02 | Folder structure + type definitions | Pending | - | - |
+| 01 | Vite init + dependencies + Tailwind | Done | chore: initial project scaffold with vite react ts tailwind | 2026-04-21 |
+| 02 | Folder structure + type definitions + stubs | Done | chore: full folder structure and type definitions | 2026-04-21 |
 | 03 | Zustand store + node defaults | Pending | - | - |
 | 04 | App layout shell + UI primitives | Pending | - | - |
 | 05 | Sidebar + draggable node toolbox | Pending | - | - |
@@ -75,9 +76,9 @@
 
 | Gate | Status |
 |---|---|
-| npx tsc --noEmit exits 0 | Not checked |
+| npx tsc --noEmit exits 0 | PASSED (after Prompt 02) |
 | npm run lint exits 0 | Not checked |
-| npm run build exits 0 | Not checked |
+| npm run build exits 0 | PASSED (after Prompt 01) |
 | Zero console.log in src/ | Not checked |
 | Zero em dashes in any file | Not checked |
 | Drag-drop verified in browser | Not checked |
@@ -86,15 +87,31 @@
 
 ---
 
+## Completed Work (P0 Summary)
+
+- package.json with all dependencies
+- tsconfig.json, vite.config.ts, tailwind.config.js, postcss.config.js
+- index.html, src/main.tsx, src/App.tsx, src/index.css
+- .gitignore
+- Full src/ folder structure (all files as typed stubs)
+- src/types/ fully implemented (nodes, workflow, api, index)
+- src/utils/nodeDefaults.ts fully implemented
+- src/utils/idGenerator.ts fully implemented
+- src/store/workflowStore.ts - typed store stub (full impl in Prompt 03)
+- @xyflow/react v12 NodeProps pattern confirmed and applied to all node stubs
+- Zero TypeScript errors
+
+---
+
 ## Active Blockers
 
-_None._
+None.
 
 ---
 
 ## Manual Steps Pending
 
-_None yet. Manual steps will appear here as they arise._
+None yet.
 
 ---
 

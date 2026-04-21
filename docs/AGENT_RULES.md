@@ -7,8 +7,8 @@
 
 ## Non-Negotiable Rules
 
-1. **Always read PROJECT_PROGRESS.md first** before starting any work in a session
-2. **Always update PROJECT_PROGRESS.md** after completing each task
+1. **Always read docs/PROJECT_PROGRESS.md first** before starting any work in a session
+2. **Always update docs/PROJECT_PROGRESS.md** after completing each task
 3. **No em dashes** anywhere in code comments, strings, or docs
 4. **No console.log left in production code** - use only during active debug, remove before commit
 5. **TypeScript only** - no `any` types except where truly unavoidable, comment why
@@ -78,7 +78,7 @@ Max 72 chars in subject line. No period at end.
 
 Only ask for human input when:
 1. A required API key or credential is needed
-2. A design decision has equal tradeoffs and cannot be resolved by referencing PRD.md
+2. A design decision has equal tradeoffs and cannot be resolved by referencing docs/PRD.md
 3. A blocking error cannot be resolved after 2 attempts
 
 For everything else: make a reasonable decision, document it in a code comment, and move on.

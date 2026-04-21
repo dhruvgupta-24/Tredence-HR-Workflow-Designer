@@ -6,7 +6,23 @@
 
 ## Status
 
-**In Progress** | Core canvas + node system under development
+**In Progress** | Phase 0 complete - core scaffold and folder structure done
+
+---
+
+## Project Docs
+
+All planning and architecture docs live in `/docs`:
+
+| Doc | Purpose |
+|---|---|
+| [PROJECT_PROGRESS.md](docs/PROJECT_PROGRESS.md) | Current phase, completed prompts, blockers |
+| [AI_EXECUTION_PLAN.md](docs/AI_EXECUTION_PLAN.md) | Full sequential build prompt checklist |
+| [AGENT_RULES.md](docs/AGENT_RULES.md) | Code style and agent behavior rules |
+| [CHAT_HANDOFF.md](docs/CHAT_HANDOFF.md) | Handoff template for new agent sessions |
+| [PRD.md](docs/PRD.md) | Product requirements |
+| [SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md) | Architecture, data flow, validation rules |
+| [TECH_ARCHITECTURE.md](docs/TECH_ARCHITECTURE.md) | Stack, folder structure, component specs |
 
 ---
 

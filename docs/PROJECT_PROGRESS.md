@@ -10,13 +10,13 @@
 
 | Field | Value |
 |---|---|
-| Current Phase | P0 - Scaffold (complete) |
-| Current Prompt | Prompt 02 done |
-| Next Prompt | Prompt 03 - Zustand Store + Node Defaults |
-| Last Commit | chore: reorganize docs into docs folder |
-| Last Commit Hash | (update after commit) |
+| Current Phase | P3 - Node Components (complete) |
+| Current Prompt | Prompt 07 done |
+| Next Prompt | Prompt 08 - Drawer Shell + FormField + KeyValueEditor |
+| Last Commit | feat: layout shell, sidebar, canvas with drag-drop, all 5 node components |
+| Last Commit Hash | d5e91fb |
 | Blocker | None |
-| Overall Progress | 2 / 22 prompts |
+| Overall Progress | 7 / 22 prompts |
 
 ---
 
@@ -25,9 +25,9 @@
 | Phase | Prompts | Status | Notes |
 |---|---|---|---|
 | P0 - Scaffold | 01, 02 | Complete | Scaffold + full folder structure done |
-| P1 - Store | 03 | Pending | |
-| P2 - Canvas + Sidebar | 04, 05, 06 | Pending | |
-| P3 - Node Components | 07 | Pending | |
+| P1 - Store | 03 | Complete | Store + nodeDefaults fully implemented |
+| P2 - Canvas + Sidebar | 04, 05, 06 | Complete | Layout, sidebar, drag-drop, connect wiring |
+| P3 - Node Components | 07 | Complete | All 5 node components with memo + react-flow v12 types |
 | P4 - Edit Forms + Drawer | 08, 09, 10 | Pending | |
 | P5 - Mock API | 11 | Pending | |
 | P6 - Sandbox + Simulate | 12 | Pending | |
@@ -47,10 +47,28 @@
 
 | Prompt | Description | Status | Commit | Date |
 |---|---|---|---|---|
-| 01 | Vite init + dependencies + Tailwind | Done | chore: initial project scaffold with vite react ts tailwind | 2026-04-21 |
+| 01 | Vite init + dependencies + Tailwind | Done | chore: initial project scaffold | 2026-04-21 |
 | 02 | Folder structure + type definitions + stubs | Done | chore: full folder structure and type definitions | 2026-04-21 |
-| 03 | Zustand store + node defaults | Pending | - | - |
-| 04 | App layout shell + UI primitives | Pending | - | - |
+| 03 | Zustand store + node defaults | Done | feat: layout shell, sidebar, canvas... | 2026-04-21 |
+| 04 | App layout shell + UI primitives | Done | feat: layout shell, sidebar, canvas... | 2026-04-21 |
+| 05 | Sidebar + draggable node toolbox | Done | feat: layout shell, sidebar, canvas... | 2026-04-21 |
+| 06 | WorkflowCanvas + drag-drop + connect | Done | feat: layout shell, sidebar, canvas... | 2026-04-21 |
+| 07 | All 5 custom node components | Done | feat: layout shell, sidebar, canvas... | 2026-04-21 |
+| 08 | Drawer shell + FormField + KeyValueEditor | Pending | - | - |
+| 09 | Start + Task + Approval forms | Pending | - | - |
+| 10 | Automated + End forms + drawer finalization | Pending | - | - |
+| 11 | Mock simulate API + topological walk | Pending | - | - |
+| 12 | Sandbox panel + execution log UI | Pending | - | - |
+| 13 | Graph validation engine | Pending | - | - |
+| 14 | Undo/redo + keyboard shortcuts | Pending | - | - |
+| 15 | Export + import + localStorage autosave | Pending | - | - |
+| 16 | Node hover actions + empty states + typography | Pending | - | - |
+| 17 | Theme finalization + animations + responsive | Pending | - | - |
+| 18 | TypeScript zero-error audit + lint | Pending | - | - |
+| 19 | React Flow render optimization | Pending | - | - |
+| 20 | Mock workflow seed data | Pending | - | - |
+| 21 | Recruiter-ready README | Pending | - | - |
+| 22 | Final quality gate + production build | Pending | - | - |
 | 05 | Sidebar + draggable node toolbox | Pending | - | - |
 | 06 | WorkflowCanvas + drag-drop + connect | Pending | - | - |
 | 07 | All 5 custom node components | Pending | - | - |

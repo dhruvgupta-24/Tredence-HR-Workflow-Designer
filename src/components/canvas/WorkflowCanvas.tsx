@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   ReactFlow,
   Background,
@@ -19,12 +19,9 @@ import { nodeTypes } from '../nodes'
 import { onDragOver, useDropHandler } from '../../hooks/useDragDrop'
 import type { WorkflowNode } from '../../types'
 
-const defaultEdgeOptions = {
-  animated: true,
-  style: { strokeWidth: 2, stroke: '#6366f1' },
-}
-
-const snapGrid: [number, number] = [16, 16]
+const DEFAULT_EDGE_STYLE = { strokeWidth: 2, stroke: '#6366f1' }
+const ACTIVE_EDGE_STYLE  = { strokeWidth: 2.5, stroke: '#818cf8' }
+const DONE_EDGE_STYLE    = { strokeWidth: 2, stroke: '#22c55e' }
 
 const minimapNodeColor = (node: { type?: string }) => {
   switch (node.type) {
@@ -38,20 +35,22 @@ const minimapNodeColor = (node: { type?: string }) => {
 }
 
 export function WorkflowCanvas() {
-  const nodes = useWorkflowStore((s) => s.nodes)
-  const edges = useWorkflowStore((s) => s.edges)
-  const setNodes = useWorkflowStore((s) => s.setNodes)
-  const setEdges = useWorkflowStore((s) => s.setEdges)
-  const setSelectedNode = useWorkflowStore((s) => s.setSelectedNode)
-  const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
-  const fitViewCounter = useWorkflowStore((s) => s.fitViewCounter)
+  const nodes              = useWorkflowStore((s) => s.nodes)
+  const edges              = useWorkflowStore((s) => s.edges)
+  const highlightedNodeId  = useWorkflowStore((s) => s.highlightedNodeId)
+  const completedNodeIds   = useWorkflowStore((s) => s.completedNodeIds)
+  const setNodes           = useWorkflowStore((s) => s.setNodes)
+  const setEdges           = useWorkflowStore((s) => s.setEdges)
+  const setSelectedNode    = useWorkflowStore((s) => s.setSelectedNode)
+  const saveSnapshot       = useWorkflowStore((s) => s.saveSnapshot)
+  const fitViewCounter     = useWorkflowStore((s) => s.fitViewCounter)
 
-  const { fitView } = useReactFlow()
-  const reactFlowInstance = useReactFlow()
-  const onDrop = useDropHandler(reactFlowInstance)
-  const didInitialFitRef = useRef(false)
+  const { fitView }        = useReactFlow()
+  const reactFlowInstance  = useReactFlow()
+  const onDrop             = useDropHandler(reactFlowInstance)
+  const didInitialFitRef   = useRef(false)
 
-  // Initial fit: fire once when nodes first become available
+  // Initial fit
   useEffect(() => {
     if (didInitialFitRef.current || nodes.length === 0) return
     didInitialFitRef.current = true
@@ -59,12 +58,27 @@ export function WorkflowCanvas() {
     return () => clearTimeout(t)
   }, [nodes.length, fitView])
 
-  // Subsequent fits triggered by store counter (template load, import, seed)
+  // Counter-triggered fit (template / import / seed)
   useEffect(() => {
     if (fitViewCounter === 0) return
     const t = setTimeout(() => void fitView({ padding: 0.15, duration: 400 }), 80)
     return () => clearTimeout(t)
   }, [fitViewCounter, fitView])
+
+  // Compute per-edge styles based on simulation state
+  const styledEdges = useMemo(() =>
+    edges.map((e) => {
+      const srcActive    = e.source === highlightedNodeId
+      const srcCompleted = completedNodeIds.includes(e.source)
+      return {
+        ...e,
+        className: srcActive ? 'edge-active' : srcCompleted ? 'edge-completed' : '',
+        style: srcActive ? ACTIVE_EDGE_STYLE : srcCompleted ? DONE_EDGE_STYLE : DEFAULT_EDGE_STYLE,
+        animated: srcActive ? true : e.animated,
+      }
+    }),
+    [edges, highlightedNodeId, completedNodeIds],
+  )
 
   const onNodesChange = useCallback(
     (changes: NodeChange<WorkflowNode>[]) => {
@@ -90,15 +104,13 @@ export function WorkflowCanvas() {
     [edges, setEdges, saveSnapshot],
   )
 
-  const onNodeDragStart = useCallback(() => {
-    saveSnapshot()
-  }, [saveSnapshot])
+  const onNodeDragStart = useCallback(() => saveSnapshot(), [saveSnapshot])
 
   return (
     <div className="h-full w-full relative">
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={styledEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -108,8 +120,7 @@ export function WorkflowCanvas() {
         onDrop={onDrop}
         onDragOver={onDragOver}
         nodeTypes={nodeTypes}
-        defaultEdgeOptions={defaultEdgeOptions}
-        snapGrid={snapGrid}
+        snapGrid={[16, 16]}
         snapToGrid
         colorMode="dark"
         className="bg-gray-900"
@@ -134,13 +145,9 @@ export function WorkflowCanvas() {
       {nodes.length === 0 && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="text-center">
-            <div className="text-5xl mb-4 opacity-[0.07] select-none">⬡</div>
-            <p className="text-sm font-medium text-gray-500">
-              Drag nodes from the left to get started
-            </p>
-            <p className="text-xs text-gray-700 mt-1.5">
-              or load a template from the sidebar
-            </p>
+            <div className="text-5xl mb-4 opacity-[0.06] select-none">⬡</div>
+            <p className="text-sm font-medium text-gray-500">Drag nodes from the left to get started</p>
+            <p className="text-xs text-gray-700 mt-1.5">or load a template · or press <kbd className="bg-gray-800 border border-gray-700 rounded px-1.5 py-0.5 text-[10px] font-mono text-gray-500">Ctrl+K</kbd></p>
           </div>
         </div>
       )}

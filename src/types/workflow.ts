@@ -36,6 +36,7 @@ export interface WorkflowState {
   isSimulating: boolean
   automations: AutomationAction[]
   highlightedNodeId: string | null   // animated playback highlight
+  completedNodeIds: string[]          // nodes that have been executed
 
   // Node actions
   addNode: (node: WorkflowNode) => void
@@ -58,6 +59,9 @@ export interface WorkflowState {
   setSimulationLog: (log: SimulationStep[]) => void
   setIsSimulating: (v: boolean) => void
   setHighlightedNodeId: (id: string | null) => void
+  setCompletedNodeIds: (ids: string[]) => void
+  addCompletedNode: (id: string) => void
+  clearCompletedNodes: () => void
 
   // Automations
   setAutomations: (automations: AutomationAction[]) => void

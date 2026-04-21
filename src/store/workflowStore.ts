@@ -18,6 +18,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   isSimulating: false,
   automations: [],
   highlightedNodeId: null,
+  completedNodeIds: [],
   past: [],
   future: [],
   fitViewCounter: 0,
@@ -59,6 +60,9 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   setSimulationLog: (log) => set({ simulationLog: log }),
   setIsSimulating: (v) => set({ isSimulating: v }),
   setHighlightedNodeId: (id) => set({ highlightedNodeId: id }),
+  setCompletedNodeIds: (ids) => set({ completedNodeIds: ids }),
+  addCompletedNode: (id) => set((s) => ({ completedNodeIds: [...s.completedNodeIds, id] })),
+  clearCompletedNodes: () => set({ completedNodeIds: [] }),
 
   // --- Automations ---
   setAutomations: (automations) => set({ automations }),
@@ -107,6 +111,8 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
       selectedNodeId: null,
       validationErrors: [],
       simulationLog: [],
+      highlightedNodeId: null,
+      completedNodeIds: [],
       past: [],
       future: [],
     }),

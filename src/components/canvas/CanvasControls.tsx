@@ -3,27 +3,59 @@ import { useWorkflowStore } from '../../store'
 import { Button } from '../ui'
 import { exportWorkflow, importWorkflow } from '../../utils/serialization'
 import { useAutoArrange } from '../../hooks/useAutoArrange'
+import { toast } from '../../store/toastStore'
 import type { WorkflowNode } from '../../types'
 import type { Edge } from '@xyflow/react'
 
 interface Props {
   onShortcutsOpen: () => void
+  onCopilotOpen: () => void
+  onCommandOpen: () => void
 }
 
-export function CanvasControls({ onShortcutsOpen }: Props) {
-  const undo = useWorkflowStore((s) => s.undo)
-  const redo = useWorkflowStore((s) => s.redo)
-  const past = useWorkflowStore((s) => s.past)
-  const future = useWorkflowStore((s) => s.future)
-  const nodes = useWorkflowStore((s) => s.nodes)
-  const edges = useWorkflowStore((s) => s.edges)
-  const setNodes = useWorkflowStore((s) => s.setNodes)
-  const setEdges = useWorkflowStore((s) => s.setEdges)
-  const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
+export function CanvasControls({ onShortcutsOpen, onCopilotOpen, onCommandOpen }: Props) {
+  const undo        = useWorkflowStore((s) => s.undo)
+  const redo        = useWorkflowStore((s) => s.redo)
+  const past        = useWorkflowStore((s) => s.past)
+  const future      = useWorkflowStore((s) => s.future)
+  const nodes       = useWorkflowStore((s) => s.nodes)
+  const edges       = useWorkflowStore((s) => s.edges)
+  const setNodes    = useWorkflowStore((s) => s.setNodes)
+  const setEdges    = useWorkflowStore((s) => s.setEdges)
+  const saveSnapshot= useWorkflowStore((s) => s.saveSnapshot)
   const setValidationErrors = useWorkflowStore((s) => s.setValidationErrors)
-  const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
+  const triggerFitView      = useWorkflowStore((s) => s.triggerFitView)
   const autoArrange = useAutoArrange()
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Workflow Optimizer: remove isolated nodes + duplicate edges, then re-arrange
+  const optimize = () => {
+    if (nodes.length === 0) return
+    saveSnapshot()
+    const connectedIds = new Set<string>()
+    edges.forEach((e) => { connectedIds.add(e.source); connectedIds.add(e.target) })
+    const startEndIds = nodes.filter((n) => n.type === 'start' || n.type === 'end').map((n) => n.id)
+    startEndIds.forEach((id) => connectedIds.add(id))
+
+    const removedNodes = nodes.filter((n) => !connectedIds.has(n.id))
+    const uniqueEdgeKeys = new Set<string>()
+    const dedupedEdges = edges.filter((e) => {
+      const key = `${e.source}→${e.target}`
+      if (uniqueEdgeKeys.has(key)) return false
+      uniqueEdgeKeys.add(key)
+      return true
+    })
+
+    setNodes(nodes.filter((n) => connectedIds.has(n.id)))
+    setEdges(dedupedEdges)
+
+    setTimeout(autoArrange, 50)
+
+    const msg = removedNodes.length > 0
+      ? `Optimized — removed ${removedNodes.length} isolated node${removedNodes.length > 1 ? 's' : ''}`
+      : 'Optimized — layout cleaned'
+    toast.success(msg)
+  }
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -35,14 +67,30 @@ export function CanvasControls({ onShortcutsOpen }: Props) {
         setNodes(importedNodes)
         setEdges(importedEdges)
         triggerFitView()
+        toast.success('Workflow imported')
       },
-      (err: string) => setValidationErrors([`Import failed: ${err}`]),
+      (err: string) => {
+        setValidationErrors([`Import failed: ${err}`])
+        toast.error(`Import failed: ${err}`)
+      },
     )
     e.target.value = ''
   }
 
   return (
     <div className="h-12 flex-shrink-0 border-b border-gray-800/80 bg-gray-950 flex items-center px-3 gap-1">
+
+      {/* AI Copilot — star feature */}
+      <button type="button" onClick={onCopilotOpen}
+        title="AI Workflow Copilot"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-600/15 border border-indigo-500/30 hover:bg-indigo-600/25 hover:border-indigo-500/60 transition-all duration-150 text-indigo-400 hover:text-indigo-300"
+      >
+        <span className="text-sm leading-none">✦</span>
+        <span className="text-[11px] font-semibold">Copilot</span>
+      </button>
+
+      <div className="w-px h-5 bg-gray-800 mx-1" />
+
       {/* Undo */}
       <button type="button" onClick={undo} disabled={past.length === 0}
         title="Undo (Ctrl+Z)"
@@ -77,6 +125,24 @@ export function CanvasControls({ onShortcutsOpen }: Props) {
         </svg>
       </button>
 
+      {/* Optimize */}
+      <button type="button" onClick={optimize} disabled={nodes.length === 0}
+        title="Optimize workflow"
+        className="p-2 rounded-lg text-gray-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L9.5 8H3l5 4-2 6 6-4 6 4-2-6 5-4h-6.5L12 2z"/>
+        </svg>
+      </button>
+
+      {/* Cmd palette hint */}
+      <button type="button" onClick={onCommandOpen}
+        title="Command palette (Ctrl+K)"
+        className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg text-gray-600 hover:text-gray-300 hover:bg-gray-800 transition-all duration-150"
+      >
+        <span className="text-[10px] font-mono">Ctrl+K</span>
+      </button>
+
       <div className="flex-1" />
 
       {/* Stats */}
@@ -86,15 +152,8 @@ export function CanvasControls({ onShortcutsOpen }: Props) {
         </span>
       )}
 
-      {/* Export */}
-      <Button variant="ghost" size="sm" onClick={() => exportWorkflow(nodes, edges)}>
-        Export
-      </Button>
-
-      {/* Import */}
-      <Button variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()}>
-        Import
-      </Button>
+      <Button variant="ghost" size="sm" onClick={() => exportWorkflow(nodes, edges)}>Export</Button>
+      <Button variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()}>Import</Button>
 
       <div className="w-px h-5 bg-gray-800 mx-1" />
 

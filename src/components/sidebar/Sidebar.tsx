@@ -24,14 +24,14 @@ export function Sidebar() {
   return (
     <div className="h-full flex flex-col bg-gray-950 border-r border-gray-800/80">
       {/* Logo */}
-      <div className="px-6 py-[22px] border-b border-gray-800/80 flex-shrink-0 bg-gray-950/50">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 shrink-0 flex items-center justify-center">
-            <img src="/flowhr-navbar.png" alt="FlowHR Logo" className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" />
+      <div className="px-5 py-[18px] border-b border-gray-800/80 flex-shrink-0 bg-gray-950/50">
+        <div className="flex items-center gap-3.5">
+          <div className="w-14 h-14 shrink-0 flex items-center justify-center">
+            <img src="/flowhr-navbar.png" alt="FlowHR Logo" className="w-full h-full object-contain drop-shadow-[0_0_6px_rgba(99,102,241,0.25)]" />
           </div>
-          <div className="flex flex-col justify-center">
-            <p className="text-[28px] font-bold text-white leading-none tracking-tight drop-shadow-sm">FlowHR</p>
-            <p className="text-[14px] text-indigo-400 font-medium mt-1">Workflow Designer</p>
+          <div className="flex flex-col justify-center min-w-0">
+            <p className="text-[26px] font-bold text-white leading-none tracking-tight drop-shadow-sm truncate">FlowHR</p>
+            <p className="text-[13px] text-indigo-400 font-medium mt-1 whitespace-nowrap">Workflow Designer</p>
           </div>
         </div>
       </div>

@@ -1,10 +1,81 @@
-// Stub - implemented in Phase 5 (Prompt 11)
-import type { WorkflowNode, SimulationResult } from '../types'
 import type { Edge } from '@xyflow/react'
+import type { WorkflowNode, SimulationResult, SimulationStep } from '../types'
+import type {
+  StartNodeData,
+  TaskNodeData,
+  ApprovalNodeData,
+  AutomatedNodeData,
+  EndNodeData,
+} from '../types'
 
 export async function simulateWorkflow(
-  _nodes: WorkflowNode[],
-  _edges: Edge[]
+  nodes: WorkflowNode[],
+  edges: Edge[],
 ): Promise<SimulationResult> {
-  return { success: false, error: 'Not implemented yet' }
+  await new Promise((r) => setTimeout(r, 400))
+
+  const startNode = nodes.find((n) => n.type === 'start')
+  if (!startNode) return { success: false, error: 'No Start node found' }
+
+  // Build adjacency list
+  const adj: Record<string, string[]> = {}
+  for (const n of nodes) adj[n.id] = []
+  for (const e of edges) {
+    if (adj[e.source]) adj[e.source].push(e.target)
+  }
+
+  // BFS from start node
+  const visited: string[] = []
+  const queue: string[] = [startNode.id]
+  const seen = new Set<string>()
+
+  while (queue.length > 0) {
+    const current = queue.shift()!
+    if (seen.has(current)) continue
+    seen.add(current)
+    visited.push(current)
+    for (const neighbor of adj[current] ?? []) {
+      if (!seen.has(neighbor)) queue.push(neighbor)
+    }
+  }
+
+  const steps: SimulationStep[] = visited.map((id, index) => {
+    const node = nodes.find((n) => n.id === id)!
+    return {
+      step: index + 1,
+      label: buildStepLabel(node),
+      nodeType: node.type ?? 'unknown',
+    }
+  })
+
+  return { success: true, steps }
+}
+
+function buildStepLabel(node: WorkflowNode): string {
+  const { type, data } = node
+  switch (type) {
+    case 'start': {
+      const d = data as StartNodeData
+      return `Workflow started: "${d.title}"`
+    }
+    case 'task': {
+      const d = data as TaskNodeData
+      return `Task assigned: "${d.title}" to ${d.assignee || 'Unassigned'}`
+    }
+    case 'approval': {
+      const d = data as ApprovalNodeData
+      const suffix = d.autoApproveThreshold > 0 ? ` (auto-approve at ${d.autoApproveThreshold}%)` : ''
+      return `Approval requested from ${d.approverRole}${suffix}`
+    }
+    case 'automated': {
+      const d = data as AutomatedNodeData
+      return `Automated: ${d.actionId ? `"${d.actionId}"` : d.title}`
+    }
+    case 'end': {
+      const d = data as EndNodeData
+      return `Workflow completed: "${d.endMessage || d.title}"`
+    }
+    default:
+      return `Processed: ${String(data.title)}`
+  }
 }

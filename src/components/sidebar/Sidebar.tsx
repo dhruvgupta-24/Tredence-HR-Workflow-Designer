@@ -24,14 +24,14 @@ export function Sidebar() {
   return (
     <div className="h-full flex flex-col bg-gray-950 border-r border-gray-800/80">
       {/* Logo */}
-      <div className="px-5 py-6 border-b border-gray-800/80 flex-shrink-0 bg-gray-950/50">
+      <div className="px-6 py-[22px] border-b border-gray-800/80 flex-shrink-0 bg-gray-950/50">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center">
-            <img src="/flowhr-navbar.png" alt="FlowHR Logo" className="w-full h-full object-contain drop-shadow-sm" />
+          <div className="w-16 h-16 shrink-0 flex items-center justify-center">
+            <img src="/flowhr-navbar.png" alt="FlowHR Logo" className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" />
           </div>
-          <div className="flex flex-col justify-center translate-y-px">
-            <p className="text-[19px] font-bold text-white leading-none tracking-tight drop-shadow-sm">FlowHR</p>
-            <p className="text-[12px] text-indigo-400/90 font-medium mt-1.5 opacity-90">Workflow Designer</p>
+          <div className="flex flex-col justify-center">
+            <p className="text-[28px] font-bold text-white leading-none tracking-tight drop-shadow-sm">FlowHR</p>
+            <p className="text-[14px] text-indigo-400 font-medium mt-1">Workflow Designer</p>
           </div>
         </div>
       </div>

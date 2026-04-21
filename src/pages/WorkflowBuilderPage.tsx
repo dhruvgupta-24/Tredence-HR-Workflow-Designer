@@ -5,8 +5,9 @@ import { useAutomations } from '../hooks/useAutomations'
 import { useUndoRedo } from '../hooks/useUndoRedo'
 import { useAutosave } from '../hooks/useAutosave'
 import { useSimulate } from '../hooks/useSimulate'
+import { useGuidedDemo } from '../hooks/useGuidedDemo'
 import { Sidebar } from '../components/sidebar'
-import { WorkflowCanvas, CanvasControls } from '../components/canvas'
+import { WorkflowCanvas, CanvasControls, StatusBar } from '../components/canvas'
 import { Drawer, Modal } from '../components/ui'
 import { ToastContainer } from '../components/ui/Toast'
 import { SandboxPanel } from '../components/sandbox'
@@ -87,6 +88,11 @@ export default function WorkflowBuilderPage() {
   const [showCopilot,   setShowCopilot]   = useState(false)
   const [showCommand,   setShowCommand]   = useState(false)
 
+  const { runDemo, isDemoRunning } = useGuidedDemo({
+    onOpenCopilot:  () => setShowCopilot(true),
+    onCloseCopilot: () => setShowCopilot(false),
+  })
+
   // Seed Employee Onboarding on first-ever visit
   const seededRef = useRef(false)
   useEffect(() => {
@@ -132,13 +138,16 @@ export default function WorkflowBuilderPage() {
         <Sidebar />
       </div>
 
-      {/* Center — Toolbar + Canvas + Analytics */}
+      {/* Center — Toolbar + Status + Canvas + Analytics */}
       <div className="flex-1 min-w-0 flex flex-col">
         <CanvasControls
           onShortcutsOpen={() => setShowShortcuts(true)}
           onCopilotOpen={() => setShowCopilot(true)}
           onCommandOpen={() => setShowCommand(true)}
+          onDemoRun={() => void runDemo()}
+          isDemoRunning={isDemoRunning}
         />
+        <StatusBar />
         <div className="flex-1 min-h-0">
           <ReactFlowProvider>
             <WorkflowCanvas />

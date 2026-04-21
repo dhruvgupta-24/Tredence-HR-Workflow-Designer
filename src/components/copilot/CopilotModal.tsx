@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import { useWorkflowStore } from '../../store'
 import { matchCopilotFlow, COPILOT_FLOWS } from '../../data/copilotFlows'
 import { toast } from '../../store/toastStore'
-import type { WorkflowNode } from '../../types'
-import type { Edge } from '@xyflow/react'
 
 type Stage = 'idle' | 'analyzing' | 'building' | 'done'
 
@@ -54,32 +52,41 @@ export function CopilotModal({ isOpen, onClose }: Props) {
     setStatusText('Analyzing your request…')
     await delay(900)
 
-    const flow = matchCopilotFlow(text)
+    try {
+      const flow = matchCopilotFlow(text)
 
-    if (!flow) {
-      setStatusText('No matching workflow found. Try a more specific HR process.')
+      if (!flow) {
+        setStatusText('No matching workflow found. Try a more specific HR process.')
+        setStage('idle')
+        toast.warning('No matching workflow — try different keywords')
+        return
+      }
+
+      setMatchedFlow(flow.name)
+      setStatusText(`Identified: ${flow.name}`)
+      await delay(700)
+
+      setStage('building')
+      setStatusText(`Building ${flow.nodes.length} nodes…`)
+      await delay(1000)
+
+      // Validated templates — data is already correctly shaped
+      saveSnapshot()
+      setNodes(flow.nodes)
+      setEdges(flow.edges)
+      triggerFitView()
+
+      setStage('done')
+      setStatusText(`✓ Generated ${flow.name} — ${flow.nodes.length} nodes, ${flow.edges.length} connections`)
+      toast.success(`AI generated: ${flow.name}`)
+      setTimeout(onClose, 1200)
+    } catch (err) {
+      console.error('[Copilot] generation error:', err)
+      const msg = err instanceof Error ? err.message : 'Unexpected error'
+      setStatusText(`Error: ${msg}`)
       setStage('idle')
-      return
+      toast.error(`Copilot failed: ${msg}`)
     }
-
-    setMatchedFlow(flow.name)
-    setStatusText(`Identified: ${flow.name}`)
-    await delay(700)
-
-    setStage('building')
-    setStatusText(`Building ${flow.nodes.length} nodes…`)
-    await delay(1000)
-
-    saveSnapshot()
-    setNodes(flow.nodes as WorkflowNode[])
-    setEdges(flow.edges as Edge[])
-    triggerFitView()
-
-    setStage('done')
-    setStatusText(`✓ Generated ${flow.name} — ${flow.nodes.length} nodes, ${flow.edges.length} connections`)
-    toast.success(`AI generated: ${flow.name}`)
-
-    setTimeout(onClose, 1200)
   }
 
   if (!isOpen) return null

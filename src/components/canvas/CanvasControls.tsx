@@ -11,9 +11,11 @@ interface Props {
   onShortcutsOpen: () => void
   onCopilotOpen: () => void
   onCommandOpen: () => void
+  onDemoRun: () => void
+  isDemoRunning?: boolean
 }
 
-export function CanvasControls({ onShortcutsOpen, onCopilotOpen, onCommandOpen }: Props) {
+export function CanvasControls({ onShortcutsOpen, onCopilotOpen, onCommandOpen, onDemoRun, isDemoRunning }: Props) {
   const undo        = useWorkflowStore((s) => s.undo)
   const redo        = useWorkflowStore((s) => s.redo)
   const past        = useWorkflowStore((s) => s.past)
@@ -87,6 +89,15 @@ export function CanvasControls({ onShortcutsOpen, onCopilotOpen, onCommandOpen }
       >
         <span className="text-sm leading-none">✦</span>
         <span className="text-[11px] font-semibold">Copilot</span>
+      </button>
+
+      {/* Guided Demo */}
+      <button type="button" onClick={onDemoRun} disabled={isDemoRunning}
+        title="Run guided demo (30s autoplay)"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-violet-600/10 border border-violet-500/20 hover:bg-violet-600/20 hover:border-violet-500/40 transition-all duration-150 text-violet-400 hover:text-violet-300 disabled:opacity-40 disabled:pointer-events-none"
+      >
+        <span className="text-[11px] leading-none">{isDemoRunning ? '⏳' : '▶'}</span>
+        <span className="text-[11px] font-semibold">{isDemoRunning ? 'Demo…' : 'Demo'}</span>
       </button>
 
       <div className="w-px h-5 bg-gray-800 mx-1" />

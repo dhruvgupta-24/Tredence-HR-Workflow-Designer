@@ -1,4 +1,4 @@
-import type { WorkflowNode } from '../types'
+﻿import type { WorkflowNode } from '../types'
 import type { Edge } from '@xyflow/react'
 
 export interface WorkflowTemplate {
@@ -10,7 +10,7 @@ export interface WorkflowTemplate {
   edges: Edge[]
 }
 
-// Helpers — typed per node kind
+// Helpers - typed per node kind
 const startNode = (
   id: string,
   pos: { x: number; y: number },
@@ -128,7 +128,7 @@ const leaveNodes: WorkflowNode[] = [
     field: 'leave_balance', value: 'auto',
   }),
   automatedNode('la-5', { x: 300, y: 770 }, 'Notify Team via Slack', 'slack_notify', {
-    channel: '#team-updates', message: 'Team member on leave — please plan accordingly.',
+    channel: '#team-updates', message: 'Team member on leave - please plan accordingly.',
   }),
   endNode('la-6', { x: 300, y: 950 }, 'Leave Approved',
     'Leave request approved and recorded. Enjoy your time off! ✈️'),

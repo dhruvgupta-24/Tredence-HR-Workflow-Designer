@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { ReactFlowProvider } from '@xyflow/react'
 import { useWorkflowStore } from '../store'
 import { useAutomations } from '../hooks/useAutomations'
@@ -138,7 +138,7 @@ export default function WorkflowBuilderPage() {
         <Sidebar />
       </div>
 
-      {/* Center — Toolbar + Status + Canvas + Analytics */}
+      {/* Center - Toolbar + Status + Canvas + Analytics */}
       <div className="flex-1 min-w-0 flex flex-col">
         <CanvasControls
           onShortcutsOpen={() => setShowShortcuts(true)}
@@ -156,7 +156,7 @@ export default function WorkflowBuilderPage() {
         <AnalyticsBar />
       </div>
 
-      {/* Right Panel — Simulation Sandbox */}
+      {/* Right Panel - Simulation Sandbox */}
       <div className="w-80 flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950">
         <SandboxPanel />
       </div>

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+﻿import { useRef } from 'react'
 import { useWorkflowStore } from '../../store'
 import { Button } from '../ui'
 import { exportWorkflow, importWorkflow } from '../../utils/serialization'
@@ -54,8 +54,8 @@ export function CanvasControls({ onShortcutsOpen, onCopilotOpen, onCommandOpen, 
     setTimeout(autoArrange, 50)
 
     const msg = removedNodes.length > 0
-      ? `Optimized — removed ${removedNodes.length} isolated node${removedNodes.length > 1 ? 's' : ''}`
-      : 'Optimized — layout cleaned'
+      ? `Optimized - removed ${removedNodes.length} isolated node${removedNodes.length > 1 ? 's' : ''}`
+      : 'Optimized - layout cleaned'
     toast.success(msg)
   }
 
@@ -82,7 +82,7 @@ export function CanvasControls({ onShortcutsOpen, onCopilotOpen, onCommandOpen, 
   return (
     <div className="h-12 flex-shrink-0 border-b border-gray-800/80 bg-gray-950 flex items-center px-3 gap-1">
 
-      {/* AI Copilot — star feature */}
+      {/* AI Copilot - star feature */}
       <button type="button" onClick={onCopilotOpen}
         title="AI Workflow Copilot"
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-600/15 border border-indigo-500/30 hover:bg-indigo-600/25 hover:border-indigo-500/60 transition-all duration-150 text-indigo-400 hover:text-indigo-300"

@@ -1,4 +1,4 @@
-import type { WorkflowNode } from '../types'
+﻿import type { WorkflowNode } from '../types'
 import type { Edge } from '@xyflow/react'
 import { TEMPLATES } from './templates'
 
@@ -95,7 +95,7 @@ const hireNodes: WorkflowNode[] = [
   taskNode ('hr-3', { x: 520,  y: 200 }, 'Screen Applicants',    'HR Team',  'Review CVs and shortlist qualified candidates'),
   approvalNode('hr-4', { x: 740, y: 200 }, 'Technical Interview', 'Manager'),
   automatedNode('hr-5', { x: 960, y: 200 }, 'Send Offer Letter',  'send_email',   { template: 'offer_letter' }),
-  endNode  ('hr-6', { x: 1180, y: 200 }, 'Candidate Onboarded', 'Hiring complete — candidate has accepted and onboarded successfully! 🎉'),
+  endNode  ('hr-6', { x: 1180, y: 200 }, 'Candidate Onboarded', 'Hiring complete - candidate has accepted and onboarded successfully! 🎉'),
 ]
 const hireEdges = [
   edge('hr-e1','hr-1','hr-2'), edge('hr-e2','hr-2','hr-3'),
@@ -141,7 +141,7 @@ const payNodes: WorkflowNode[] = [
   automatedNode('py-3', { x: 520, y: 200 }, 'Process Payroll', 'update_hris',  { field: 'payroll_run', value: 'auto' }),
   approvalNode('py-4', { x: 740, y: 200 }, 'Finance Director Approval', 'Director'),
   automatedNode('py-5', { x: 960, y: 200 }, 'Initiate Bank Transfer', 'update_hris', { field: 'bank_transfer', value: 'initiated' }),
-  endNode  ('py-6', { x: 1180, y: 200 }, 'Salaries Disbursed', 'Payroll complete — salaries credited to all employee accounts. ✓'),
+  endNode  ('py-6', { x: 1180, y: 200 }, 'Salaries Disbursed', 'Payroll complete - salaries credited to all employee accounts. ✓'),
 ]
 const payEdges = [
   edge('py-e1','py-1','py-2'), edge('py-e2','py-2','py-3'),

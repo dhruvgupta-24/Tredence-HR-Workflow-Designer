@@ -1,4 +1,4 @@
-/* React Flow base styles - must precede @tailwind directives */
+﻿/* React Flow base styles - must precede @tailwind directives */
 @import '@xyflow/react/dist/style.css';
 
 @tailwind base;
@@ -63,7 +63,7 @@
 
 /* ── Edge simulation states ───────────────────────────────────── */
 
-/* Active edge — travels along like a pulse */
+/* Active edge - travels along like a pulse */
 .edge-active .react-flow__edge-path {
   stroke: #818cf8 !important;
   stroke-width: 2.5px !important;
@@ -76,7 +76,7 @@
   to   { stroke-dashoffset: 0; }
 }
 
-/* Completed edge — green, stays static */
+/* Completed edge - green, stays static */
 .edge-completed .react-flow__edge-path {
   stroke: #22c55e !important;
   stroke-width: 2px !important;

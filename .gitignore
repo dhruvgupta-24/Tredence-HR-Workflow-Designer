@@ -5,3 +5,14 @@ dist
 .env.*.local
 *.log
 .DS_Store
+
+# Internal AI planning docs - not relevant to public repo reviewers
+docs/AI_EXECUTION_PLAN.md
+docs/AGENT_RULES.md
+docs/CHAT_HANDOFF.md
+docs/GIT_WORKFLOW.md
+
+# Temporary build scripts
+trim-icons.js
+resize.mjs
+gen-ico.mjs

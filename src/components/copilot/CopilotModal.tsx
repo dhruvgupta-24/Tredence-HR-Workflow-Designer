@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+﻿import { useState, useRef, useEffect } from 'react'
 import { useWorkflowStore } from '../../store'
 import { matchCopilotFlow, COPILOT_FLOWS } from '../../data/copilotFlows'
 import { toast } from '../../store/toastStore'
@@ -58,7 +58,7 @@ export function CopilotModal({ isOpen, onClose }: Props) {
       if (!flow) {
         setStatusText('No matching workflow found. Try a more specific HR process.')
         setStage('idle')
-        toast.warning('No matching workflow — try different keywords')
+        toast.warning('No matching workflow - try different keywords')
         return
       }
 
@@ -70,14 +70,14 @@ export function CopilotModal({ isOpen, onClose }: Props) {
       setStatusText(`Building ${flow.nodes.length} nodes…`)
       await delay(1000)
 
-      // Validated templates — data is already correctly shaped
+      // Validated templates - data is already correctly shaped
       saveSnapshot()
       setNodes(flow.nodes)
       setEdges(flow.edges)
       triggerFitView()
 
       setStage('done')
-      setStatusText(`✓ Generated ${flow.name} — ${flow.nodes.length} nodes, ${flow.edges.length} connections`)
+      setStatusText(`✓ Generated ${flow.name} - ${flow.nodes.length} nodes, ${flow.edges.length} connections`)
       toast.success(`AI generated: ${flow.name}`)
       setTimeout(onClose, 1200)
     } catch (err) {

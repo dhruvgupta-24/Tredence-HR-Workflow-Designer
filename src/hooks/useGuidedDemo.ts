@@ -12,93 +12,119 @@ interface DemoCallbacks {
   onCloseCopilot: () => void
 }
 
-const STEP_DELAY = 600
+// Leave Approval is a clean 6-node linear chain - guaranteed valid, no branching complexity.
+const DEMO_TEMPLATE = TEMPLATES[1]!
 
 export function useGuidedDemo({ onOpenCopilot, onCloseCopilot }: DemoCallbacks) {
   const [isDemoRunning, setIsDemoRunning] = useState(false)
 
-  const setNodes           = useWorkflowStore((s) => s.setNodes)
-  const setEdges           = useWorkflowStore((s) => s.setEdges)
-  const triggerFitView     = useWorkflowStore((s) => s.triggerFitView)
+  const setNodes             = useWorkflowStore((s) => s.setNodes)
+  const setEdges             = useWorkflowStore((s) => s.setEdges)
+  const triggerFitView       = useWorkflowStore((s) => s.triggerFitView)
   const setHighlightedNodeId = useWorkflowStore((s) => s.setHighlightedNodeId)
   const addCompletedNode     = useWorkflowStore((s) => s.addCompletedNode)
   const clearCompletedNodes  = useWorkflowStore((s) => s.clearCompletedNodes)
   const setSimulationLog     = useWorkflowStore((s) => s.setSimulationLog)
   const setIsSimulating      = useWorkflowStore((s) => s.setIsSimulating)
+  const setValidationErrors  = useWorkflowStore((s) => s.setValidationErrors)
 
   const autoArrange = useAutoArrange()
-  const cancelRef = useRef(false)
+  const cancelRef   = useRef(false)
 
   const runDemo = useCallback(async () => {
     if (isDemoRunning) return
     cancelRef.current = false
     setIsDemoRunning(true)
 
-    const delay = (ms: number) =>
-      new Promise<void>((r) => {
-        const t = setTimeout(r, ms)
-        const check = setInterval(() => {
-          if (cancelRef.current) { clearTimeout(t); clearInterval(check); r() }
-        }, 50)
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        const id = setTimeout(resolve, ms)
+        const poll = setInterval(() => {
+          if (cancelRef.current) { clearTimeout(id); clearInterval(poll); resolve() }
+        }, 40)
       })
 
     try {
-      toast.info('🎬 Demo starting — watch the full flow')
-      await delay(600)
+      // 0 - Announce
+      toast.info('Demo starting...')
+      await wait(500)
+      if (cancelRef.current) return
 
-      // Step 1 — Load Employee Onboarding
-      const tpl = TEMPLATES[0]!
-      setNodes(tpl.nodes as WorkflowNode[])
-      setEdges(tpl.edges as Edge[])
+      // 1 - Load Leave Approval (a clean, linear 6-node workflow)
+      setNodes(DEMO_TEMPLATE.nodes as WorkflowNode[])
+      setEdges(DEMO_TEMPLATE.edges as Edge[])
       setSimulationLog([])
+      setValidationErrors([])
       clearCompletedNodes()
+      setHighlightedNodeId(null)
+      toast.success('Loaded: Leave Approval')
+      await wait(300)
+      if (cancelRef.current) return
+
+      // 2 - Fit View smoothly
       triggerFitView()
-      toast.success('Loaded: Employee Onboarding')
-      await delay(1400)
-
+      await wait(700)
       if (cancelRef.current) return
 
-      // Step 2 — Auto-arrange
+      // 3 - Auto-arrange for perfect visual layout
       autoArrange()
-      toast.info('Layout optimized')
-      await delay(1400)
-
+      await wait(900)
       if (cancelRef.current) return
 
-      // Step 3 — Run simulation
-      const snap = useWorkflowStore.getState()
-      const result = await simulateWorkflow(snap.nodes, snap.edges)
+      // 4 - Run simulation directly against the template nodes/edges
+      //     (bypass store read to avoid any stale state race)
+      const result = await simulateWorkflow(
+        DEMO_TEMPLATE.nodes as WorkflowNode[],
+        DEMO_TEMPLATE.edges as Edge[],
+      )
 
-      if (result.success && result.steps) {
-        setIsSimulating(true)
-        let prevId: string | null = null
-        for (const step of result.steps) {
-          if (cancelRef.current) break
-          if (prevId) addCompletedNode(prevId)
-          setHighlightedNodeId(step.nodeId)
-          prevId = step.nodeId
-          await delay(STEP_DELAY)
-        }
-        if (prevId) addCompletedNode(prevId)
-        setHighlightedNodeId(null)
-        setIsSimulating(false)
-        toast.success('Simulation complete ✓')
-        await delay(800)
+      if (!result.success || !result.steps?.length) {
+        toast.error('Demo simulation could not run')
+        return
       }
 
+      // 5 - Animated step-by-step playback
+      setIsSimulating(true)
+      let prevId: string | null = null
+
+      for (const step of result.steps) {
+        if (cancelRef.current) break
+        if (prevId) addCompletedNode(prevId)
+        setHighlightedNodeId(step.nodeId)
+        prevId = step.nodeId
+        await wait(700)
+      }
+
+      if (prevId) addCompletedNode(prevId)
+      setHighlightedNodeId(null)
+      setIsSimulating(false)
+      toast.success('Simulation complete - 6 steps executed')
+      await wait(900)
       if (cancelRef.current) return
 
-      // Step 4 — Flash AI Copilot
+      // 6 - Flash AI Copilot
       onOpenCopilot()
-      await delay(1800)
+      await wait(1800)
       onCloseCopilot()
-      toast.info('✦ Try AI Copilot — describe any HR process')
+      await wait(400)
+
+      // 7 - Wrap up
+      toast.success('FlowHR Demo complete - ready to build your own workflow')
+    } catch (err) {
+      console.error('[Demo] unexpected error:', err)
+      toast.error('Demo encountered an error')
     } finally {
       setIsDemoRunning(false)
+      setIsSimulating(false)
+      setHighlightedNodeId(null)
     }
-  }, [isDemoRunning, autoArrange, setNodes, setEdges, triggerFitView, setHighlightedNodeId,
-      addCompletedNode, clearCompletedNodes, setSimulationLog, setIsSimulating,
-      onOpenCopilot, onCloseCopilot])
+  }, [
+    isDemoRunning, autoArrange,
+    setNodes, setEdges, triggerFitView,
+    setHighlightedNodeId, addCompletedNode, clearCompletedNodes,
+    setSimulationLog, setIsSimulating, setValidationErrors,
+    onOpenCopilot, onCloseCopilot,
+  ])
 
   const cancelDemo = useCallback(() => { cancelRef.current = true }, [])
 

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+﻿import { useCallback } from 'react'
 import type { Edge } from '@xyflow/react'
 import { useWorkflowStore } from '../store'
 import type { WorkflowNode } from '../types'
@@ -18,7 +18,7 @@ function computeLayout(nodes: WorkflowNode[], edges: Edge[]): WorkflowNode[] {
     inDeg[e.target] = (inDeg[e.target] ?? 0) + 1
   }
 
-  // Kahn's BFS — assign level = longest path from any source
+  // Kahn's BFS - assign level = longest path from any source
   const levelMap = new Map<string, number>()
   const queue: string[] = nodes.filter((n) => (inDeg[n.id] ?? 0) === 0).map((n) => n.id)
   for (const id of queue) levelMap.set(id, 0)
@@ -46,7 +46,7 @@ function computeLayout(nodes: WorkflowNode[], edges: Edge[]): WorkflowNode[] {
     byLevel.get(level)!.push(id)
   }
 
-  // Compute positions — centred vertically per column
+  // Compute positions - centred vertically per column
   const posMap = new Map<string, { x: number; y: number }>()
   for (const [level, ids] of byLevel) {
     const totalH = (ids.length - 1) * V_GAP

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+﻿import { useCallback } from 'react'
 import { useWorkflowStore } from '../store'
 import { validateWorkflow } from '../utils/validation'
 import { simulateWorkflow } from '../api/simulate'
@@ -54,7 +54,7 @@ export function useSimulate() {
       // Mark last node completed, clear highlight
       if (prevNodeId) addCompletedNode(prevNodeId)
       setHighlightedNodeId(null)
-      toast.success(`Simulation complete — ${result.steps.length} steps`)
+      toast.success(`Simulation complete - ${result.steps.length} steps`)
     } else {
       const errMsg = result.error ?? 'Simulation failed'
       setValidationErrors([errMsg])

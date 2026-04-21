@@ -1,4 +1,4 @@
-# HR Workflow Designer
+# FlowHR
 
 > A premium visual drag-and-drop HR workflow automation builder built for the Tredence Engineering Assessment.
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-HR Workflow Designer lets HR teams build, configure, and simulate multi-step HR processes using an intuitive node-based canvas. Workflows are built visually, edited via property panels, and tested through an animated step-by-step simulation engine — all in the browser with zero backend dependency.
+FlowHR lets HR teams build, configure, and simulate multi-step HR processes using an intuitive node-based canvas. Workflows are built visually, edited via property panels, and tested through an animated step-by-step simulation engine — all in the browser with zero backend dependency.
 
 ---
 

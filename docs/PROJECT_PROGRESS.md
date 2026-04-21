@@ -1,4 +1,4 @@
-# Project Progress — HR Workflow Designer
+# Project Progress — FlowHR
 
 ## Status: ✅ COMPLETE
 

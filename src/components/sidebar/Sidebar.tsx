@@ -25,15 +25,13 @@ export function Sidebar() {
     <div className="h-full flex flex-col bg-gray-950 border-r border-gray-800/80">
       {/* Logo */}
       <div className="px-4 py-5 border-b border-gray-800/80 flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-900/50 flex-shrink-0">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-            </svg>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
+            <img src="/flowhr-navbar.png" alt="FlowHR Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <p className="text-[13px] font-bold text-white leading-none tracking-tight">HR Flow</p>
-            <p className="text-[10px] text-indigo-400 font-medium mt-0.5">Workflow Designer</p>
+            <p className="text-[14px] font-bold text-white leading-none tracking-tight">FlowHR</p>
+            <p className="text-[11px] text-indigo-400/90 font-medium mt-1">Workflow Designer</p>
           </div>
         </div>
       </div>

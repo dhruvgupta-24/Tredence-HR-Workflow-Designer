@@ -5,6 +5,12 @@ import type { AutomationAction } from './api'
 // A workflow node is a React Flow Node with our NodeData type
 export type WorkflowNode = Node<NodeData>
 
+// Snapshot used for undo/redo history
+export interface WorkflowSnapshot {
+  nodes: WorkflowNode[]
+  edges: Edge[]
+}
+
 // One step in a simulation execution log
 export interface SimulationStep {
   step: number
@@ -52,6 +58,13 @@ export interface WorkflowState {
 
   // Automations
   setAutomations: (automations: AutomationAction[]) => void
+
+  // Undo/Redo history
+  past: WorkflowSnapshot[]
+  future: WorkflowSnapshot[]
+  saveSnapshot: () => void
+  undo: () => void
+  redo: () => void
 
   // Reset
   resetWorkflow: () => void

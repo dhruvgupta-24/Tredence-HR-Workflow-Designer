@@ -32,30 +32,39 @@ export function WorkflowCanvas() {
   const setNodes = useWorkflowStore((s) => s.setNodes)
   const setEdges = useWorkflowStore((s) => s.setEdges)
   const setSelectedNode = useWorkflowStore((s) => s.setSelectedNode)
+  const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
 
   const reactFlowInstance = useReactFlow()
   const onDrop = useDropHandler(reactFlowInstance)
 
   const onNodesChange = useCallback(
     (changes: NodeChange<WorkflowNode>[]) => {
+      if (changes.some((c) => c.type === 'remove')) saveSnapshot()
       setNodes(applyNodeChanges(changes, nodes))
     },
-    [nodes, setNodes],
+    [nodes, setNodes, saveSnapshot],
   )
 
   const onEdgesChange = useCallback(
     (changes: EdgeChange<Edge>[]) => {
+      if (changes.some((c) => c.type === 'remove')) saveSnapshot()
       setEdges(applyEdgeChanges(changes, edges))
     },
-    [edges, setEdges],
+    [edges, setEdges, saveSnapshot],
   )
 
   const onConnect = useCallback(
     (connection: Connection) => {
+      saveSnapshot()
       setEdges(rfAddEdge(connection, edges))
     },
-    [edges, setEdges],
+    [edges, setEdges, saveSnapshot],
   )
+
+  // Save position snapshot at drag START (before position changes)
+  const onNodeDragStart = useCallback(() => {
+    saveSnapshot()
+  }, [saveSnapshot])
 
   return (
     <div className="h-full w-full relative">
@@ -65,6 +74,7 @@ export function WorkflowCanvas() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeDragStart={onNodeDragStart}
         onNodeClick={(_, node) => setSelectedNode(node.id)}
         onPaneClick={() => setSelectedNode(null)}
         onDrop={onDrop}

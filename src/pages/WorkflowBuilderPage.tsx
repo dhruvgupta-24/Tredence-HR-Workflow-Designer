@@ -1,8 +1,10 @@
 import { ReactFlowProvider } from '@xyflow/react'
 import { useWorkflowStore } from '../store'
 import { useAutomations } from '../hooks/useAutomations'
+import { useUndoRedo } from '../hooks/useUndoRedo'
+import { useAutosave } from '../hooks/useAutosave'
 import { Sidebar } from '../components/sidebar'
-import { WorkflowCanvas } from '../components/canvas'
+import { WorkflowCanvas, CanvasControls } from '../components/canvas'
 import { Drawer } from '../components/ui'
 import { SandboxPanel } from '../components/sandbox'
 import {
@@ -26,14 +28,14 @@ function NodeFormRouter({ nodeId, type }: { nodeId: string; type: string }) {
     case 'end':
       return <EndNodeForm nodeId={nodeId} />
     default:
-      return (
-        <p className="text-xs text-gray-500">No properties for this node type.</p>
-      )
+      return <p className="text-xs text-gray-500">No properties for this node type.</p>
   }
 }
 
 export default function WorkflowBuilderPage() {
   useAutomations()
+  useUndoRedo()
+  useAutosave()
 
   const nodes = useWorkflowStore((s) => s.nodes)
   const selectedNodeId = useWorkflowStore((s) => s.selectedNodeId)
@@ -54,11 +56,14 @@ export default function WorkflowBuilderPage() {
         <Sidebar />
       </div>
 
-      {/* Center Canvas */}
-      <div className="flex-1 min-w-0">
-        <ReactFlowProvider>
-          <WorkflowCanvas />
-        </ReactFlowProvider>
+      {/* Center - Toolbar + Canvas */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <CanvasControls />
+        <div className="flex-1 min-h-0">
+          <ReactFlowProvider>
+            <WorkflowCanvas />
+          </ReactFlowProvider>
+        </div>
       </div>
 
       {/* Right Panel - Sandbox (always visible) */}
@@ -66,7 +71,7 @@ export default function WorkflowBuilderPage() {
         <SandboxPanel />
       </div>
 
-      {/* Properties Drawer - fixed overlay, slides over right panel when node selected */}
+      {/* Properties Drawer - fixed overlay, slides in when node selected */}
       <Drawer
         isOpen={!!selectedNode}
         onClose={() => setSelectedNode(null)}

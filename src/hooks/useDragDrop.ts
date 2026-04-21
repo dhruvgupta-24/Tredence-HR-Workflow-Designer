@@ -12,6 +12,7 @@ export function onDragOver(e: React.DragEvent<HTMLDivElement>) {
 
 export function useDropHandler(reactFlowInstance: ReactFlowInstance | null) {
   const addNode = useWorkflowStore((s) => s.addNode)
+  const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
 
   return useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
@@ -32,8 +33,9 @@ export function useDropHandler(reactFlowInstance: ReactFlowInstance | null) {
         data: getDefaultData(type),
       }
 
+      saveSnapshot()
       addNode(newNode)
     },
-    [reactFlowInstance, addNode],
+    [reactFlowInstance, addNode, saveSnapshot],
   )
 }

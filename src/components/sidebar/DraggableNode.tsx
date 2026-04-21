@@ -31,6 +31,7 @@ export function DraggableNode({ type, label, icon, color }: DraggableNodeProps) 
     <div
       draggable
       onDragStart={onDragStart}
+      data-demo-target={`node-${type}`}
       className={[
         'flex items-center gap-3 px-3 py-2.5 border rounded-lg cursor-grab active:cursor-grabbing',
         'transition-all duration-150 select-none',

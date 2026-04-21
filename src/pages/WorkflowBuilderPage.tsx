@@ -204,6 +204,8 @@ export default function WorkflowBuilderPage() {
         stepTitle={tutorial.stepTitle}
         stepHint={tutorial.stepHint}
         stepIcon={tutorial.stepIcon}
+        ghost={tutorial.ghost}
+        spotlightTarget={tutorial.spotlightTarget}
         onCancel={tutorial.cancelTutorial}
         onBuildOwn={tutorial.cancelTutorial}
         onTryCopilot={() => { tutorial.cancelTutorial(); setShowCopilot(true) }}

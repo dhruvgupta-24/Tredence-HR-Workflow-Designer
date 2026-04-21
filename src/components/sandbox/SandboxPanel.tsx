@@ -36,11 +36,12 @@ export function SandboxPanel() {
           onClick={() => void runSimulation()}
           disabled={isSimulating}
           className="w-full justify-center"
+          data-demo-target="run-workflow"
         >
           {isSimulating ? (
             <span className="flex items-center gap-2">
               <span className="w-3 h-3 border border-white/60 border-t-white rounded-full animate-spin" />
-              Simulating…
+              Simulating...
             </span>
           ) : (
             <span className="flex items-center gap-2">

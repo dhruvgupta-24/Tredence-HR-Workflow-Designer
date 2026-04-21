@@ -1,66 +1,109 @@
 # Project Progress Tracker
+## HR Workflow Designer
 
-> Updated after every completed task. This is the single source of truth for what is done and what is next.
-
----
-
-## Current Phase: NOT STARTED
+> Single source of truth. Update this file after every completed prompt before doing anything else.
 
 ---
 
-## Phase Completion
+## Status Dashboard
 
-| Phase | Status | Notes |
-|---|---|---|
-| 0 - Scaffold | Pending | |
-| 1 - Canvas + Sidebar | Pending | |
-| 2 - Node Components | Pending | |
-| 3 - Node Edit Forms | Pending | |
-| 4 - Mock API | Pending | |
-| 5 - Sandbox + Simulate | Pending | |
-| 6 - Validation | Pending | |
-| 7 - Bonus Features | Pending | |
-| 8 - Polish + README | Pending | |
+| Field | Value |
+|---|---|
+| Current Phase | NOT STARTED |
+| Current Prompt | None |
+| Next Prompt | Prompt 01 - Vite Init |
+| Last Commit | None |
+| Last Commit Hash | None |
+| Blocker | None |
+| Overall Progress | 0 / 22 prompts |
 
 ---
 
-## Completed Tasks
+## Phase Tracker
 
-_None yet._
+| Phase | Prompts | Status | Notes |
+|---|---|---|---|
+| P0 - Scaffold | 01, 02 | Pending | |
+| P1 - Store | 03 | Pending | |
+| P2 - Canvas + Sidebar | 04, 05, 06 | Pending | |
+| P3 - Node Components | 07 | Pending | |
+| P4 - Edit Forms + Drawer | 08, 09, 10 | Pending | |
+| P5 - Mock API | 11 | Pending | |
+| P6 - Sandbox + Simulate | 12 | Pending | |
+| P7 - Validation | 13 | Pending | |
+| P8 - Undo/Redo | 14 | Pending | |
+| P9 - Export/Import/Autosave | 15 | Pending | |
+| P10 - Visual Polish | 16, 17 | Pending | |
+| P11 - Code Quality | 18 | Pending | |
+| P12 - Performance | 19 | Pending | |
+| P13 - Mock Data | 20 | Pending | |
+| P14 - README + Docs | 21 | Pending | |
+| P15 - Production Build | 22 | Pending | |
 
 ---
 
-## In Progress
+## Prompt Completion Log
 
-_None yet._
+| Prompt | Description | Status | Commit | Date |
+|---|---|---|---|---|
+| 01 | Vite init + dependencies + Tailwind | Pending | - | - |
+| 02 | Folder structure + type definitions | Pending | - | - |
+| 03 | Zustand store + node defaults | Pending | - | - |
+| 04 | App layout shell + UI primitives | Pending | - | - |
+| 05 | Sidebar + draggable node toolbox | Pending | - | - |
+| 06 | WorkflowCanvas + drag-drop + connect | Pending | - | - |
+| 07 | All 5 custom node components | Pending | - | - |
+| 08 | Drawer shell + FormField + KeyValueEditor | Pending | - | - |
+| 09 | Start + Task + Approval forms | Pending | - | - |
+| 10 | Automated + End forms + drawer finalization | Pending | - | - |
+| 11 | Mock simulate API + topological walk | Pending | - | - |
+| 12 | Sandbox panel + execution log UI | Pending | - | - |
+| 13 | Graph validation engine | Pending | - | - |
+| 14 | Undo/redo + keyboard shortcuts | Pending | - | - |
+| 15 | Export + import + localStorage autosave | Pending | - | - |
+| 16 | Node hover actions + empty states + typography | Pending | - | - |
+| 17 | Theme finalization + animations + responsive | Pending | - | - |
+| 18 | TypeScript zero-error audit + lint | Pending | - | - |
+| 19 | React Flow render optimization | Pending | - | - |
+| 20 | Mock workflow seed data | Pending | - | - |
+| 21 | Recruiter-ready README | Pending | - | - |
+| 22 | Final quality gate + production build | Pending | - | - |
 
 ---
 
-## Blockers
+## Quality Gates
+
+| Gate | Status |
+|---|---|
+| npx tsc --noEmit exits 0 | Not checked |
+| npm run lint exits 0 | Not checked |
+| npm run build exits 0 | Not checked |
+| Zero console.log in src/ | Not checked |
+| Zero em dashes in any file | Not checked |
+| Drag-drop verified in browser | Not checked |
+| Full simulate flow verified | Not checked |
+| Autosave verified on refresh | Not checked |
+
+---
+
+## Active Blockers
 
 _None._
 
 ---
 
-## Task Log
+## Manual Steps Pending
 
-| Timestamp | Task | Result |
-|---|---|---|
-| - | Init | Pending |
+_None yet. Manual steps will appear here as they arise._
 
 ---
 
-## Last Updated
+## How to Update This File
 
-Not started. Update this file after every completed prompt/task.
-
----
-
-## Update Instructions for Agents
-
-After completing any task:
-1. Move task from "In Progress" to "Completed Tasks"
-2. Update the Phase row status
-3. Add a row to Task Log with timestamp and result
-4. Update "Current Phase" at the top
-5. List any new blockers
+After completing every prompt:
+1. Change prompt row Status from "Pending" to "Done"
+2. Fill in the Commit message and Date
+3. Update "Current Prompt", "Next Prompt", and "Last Commit" in Status Dashboard
+4. Update Phase row status to "Complete" when all prompts in that phase are done
+5. Add any blockers or manual step notes
+6. Update the Quality Gates table if a gate was verified

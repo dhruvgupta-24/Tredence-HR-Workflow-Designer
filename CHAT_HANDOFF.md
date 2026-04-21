@@ -1,61 +1,93 @@
-# Chat Handoff Template
+# Chat Handoff
 ## HR Workflow Designer
 
-> Paste this at the start of every new AI agent chat session. Fill in the blanks.
+> Paste this file as the FIRST message in every new agent chat session.
+> Fill in the bracketed fields from PROJECT_PROGRESS.md before sending.
+> Do not skip this step - the agent needs this context to resume correctly.
 
 ---
 
-## Handoff Message (copy-paste this)
+## Live Project State
+
+Update these fields from PROJECT_PROGRESS.md before pasting:
+
+| Field | Value (fill from PROJECT_PROGRESS.md) |
+|---|---|
+| Completed Prompts | [e.g. 01, 02, 03] |
+| Current Phase | [e.g. P2 - Canvas + Sidebar] |
+| Next Prompt | [e.g. Prompt 04 - App Layout Shell] |
+| Last Commit | [paste last commit message] |
+| Last Commit Hash | [paste short hash, e.g. a1b2c3d] |
+| Active Blocker | [None, or describe it] |
+
+---
+
+## Copy-Paste Handoff Message
 
 ```
-You are an AI coding agent working on the HR Workflow Designer project for a Tredence internship assessment.
+You are an AI coding agent resuming work on the HR Workflow Designer project for a Tredence internship assessment.
 
 PROJECT: HR Workflow Designer
-STACK: React 18, TypeScript, Vite, React Flow (@xyflow/react), Zustand, Tailwind CSS
+STACK: React 18, TypeScript, Vite, @xyflow/react (v12), Zustand, Tailwind CSS 3
+REPO: c:\Users\Dhruv\Desktop\Tredence-HR-Workflow-Designer
 
-REPO LOCATION: [path to project root]
-
-DOCS TO READ FIRST (in this order):
-1. PROJECT_PROGRESS.md - what is done and what is next
-2. AI_EXECUTION_PLAN.md - the full phase-by-phase plan
-3. AGENT_RULES.md - rules you must follow
-
-CURRENT STATUS:
-  Completed phases: [list here, e.g., "Phase 0, Phase 1"]
-  Current phase: [e.g., "Phase 2 - Node Components"]
-  Last commit: [paste last commit message]
+COMPLETED PROMPTS: [fill from table above]
+CURRENT PHASE: [fill from table above]
+LAST COMMIT: [fill from table above]
 
 YOUR TASK THIS SESSION:
-  [Paste the exact phase prompt from AI_EXECUTION_PLAN.md]
+[Paste the exact prompt block from AI_EXECUTION_PLAN.md for the next prompt number]
 
-IMPORTANT RULES:
-  - No em dashes in any output
-  - TypeScript only, no 'any'
-  - No additional UI libraries
-  - Read PROJECT_PROGRESS.md before starting
-  - Update PROJECT_PROGRESS.md after completing the phase
-  - Commit with the message specified in GIT_WORKFLOW.md
+DOCUMENTS TO READ FIRST (in this order):
+1. PROJECT_PROGRESS.md - verify what is done and what is next
+2. AGENT_RULES.md - non-negotiable rules you must follow
+3. The relevant section of AI_EXECUTION_PLAN.md for context
 
-Start by reading PROJECT_PROGRESS.md, confirm what is done, then begin the task.
+NON-NEGOTIABLE RULES (summary - read AGENT_RULES.md for full list):
+- No em dashes anywhere (not in code, comments, strings, or docs)
+- TypeScript only. No 'any' unless unavoidable with a comment explaining why.
+- No console.log left in code
+- No additional UI libraries. Tailwind + custom components only.
+- Commit after every prompt, not after every file.
+- Update PROJECT_PROGRESS.md after completing the prompt.
+- No em dashes.
+
+ACTIVE BLOCKER: [None, or paste the blocker description]
+
+Start by reading PROJECT_PROGRESS.md to confirm what is done. Then execute the task above exactly as written.
 ```
 
 ---
 
 ## When to Start a New Chat
 
-Start a new chat session when:
-1. You have completed 2 or more phases in one session
-2. Agent responses are getting truncated or slow
-3. Agent starts making mistakes on things it got right earlier
-4. You see "context window" warnings
+Start a new chat session when any of these are true:
+- You have completed 2+ prompts in one session
+- Agent responses are getting truncated or feel slow
+- Agent starts contradicting previous decisions
+- Agent starts rewriting things it built correctly earlier
+- You see any context window warning
 
-Rule of thumb: new chat every 2 phases maximum.
+Fresh chat checkpoints are also marked in AI_EXECUTION_PLAN.md with: [FRESH CHAT RECOMMENDED]
+
+Rule of thumb: new chat every 2 prompts maximum during heavy coding phases (P2 through P10).
 
 ---
 
-## State to Pass Between Sessions
+## Before Ending a Chat Session
 
-Before ending a session, make sure:
-- PROJECT_PROGRESS.md is updated
-- Last commit is made
-- Note the exact last commit message to include in next handoff
+Checklist before closing a chat:
+- [ ] PROJECT_PROGRESS.md is updated with the completed prompt number
+- [ ] Commit is made with the correct message from AI_EXECUTION_PLAN.md
+- [ ] Commit hash is noted
+- [ ] Any blockers or manual steps are noted in PROJECT_PROGRESS.md
+- [ ] You know exactly which prompt number comes next
+
+---
+
+## Project Status: NOT STARTED
+
+Update this status line after each phase completes:
+- NOT STARTED
+- IN PROGRESS (Current: Phase P__, Prompt __)
+- COMPLETE (All 22 prompts done, submission ready)

@@ -36,26 +36,6 @@ export function CanvasControls({
   const autoArrange  = useAutoArrange()
   const fileRef      = useRef<HTMLInputElement>(null)
 
-  const optimize = () => {
-    if (nodes.length === 0) return
-    saveSnapshot()
-    const connected = new Set<string>()
-    edges.forEach((e) => { connected.add(e.source); connected.add(e.target) })
-    nodes.filter((n) => n.type === 'start' || n.type === 'end').forEach((n) => connected.add(n.id))
-    const removed = nodes.filter((n) => !connected.has(n.id))
-    const seen = new Set<string>()
-    const deduped = edges.filter((e) => {
-      const k = `${e.source}>${e.target}`
-      return seen.has(k) ? false : (seen.add(k), true)
-    })
-    setNodes(nodes.filter((n) => connected.has(n.id)))
-    setEdges(deduped)
-    setTimeout(autoArrange, 50)
-    toast.success(removed.length > 0
-      ? `Optimized - removed ${removed.length} isolated node${removed.length > 1 ? 's' : ''}`
-      : 'Layout optimized')
-  }
-
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -123,22 +103,37 @@ export function CanvasControls({
 
       <div className="w-px h-5 bg-gray-800/80 mx-1" />
 
-      {/* Layout */}
-      <button type="button" onClick={autoArrange} disabled={nodes.length === 0 || isLocked} title="Auto-arrange layout"
-        className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800 transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none"
+      {/* Layout - single "Auto Arrange" merges arrange + optimize */}
+      <button type="button"
+        onClick={() => {
+          if (nodes.length === 0) return
+          saveSnapshot()
+          const connected = new Set<string>()
+          edges.forEach((e) => { connected.add(e.source); connected.add(e.target) })
+          nodes.filter((n) => n.type === 'start' || n.type === 'end').forEach((n) => connected.add(n.id))
+          const removed = nodes.filter((n) => !connected.has(n.id))
+          const seen = new Set<string>()
+          const deduped = edges.filter((e) => {
+            const k = `${e.source}>${e.target}`
+            return seen.has(k) ? false : (seen.add(k), true)
+          })
+          setNodes(nodes.filter((n) => connected.has(n.id)))
+          setEdges(deduped)
+          setTimeout(autoArrange, 50)
+          toast.success(removed.length > 0
+            ? `Arranged - removed ${removed.length} isolated node${removed.length > 1 ? 's' : ''}`
+            : 'Layout arranged')
+        }}
+        disabled={nodes.length === 0 || isLocked}
+        title="Auto Arrange layout"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800 border border-transparent hover:border-gray-700/40 transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
           <rect x="9" y="16" width="6" height="5" rx="1"/>
           <path d="M5.5 8v4a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8M12 14v2"/>
         </svg>
-      </button>
-      <button type="button" onClick={optimize} disabled={nodes.length === 0 || isLocked} title="Optimize workflow"
-        className="p-2 rounded-lg text-gray-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
+        <span className="text-[11px] font-medium">Auto Arrange</span>
       </button>
 
       {/* Command palette - centred search bar */}

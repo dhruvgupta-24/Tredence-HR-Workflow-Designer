@@ -43,10 +43,11 @@ export function WorkflowCanvas() {
   const setEdges           = useWorkflowStore((s) => s.setEdges)
   const setSelectedNode    = useWorkflowStore((s) => s.setSelectedNode)
   const saveSnapshot       = useWorkflowStore((s) => s.saveSnapshot)
-  const fitViewCounter     = useWorkflowStore((s) => s.fitViewCounter)
+  const fitViewCounter        = useWorkflowStore((s) => s.fitViewCounter)
+  const viewportResetCount    = useWorkflowStore((s) => s.viewportResetCount)
 
-  const { fitView }        = useReactFlow()
-  const reactFlowInstance  = useReactFlow()
+  const { fitView, setViewport } = useReactFlow()
+  const reactFlowInstance        = useReactFlow()
   const onDrop             = useDropHandler(reactFlowInstance)
   const didInitialFitRef   = useRef(false)
 
@@ -64,6 +65,13 @@ export function WorkflowCanvas() {
     const t = setTimeout(() => void fitView({ padding: 0.15, duration: 400 }), 80)
     return () => clearTimeout(t)
   }, [fitViewCounter, fitView])
+
+  // Viewport reset to known state for Live Demo cursor math
+  useEffect(() => {
+    if (viewportResetCount === 0) return
+    const t = setTimeout(() => void setViewport({ x: 0, y: 0, zoom: 0.82 }, { duration: 300 }), 60)
+    return () => clearTimeout(t)
+  }, [viewportResetCount, setViewport])
 
   // Compute per-edge styles based on simulation state
   const styledEdges = useMemo(() =>

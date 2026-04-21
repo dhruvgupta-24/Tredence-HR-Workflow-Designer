@@ -1,109 +1,269 @@
 import { useEffect, useState } from 'react'
 import { useWorkflowStore } from '../store'
-import { getDemoTarget, getCanvasDropPositions } from '../utils/demoPositions'
+import { getDemoTarget, getCanvasRect, nodeCenter } from '../utils/demoPositions'
 
-// Valid minimum workflow: Start → Task → End
-// Steps designed so completion is detectable from store signals
+// ── Tutorial step animation types ─────────────────────────────────────────────
+export type StepAnimType = 'drag' | 'connect' | 'click'
 
 export interface TutorialStep {
-  num: number
-  title: string
-  hint: string
-  icon: string
-  // For ghost cursor animation
-  fromTarget: string   // data-demo-target of source
-  toTarget: 'canvas'   // always goes to canvas area
-  dropIndex: number    // which canvas drop position (0-3)
+  num:       number
+  title:     string
+  hint:      string
+  icon:      string
+  animType:  StepAnimType
+  fromTarget: string        // data-demo-target of source element
+  toTarget:  string | null  // data-demo-target of destination (null = canvas coord below)
+  toRF?: { x: number; y: number } // RF canvas position to point at when toTarget is null
 }
 
-const STEPS: TutorialStep[] = [
+// ── Tutorial definitions ───────────────────────────────────────────────────────
+// BASIC WORKFLOW: Start → Task → End (6 steps)
+const BASIC_STEPS: TutorialStep[] = [
   {
-    num: 1,
-    title: 'Drag a Start node to the canvas',
-    hint: 'Grab the Start Node from the left panel and drop it onto the canvas.',
-    icon: '▶',
-    fromTarget: 'node-start',
-    toTarget: 'canvas',
-    dropIndex: 0,
+    num: 1, icon: '▶',
+    title: 'Add a Start node',
+    hint: 'Drag the Start Node from the left panel onto the canvas to begin your workflow.',
+    animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 120 },
   },
   {
-    num: 2,
+    num: 2, icon: '☐',
     title: 'Add a Task node',
-    hint: 'Drag a Task node below your Start node.',
-    icon: '☐',
-    fromTarget: 'node-task',
-    toTarget: 'canvas',
-    dropIndex: 1,
+    hint: 'Drag a Task node below the Start node to represent a step someone must complete.',
+    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 300 },
   },
   {
-    num: 3,
+    num: 3, icon: '■',
     title: 'Add an End node',
-    hint: 'Drag an End node below your Task node to complete the flow.',
-    icon: '■',
-    fromTarget: 'node-end',
-    toTarget: 'canvas',
-    dropIndex: 2,
+    hint: 'Drag an End node below the Task to mark where the workflow completes.',
+    animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 480 },
   },
   {
-    num: 4,
-    title: 'Connect Start → Task → End',
-    hint: 'Drag from the bottom handle of each node to the top handle of the next.',
-    icon: '→',
-    fromTarget: 'node-start',
-    toTarget: 'canvas',
-    dropIndex: 1,
+    num: 4, icon: '→',
+    title: 'Connect the nodes',
+    hint: 'Drag from the bottom handle of each node to the top handle of the next to create connections.',
+    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 300 },
   },
   {
-    num: 5,
+    num: 5, icon: '✎',
     title: 'Open a node\'s properties',
-    hint: 'Click any node on the canvas to open its properties panel.',
-    icon: '✎',
-    fromTarget: 'node-task',
-    toTarget: 'canvas',
-    dropIndex: 1,
+    hint: 'Click any node on the canvas to open its property panel and set a name or assignee.',
+    animType: 'click', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 300 },
   },
   {
-    num: 6,
+    num: 6, icon: '⚡',
     title: 'Run your workflow',
-    hint: 'Click the "Run Workflow" button to simulate your process!',
-    icon: '⚡',
-    fromTarget: 'run-workflow',
-    toTarget: 'canvas',
-    dropIndex: 1,
+    hint: 'Click the "Run Workflow" button to simulate your process step by step.',
+    animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 300 },
   },
 ]
 
-const TOTAL = STEPS.length
+// LEAVE APPROVAL: Start → Task → Approval → End (7 steps)
+const LEAVE_STEPS: TutorialStep[] = [
+  {
+    num: 1, icon: '▶',
+    title: 'Add a Start node',
+    hint: 'Drag the Start Node onto the canvas. This represents the employee submitting a leave request.',
+    animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 80 },
+  },
+  {
+    num: 2, icon: '☐',
+    title: 'Add a Task node — HR Review',
+    hint: 'Drag a Task node to the canvas. This will represent the HR team reviewing the request.',
+    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
+  },
+  {
+    num: 3, icon: '⬡',
+    title: 'Add an Approval gate',
+    hint: 'Drag an Approval Gate for the manager to approve or reject the leave.',
+    animType: 'drag', fromTarget: 'node-approval', toTarget: null, toRF: { x: 350, y: 440 },
+  },
+  {
+    num: 4, icon: '■',
+    title: 'Add an End node',
+    hint: 'Drag an End node to close the workflow once all approvals are done.',
+    animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 620 },
+  },
+  {
+    num: 5, icon: '→',
+    title: 'Connect the chain',
+    hint: 'Connect Start to Task to Approval to End by dragging between their handles.',
+    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 260 },
+  },
+  {
+    num: 6, icon: '✎',
+    title: 'Customize approval settings',
+    hint: 'Click the Approval node and set the approver role — for example "Line Manager".',
+    animType: 'click', fromTarget: 'node-approval', toTarget: null, toRF: { x: 350, y: 440 },
+  },
+  {
+    num: 7, icon: '⚡',
+    title: 'Run the simulation',
+    hint: 'Click Run Workflow to see the leave approval flow execute end to end.',
+    animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 440 },
+  },
+]
 
-// Completion detectors for each step (0-indexed)
+// ONBOARDING: Start → Task → Task → End (7 steps)
+const ONBOARDING_STEPS: TutorialStep[] = [
+  {
+    num: 1, icon: '▶',
+    title: 'Add a Start node',
+    hint: 'The Start node triggers when a new hire\'s offer is accepted.',
+    animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 80 },
+  },
+  {
+    num: 2, icon: '☐',
+    title: 'Add: Document Collection',
+    hint: 'Drag a Task node for collecting ID, bank, and education documents from the joiner.',
+    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
+  },
+  {
+    num: 3, icon: '☐',
+    title: 'Add: IT Setup Task',
+    hint: 'Add another Task for IT to provision laptop, email, and access credentials.',
+    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 440 },
+  },
+  {
+    num: 4, icon: '■',
+    title: 'Add an End node',
+    hint: 'The End node marks the joiner as fully onboarded.',
+    animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 620 },
+  },
+  {
+    num: 5, icon: '→',
+    title: 'Connect the flow',
+    hint: 'Link Start through both Task nodes to the End by dragging handles in sequence.',
+    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 260 },
+  },
+  {
+    num: 6, icon: '✎',
+    title: 'Name each step',
+    hint: 'Click each Task node and give them descriptive names and assignees.',
+    animType: 'click', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
+  },
+  {
+    num: 7, icon: '⚡',
+    title: 'Simulate onboarding',
+    hint: 'Click Run Workflow to validate and simulate the entire onboarding sequence.',
+    animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 260 },
+  },
+]
+
+export type TutorialType = 'basic' | 'leave' | 'onboarding'
+
+export const TUTORIAL_CATALOG: {
+  id: TutorialType
+  title: string
+  description: string
+  icon: string
+  steps: TutorialStep[]
+}[] = [
+  {
+    id: 'basic',
+    title: 'Basic Workflow',
+    description: 'Build your first Start → Task → End flow in 6 steps.',
+    icon: '⬡',
+    steps: BASIC_STEPS,
+  },
+  {
+    id: 'leave',
+    title: 'Leave Approval',
+    description: 'Model an employee leave request with manager approval gate.',
+    icon: '✓',
+    steps: LEAVE_STEPS,
+  },
+  {
+    id: 'onboarding',
+    title: 'Employee Onboarding',
+    description: 'Sequence document collection and IT setup for new joiners.',
+    icon: '▶',
+    steps: ONBOARDING_STEPS,
+  },
+]
+
+// ── Completion detectors (0-indexed step) ─────────────────────────────────────
 function isStepComplete(
   stepIdx: number,
+  tutorialType: TutorialType,
   nodeTypes: string[],
   edgeCount: number,
   selectedId: string | null,
   simLogLen: number,
 ): boolean {
-  switch (stepIdx) {
-    case 0: return nodeTypes.includes('start')
-    case 1: return nodeTypes.includes('task')
-    case 2: return nodeTypes.includes('end')
-    case 3: return edgeCount >= 2   // needs Start→Task and Task→End
-    case 4: return !!selectedId
-    case 5: return simLogLen > 0
-    default: return false
+  if (tutorialType === 'basic') {
+    switch (stepIdx) {
+      case 0: return nodeTypes.includes('start')
+      case 1: return nodeTypes.includes('task')
+      case 2: return nodeTypes.includes('end')
+      case 3: return edgeCount >= 2
+      case 4: return !!selectedId
+      case 5: return simLogLen > 0
+    }
   }
+  if (tutorialType === 'leave') {
+    switch (stepIdx) {
+      case 0: return nodeTypes.includes('start')
+      case 1: return nodeTypes.includes('task')
+      case 2: return nodeTypes.includes('approval')
+      case 3: return nodeTypes.includes('end')
+      case 4: return edgeCount >= 3
+      case 5: return !!selectedId
+      case 6: return simLogLen > 0
+    }
+  }
+  if (tutorialType === 'onboarding') {
+    switch (stepIdx) {
+      case 0: return nodeTypes.includes('start')
+      case 1: return nodeTypes.filter((t) => t === 'task').length >= 1
+      case 2: return nodeTypes.filter((t) => t === 'task').length >= 2
+      case 3: return nodeTypes.includes('end')
+      case 4: return edgeCount >= 3
+      case 5: return !!selectedId
+      case 6: return simLogLen > 0
+    }
+  }
+  return false
 }
 
+// ── Ghost cursor position for each step ───────────────────────────────────────
 export interface GhostCursorConfig {
   from: { x: number; y: number }
   to:   { x: number; y: number }
+  animType: StepAnimType
 }
 
+function computeGhostConfig(step: TutorialStep): GhostCursorConfig | null {
+  const from = getDemoTarget(step.fromTarget)
+  if (!from) return null
+
+  let to: { x: number; y: number } | null = null
+
+  if (step.toTarget) {
+    // Target is another DOM element (e.g. another node button)
+    to = getDemoTarget(step.toTarget)
+  }
+
+  if (!to && step.toRF) {
+    // Target is a canvas position — convert RF to screen
+    const cr = getCanvasRect()
+    if (cr) {
+      // Use a reasonable zoom approximation for tutorial (we don't reset viewport)
+      to = nodeCenter(step.toRF.x, step.toRF.y, 0.82, cr)
+    }
+  }
+
+  if (!to) return null
+  return { from, to, animType: step.animType }
+}
+
+// ── Main hook ─────────────────────────────────────────────────────────────────
 export function useTutorial() {
-  const [isActive, setIsActive] = useState(false)
-  const [step,     setStep]     = useState(0)
-  const [isDone,   setIsDone]   = useState(false)
-  const [ghost,    setGhost]    = useState<GhostCursorConfig | null>(null)
+  const [isActive,      setIsActive]      = useState(false)
+  const [isDone,        setIsDone]        = useState(false)
+  const [step,          setStep]          = useState(0)
+  const [tutorialType,  setTutorialType]  = useState<TutorialType>('basic')
+  const [ghost,         setGhost]         = useState<GhostCursorConfig | null>(null)
+  const [showPicker,    setShowPicker]    = useState(false)
 
   const nodes          = useWorkflowStore((s) => s.nodes)
   const edges          = useWorkflowStore((s) => s.edges)
@@ -112,42 +272,37 @@ export function useTutorial() {
   const resetWorkflow  = useWorkflowStore((s) => s.resetWorkflow)
   const saveSnapshot   = useWorkflowStore((s) => s.saveSnapshot)
 
-  // Recompute ghost cursor positions whenever step changes (DOM may have changed)
+  const currentCatalog = TUTORIAL_CATALOG.find((c) => c.id === tutorialType)!
+  const STEPS          = currentCatalog.steps
+  const TOTAL          = STEPS.length
+  const current        = STEPS[step]
+
+  // Recompute ghost config when step changes
   useEffect(() => {
-    if (!isActive || isDone) { setGhost(null); return }
-    const current = STEPS[step]
-    if (!current) return
+    if (!isActive || isDone || !current) { setGhost(null); return }
+    const config = computeGhostConfig(current)
+    setGhost(config)
+  }, [isActive, isDone, step, current])
 
-    const from = getDemoTarget(current.fromTarget)
-    const drops = getCanvasDropPositions()
-    const to   = drops[current.dropIndex] ?? drops[0] ?? { x: 500, y: 300 }
-
-    if (from) {
-      setGhost({ from, to })
-    } else {
-      setGhost(null)
-    }
-  }, [isActive, isDone, step])
-
-  // Auto-advance when step condition is met
+  // Auto-advance on step completion
   useEffect(() => {
     if (!isActive || isDone) return
     const nodeTypes = nodes.map((n) => n.type ?? '')
-    const met = isStepComplete(step, nodeTypes, edges.length, selectedNodeId, simulationLog.length)
+    const met = isStepComplete(step, tutorialType, nodeTypes, edges.length, selectedNodeId, simulationLog.length)
     if (!met) return
-
     const id = setTimeout(() => {
-      if (step < TOTAL - 1) {
-        setStep((s) => s + 1)
-      } else {
-        setIsDone(true)
-      }
+      if (step < TOTAL - 1) setStep((s) => s + 1)
+      else setIsDone(true)
     }, 700)
     return () => clearTimeout(id)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges, selectedNodeId, simulationLog, step, isActive, isDone])
+  }, [nodes, edges, selectedNodeId, simulationLog, step, isActive, isDone, tutorialType, TOTAL])
 
-  const startTutorial = () => {
+  const openPicker = () => setShowPicker(true)
+
+  const startTutorial = (type: TutorialType) => {
+    setTutorialType(type)
+    setShowPicker(false)
     saveSnapshot()
     resetWorkflow()
     setStep(0)
@@ -157,23 +312,25 @@ export function useTutorial() {
 
   const cancelTutorial = () => {
     setIsActive(false)
+    setShowPicker(false)
     setStep(0)
     setIsDone(false)
     setGhost(null)
   }
 
-  const current = STEPS[step]
-
   return {
     isActive,
     isDone,
+    showPicker,
     step,
-    totalSteps: TOTAL,
-    stepTitle:  current?.title ?? '',
-    stepHint:   current?.hint ?? '',
-    stepIcon:   current?.icon ?? '',
+    totalSteps:      TOTAL,
+    stepTitle:       current?.title ?? '',
+    stepHint:        current?.hint  ?? '',
+    stepIcon:        current?.icon  ?? '',
     spotlightTarget: current?.fromTarget ?? '',
     ghost,
+    tutorialType,
+    openPicker,
     startTutorial,
     cancelTutorial,
   }

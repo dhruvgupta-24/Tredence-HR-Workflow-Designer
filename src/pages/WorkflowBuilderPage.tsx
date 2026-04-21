@@ -17,7 +17,7 @@ import { CopilotModal } from '../components/copilot/CopilotModal'
 import { CommandPalette } from '../components/command/CommandPalette'
 import { DemoOverlay } from '../components/demo/DemoOverlay'
 import { FakeCursor } from '../components/demo/FakeCursor'
-import { TutorialOverlay } from '../components/demo/TutorialOverlay'
+import { TutorialOverlay, TutorialPicker } from '../components/demo/TutorialOverlay'
 import type { LiveDemoPhase } from '../components/demo/DemoOverlay'
 import {
   StartNodeForm, TaskNodeForm, ApprovalNodeForm, AutomatedNodeForm, EndNodeForm,
@@ -143,7 +143,7 @@ export default function WorkflowBuilderPage() {
           onCopilotOpen={() => setShowCopilot(true)}
           onCommandOpen={() => setShowCommand(true)}
           onLiveDemoRun={() => void runDemo()}
-          onTutorialStart={() => tutorial.startTutorial()}
+          onTutorialStart={() => tutorial.openPicker()}
           isLiveDemoRunning={isLiveDemoRunning}
           isTutorialActive={tutorial.isActive}
         />
@@ -210,6 +210,14 @@ export default function WorkflowBuilderPage() {
         onBuildOwn={tutorial.cancelTutorial}
         onTryCopilot={() => { tutorial.cancelTutorial(); setShowCopilot(true) }}
       />
+
+      {/* Tutorial picker modal */}
+      {tutorial.showPicker && (
+        <TutorialPicker
+          onSelect={(type) => tutorial.startTutorial(type)}
+          onClose={tutorial.cancelTutorial}
+        />
+      )}
 
       {/* Fake cursor for Live Demo */}
       <FakeCursor state={cursor} />

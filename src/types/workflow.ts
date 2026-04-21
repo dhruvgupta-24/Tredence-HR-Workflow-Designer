@@ -76,7 +76,11 @@ export interface WorkflowState {
   // Reset
   resetWorkflow: () => void
 
-  // fitView trigger (incremented to signal WorkflowCanvas to call fitView)
+  // fitView trigger
   fitViewCounter: number
   triggerFitView: () => void
+
+  // viewport reset - signals canvas to reset to known {x:0,y:0,zoom:0.82}
+  viewportResetCount: number
+  triggerViewportReset: () => void
 }

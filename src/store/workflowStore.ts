@@ -22,6 +22,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   past: [],
   future: [],
   fitViewCounter: 0,
+  viewportResetCount: 0,
 
   // --- Node actions ---
   addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
@@ -118,4 +119,5 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
     }),
 
   triggerFitView: () => set((s) => ({ fitViewCounter: s.fitViewCounter + 1 })),
+  triggerViewportReset: () => set((s) => ({ viewportResetCount: s.viewportResetCount + 1 })),
 }));

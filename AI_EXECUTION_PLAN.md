@@ -12,6 +12,24 @@ Stack lock: `@xyflow/react ^12.x` (React Flow v12). README previously said v11 -
 
 ---
 
+## Supabase MCP - Tooling Note
+
+**Status:** Connected and available. Do not use unless a prompt explicitly requires it or the benefit is clear and concrete.
+
+Current scope is frontend-first:
+- Workflow state: Zustand + localStorage (no backend needed)
+- APIs: mock async functions in src/api/ (no network calls)
+- Auth: none (single-user tool per PRD)
+
+Supabase MCP MAY be useful for:
+- Phase 9 (autosave): if localStorage proves insufficient, use Supabase as a drop-in persistence layer
+- Future enhancements listed in README "What I Would Add" section
+- Demo purposes: storing and sharing workflows by URL via a Supabase row
+
+Do NOT add Supabase to any prompt unless the agent explicitly evaluates localStorage as insufficient first.
+
+---
+
 ## How to Use This File
 
 1. Find your current prompt number in PROJECT_PROGRESS.md.

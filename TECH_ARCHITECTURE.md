@@ -15,6 +15,15 @@
 | zustand | ^4.4 |
 | tailwindcss | ^3.4 |
 | clsx | ^2.0 |
+| nanoid | ^5.x |
+
+## Optional Tooling
+
+**Supabase MCP** is connected and available as an optional tool.
+- Use only if persistence, auth, or storage creates clear, concrete value.
+- Current scope is frontend-first with localStorage and mock APIs.
+- Do not add Supabase complexity unless a phase explicitly calls for it.
+- Potential future use: persist workflows per user, share workflow URLs, export history.
 
 ---
 

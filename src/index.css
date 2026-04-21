@@ -1,0 +1,6 @@
+/* React Flow base styles - must precede @tailwind directives */
+@import '@xyflow/react/dist/style.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

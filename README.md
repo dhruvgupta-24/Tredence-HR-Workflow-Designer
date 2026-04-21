@@ -35,10 +35,11 @@
 |---|---|
 | Framework | React 18 + TypeScript |
 | Build | Vite |
-| Graph | React Flow v11 |
+| Graph | @xyflow/react v12 (React Flow) |
 | State | Zustand |
-| Styling | Tailwind CSS |
-| Mock API | Local JSON + fetch wrappers |
+| Styling | Tailwind CSS 3 |
+| Mock API | Local JSON + async fetch wrappers |
+| Optional | Supabase MCP (available for persistence or auth if scope expands) |
 
 ---
 

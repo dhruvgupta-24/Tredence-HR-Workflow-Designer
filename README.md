@@ -260,9 +260,43 @@ FlowHR is a **product.** It has a real user problem, a real design system, produ
 
 ---
 
+## Product Preview
+
+<p align="center">
+  <img src="assets/screenshots/main-ui.png" width="1000" alt="FlowHR Main UI"/>
+</p>
+
+<p align="center">
+  Premium drag-and-drop HR workflow builder with simulation, AI Copilot, tutorial mode, and dual themes.
+</p>
+
+---
+
 ## Screenshots
 
-> Try the live app or run locally to see it in action.
+### Main Builder
+
+<p align="center">
+  <img src="assets/screenshots/main-ui.png" width="1000" alt="Main UI"/>
+</p>
+
+### Light Theme
+
+<p align="center">
+  <img src="assets/screenshots/light-mode.png" width="1000" alt="Light Theme"/>
+</p>
+
+### AI Workflow Copilot
+
+<p align="center">
+  <img src="assets/screenshots/copilot.png" width="850" alt="AI Copilot"/>
+</p>
+
+### Guided Tutorial Mode
+
+<p align="center">
+  <img src="assets/screenshots/tutorial.png" width="1000" alt="Tutorial Mode"/>
+</p>
 
 | View | Description |
 |---|---|

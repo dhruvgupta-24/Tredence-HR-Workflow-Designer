@@ -10,6 +10,7 @@ export function Sidebar() {
   const edges = useWorkflowStore((s) => s.edges)
   const setNodes = useWorkflowStore((s) => s.setNodes)
   const setEdges = useWorkflowStore((s) => s.setEdges)
+  const setWorkflowName = useWorkflowStore((s) => s.setWorkflowName)
   const resetWorkflow = useWorkflowStore((s) => s.resetWorkflow)
   const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
   const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
@@ -18,6 +19,7 @@ export function Sidebar() {
     saveSnapshot()
     setNodes(template.nodes as WorkflowNode[])
     setEdges(template.edges as Edge[])
+    setWorkflowName(template.name)
     triggerFitView()
   }
 

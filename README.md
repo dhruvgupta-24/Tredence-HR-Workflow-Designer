@@ -83,6 +83,12 @@ Four professionally designed workflow templates ship out of the box: Employee On
 ### Validation System
 Before simulation runs, the engine checks: Has a Start node? Has an End node? Are all nodes reachable? Are there orphan nodes? Errors surface as clear, dismissible banners.
 
+### Connection Integrity Validation
+Strict canvas validation running on every drag event. It actively prevents nodes from connecting to themselves, intercepts duplicate parallel edges, blocks outgoing boundaries on End nodes, and shields Start nodes from incoming paths, rendering contextual toast errors immediately on violation.
+
+### Resizable Layout Engine
+Drag horizontally on the inner boundaries of the left and right panels to smoothly expand or shrink your workspace. Complete with strict minimum boundaries (e.g., 260px) and double-click reset constraints. The React Flow canvas instantly recalculates and centers itself as layout dimensions shift.
+
 ### Premium Theme System (Light & Dark Modes)
 A flawless, real-time theme architecture built with Tailwind CSS and CSS variables. Features a deep, structured Dark Mode and a highly refined warm Light Mode. Includes cinematic circular-reveal transition animations and smooth micro-animations on every hover to replicate a true top-tier SaaS interface without layout shift.
 

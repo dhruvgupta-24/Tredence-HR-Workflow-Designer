@@ -73,6 +73,10 @@ export interface WorkflowState {
   undo: () => void
   redo: () => void
 
+  // Workflow name
+  workflowName: string
+  setWorkflowName: (name: string) => void
+
   // Reset
   resetWorkflow: () => void
 

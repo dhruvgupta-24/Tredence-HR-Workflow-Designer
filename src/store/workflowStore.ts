@@ -12,6 +12,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   // --- Initial state ---
   nodes: persisted?.nodes ?? [],
   edges: persisted?.edges ?? [],
+  workflowName: persisted?.workflowName ?? '',
   selectedNodeId: null,
   validationErrors: [],
   simulationLog: [],
@@ -28,6 +29,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   sandboxWidth: persisted?.sandboxWidth ?? 320,
   setSidebarWidth: (width) => set({ sidebarWidth: width }),
   setSandboxWidth: (width) => set({ sandboxWidth: width }),
+  setWorkflowName: (name) => set({ workflowName: name }),
 
   // --- Node actions ---
   addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
@@ -114,6 +116,7 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
     set({
       nodes: [],
       edges: [],
+      workflowName: '',
       selectedNodeId: null,
       validationErrors: [],
       simulationLog: [],

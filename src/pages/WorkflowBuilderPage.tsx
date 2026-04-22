@@ -78,6 +78,8 @@ export default function WorkflowBuilderPage() {
   const setSelectedNode = useWorkflowStore((s) => s.setSelectedNode)
   const setNodes       = useWorkflowStore((s) => s.setNodes)
   const setEdges       = useWorkflowStore((s) => s.setEdges)
+  const workflowName   = useWorkflowStore((s) => s.workflowName)
+  const setWorkflowName = useWorkflowStore((s) => s.setWorkflowName)
   const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
   const sidebarWidth   = useWorkflowStore((s) => s.sidebarWidth)
   const sandboxWidth   = useWorkflowStore((s) => s.sandboxWidth)
@@ -128,7 +130,7 @@ export default function WorkflowBuilderPage() {
     }
   }, [tutorial.isActive, tutorial.spotlightTarget, setSelectedNode])
 
-  // Seed template on first visit
+  // Seed template on first visit (only when nothing was restored from localStorage)
   const seededRef = useRef(false)
   useEffect(() => {
     if (seededRef.current) return
@@ -137,6 +139,8 @@ export default function WorkflowBuilderPage() {
       const tpl = TEMPLATES[0]!
       setNodes(tpl.nodes as WorkflowNode[])
       setEdges(tpl.edges as Edge[])
+      // Only set the name if there is no persisted name (fresh session)
+      if (!workflowName) setWorkflowName(tpl.name)
       triggerFitView()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

@@ -45,8 +45,10 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
 
   const nodes   = useWorkflowStore((s) => s.nodes)
   const edges   = useWorkflowStore((s) => s.edges)
+  const workflowName = useWorkflowStore((s) => s.workflowName)
   const setNodes = useWorkflowStore((s) => s.setNodes)
   const setEdges = useWorkflowStore((s) => s.setEdges)
+  const setWorkflowName = useWorkflowStore((s) => s.setWorkflowName)
   const saveSnapshot = useWorkflowStore((s) => s.saveSnapshot)
   const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
   const resetWorkflow  = useWorkflowStore((s) => s.resetWorkflow)
@@ -58,10 +60,11 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
     saveSnapshot()
     setNodes(tpl.nodes as WorkflowNode[])
     setEdges(tpl.edges as Edge[])
+    setWorkflowName(tpl.name)
     triggerFitView()
     toast.success(`Loaded: ${tpl.name}`)
     onClose()
-  }, [saveSnapshot, setNodes, setEdges, triggerFitView, onClose])
+  }, [saveSnapshot, setNodes, setEdges, setWorkflowName, triggerFitView, onClose])
 
   const TplIcon = (icon: string) => {
     const Comp = TemplateIcon(icon)
@@ -78,7 +81,7 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
     { id: 'redo',     label: 'Redo',                icon: <RedoIcon />,    group: 'Actions', description: 'Ctrl+Shift+Z',
       action: () => { redo(); onClose() } },
     { id: 'export',   label: 'Export Workflow',     icon: <ExportIcon />,  group: 'Actions', description: 'Download as JSON',
-      action: () => { exportWorkflow(nodes, edges); onClose() } },
+      action: () => { exportWorkflow(nodes, edges, workflowName); onClose() } },
     { id: 'reset',    label: 'Reset Canvas',        icon: <ResetIcon />,   group: 'Actions', description: 'Clear all nodes and edges',
       action: () => { resetWorkflow(); toast.info('Canvas reset'); onClose() } },
     ...TEMPLATES.map((t) => ({
@@ -94,7 +97,7 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
     { id: 'shortcuts', label: 'Keyboard Shortcuts',   icon: <ShortcutIcon />, group: 'AI & Views', description: '?',
       action: () => { onOpenShortcuts(); onClose() } },
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [nodes, edges, undo, redo, autoArrange, loadTemplate, onRunSimulation, onOpenCopilot, onOpenShortcuts, onClose, resetWorkflow])
+  ], [nodes, edges, workflowName, undo, redo, autoArrange, loadTemplate, onRunSimulation, onOpenCopilot, onOpenShortcuts, onClose, resetWorkflow])
 
   const filtered = useMemo(() => {
     if (!query.trim()) return commands

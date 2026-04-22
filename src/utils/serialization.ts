@@ -7,16 +7,24 @@ const SCHEMA_VERSION = '1.0'
 interface WorkflowExport {
   version: string
   exportedAt: number
+  workflowName?: string
   nodes: WorkflowNode[]
   edges: Edge[]
 }
 
+// Converts a workflow name to a safe filename slug
+function toFilename(name: string): string {
+  const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  return slug || 'flowhr-workflow'
+}
+
 // --- Export ---
 
-export function exportWorkflow(nodes: WorkflowNode[], edges: Edge[]): void {
+export function exportWorkflow(nodes: WorkflowNode[], edges: Edge[], workflowName = ''): void {
   const payload: WorkflowExport = {
     version: SCHEMA_VERSION,
     exportedAt: Date.now(),
+    workflowName: workflowName || undefined,
     nodes,
     edges,
   }
@@ -24,7 +32,7 @@ export function exportWorkflow(nodes: WorkflowNode[], edges: Edge[]): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `hr-workflow-${new Date().toISOString().slice(0, 10)}.json`
+  a.download = `${toFilename(workflowName)}.json`
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -33,7 +41,7 @@ export function exportWorkflow(nodes: WorkflowNode[], edges: Edge[]): void {
 
 export function importWorkflow(
   file: File,
-  onSuccess: (nodes: WorkflowNode[], edges: Edge[]) => void,
+  onSuccess: (nodes: WorkflowNode[], edges: Edge[], workflowName?: string) => void,
   onError: (msg: string) => void,
 ): void {
   const reader = new FileReader()
@@ -44,7 +52,7 @@ export function importWorkflow(
         onError('Invalid workflow file: missing nodes or edges array')
         return
       }
-      onSuccess(raw.nodes, raw.edges)
+      onSuccess(raw.nodes, raw.edges, raw.workflowName)
     } catch {
       onError('Failed to parse workflow file - ensure it is valid JSON')
     }
@@ -54,21 +62,45 @@ export function importWorkflow(
 
 // --- localStorage autosave ---
 
-export function saveToStorage(nodes: WorkflowNode[], edges: Edge[], sidebarWidth?: number, sandboxWidth?: number): void {
+export function saveToStorage(
+  nodes: WorkflowNode[],
+  edges: Edge[],
+  workflowName?: string,
+  sidebarWidth?: number,
+  sandboxWidth?: number,
+): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ nodes, edges, sidebarWidth, sandboxWidth }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ nodes, edges, workflowName, sidebarWidth, sandboxWidth }))
   } catch {
-    // localStorage unavailable or quota exceeded - silently fail
+    // localStorage unavailable or quota exceeded
   }
 }
 
-export function loadFromStorage(): { nodes: WorkflowNode[]; edges: Edge[]; sidebarWidth?: number; sandboxWidth?: number } | null {
+export function loadFromStorage(): {
+  nodes: WorkflowNode[]
+  edges: Edge[]
+  workflowName?: string
+  sidebarWidth?: number
+  sandboxWidth?: number
+} | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as { nodes?: WorkflowNode[]; edges?: Edge[]; sidebarWidth?: number; sandboxWidth?: number }
+    const parsed = JSON.parse(raw) as {
+      nodes?: WorkflowNode[]
+      edges?: Edge[]
+      workflowName?: string
+      sidebarWidth?: number
+      sandboxWidth?: number
+    }
     if (!Array.isArray(parsed.nodes) || !Array.isArray(parsed.edges)) return null
-    return { nodes: parsed.nodes, edges: parsed.edges, sidebarWidth: parsed.sidebarWidth, sandboxWidth: parsed.sandboxWidth }
+    return {
+      nodes: parsed.nodes,
+      edges: parsed.edges,
+      workflowName: parsed.workflowName,
+      sidebarWidth: parsed.sidebarWidth,
+      sandboxWidth: parsed.sandboxWidth,
+    }
   } catch {
     return null
   }

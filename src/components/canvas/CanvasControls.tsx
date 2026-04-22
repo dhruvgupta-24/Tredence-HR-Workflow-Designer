@@ -172,18 +172,19 @@ export function CanvasControls({
       <div className="flex-1 flex justify-center">
         <button type="button" onClick={onCommandOpen} title="Command Palette (Ctrl+K)"
           className="
-            flex items-center gap-2 px-3 py-1.5 rounded-lg
-            bg-th-bg-2 border border-th-border
-            hover:border-th-border-strong hover:bg-th-bg-3
+            flex items-center gap-2 px-2.5 py-1 rounded-md w-48
+            bg-th-bg-2 border border-th-border shadow-[0_1px_2px_rgba(0,0,0,0.05)]
+            hover:border-th-accent/40 hover:bg-th-bg-3 hover:shadow-[0_2px_4px_rgba(0,0,0,0.08)]
+            active:bg-th-bg-1 active:shadow-inner active:scale-[0.99]
             text-th-text-3 hover:text-th-text-2
             transition-all duration-150 group
           "
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="flex-shrink-0">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="flex-shrink-0 text-th-text-4 group-hover:text-th-text-3 transition-colors">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
-          <span className="text-[11.5px] font-medium">Search commands...</span>
-          <kbd className="ml-1 text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded px-1.5 py-0.5 font-mono group-hover:text-th-text-3 transition-colors hidden sm:inline">
+          <span className="text-[11px] font-medium flex-1 text-left tracking-tight">Search commands...</span>
+          <kbd className="text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded-[3px] px-1.5 py-[1px] font-mono group-hover:text-th-text-2 transition-colors hidden sm:inline leading-none">
             Ctrl+K
           </kbd>
         </button>

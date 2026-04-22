@@ -26,8 +26,10 @@ export function validateWorkflow(nodes: WorkflowNode[], edges: Edge[]): string[]
 
     if (node.type === 'start') {
       if (!hasOutgoing) errors.push(`Start node "${label}" has no outgoing connection`)
+      if (hasIncoming) errors.push(`Start node "${label}" cannot have incoming connections`)
     } else if (node.type === 'end') {
       if (!hasIncoming) errors.push(`End node "${label}" has no incoming connection`)
+      if (hasOutgoing) errors.push(`End node "${label}" cannot have outgoing connections`)
     } else {
       if (!hasIncoming && !hasOutgoing) {
         errors.push(`Node "${label}" is not connected`)

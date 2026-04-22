@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ReactFlow,
   Background,
@@ -35,6 +36,138 @@ const minimapNodeColor = (node: { type?: string }) => {
     default:          return '#4b5563'
   }
 }
+
+// ─── Icons ───────────────────────────────────────────────────────────────────
+
+const WorkflowIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="5" height="5" rx="1"/>
+    <rect x="16" y="3" width="5" height="5" rx="1"/>
+    <rect x="9" y="16" width="6" height="5" rx="1"/>
+    <path d="M5.5 8v4a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8M12 14v2"/>
+  </svg>
+)
+
+const PencilIcon = () => (
+  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+  </svg>
+)
+
+// ─── Workflow Title Chip ──────────────────────────────────────────────────────
+
+function WorkflowTitleChip() {
+  const workflowName    = useWorkflowStore((s) => s.workflowName)
+  const setWorkflowName = useWorkflowStore((s) => s.setWorkflowName)
+
+  const [editing, setEditing] = useState(false)
+  const [draft,   setDraft]   = useState(workflowName)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!editing) setDraft(workflowName)
+  }, [workflowName, editing])
+
+  useEffect(() => {
+    if (editing) {
+      const id = setTimeout(() => inputRef.current?.select(), 30)
+      return () => clearTimeout(id)
+    }
+  }, [editing])
+
+  const commit = () => {
+    const trimmed = draft.trim()
+    setWorkflowName(trimmed)
+    setDraft(trimmed)
+    setEditing(false)
+  }
+
+  const cancel = () => {
+    setDraft(workflowName)
+    setEditing(false)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+      className="
+        flex items-center gap-2 px-3 py-2
+        bg-th-bg-nav/88 backdrop-blur-md
+        border border-th-border/60
+        rounded-xl
+        shadow-[0_4px_20px_rgba(0,0,0,0.14),0_1px_3px_rgba(0,0,0,0.08)]
+        select-none
+      "
+    >
+      <span className="text-th-text-4 flex-shrink-0 flex items-center">
+        <WorkflowIcon />
+      </span>
+
+      <AnimatePresence mode="wait" initial={false}>
+        {editing ? (
+          <motion.input
+            key="input"
+            ref={inputRef}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.08 }}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={commit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter')  { e.preventDefault(); commit() }
+              if (e.key === 'Escape') { e.preventDefault(); cancel() }
+            }}
+            maxLength={80}
+            placeholder="Untitled Workflow"
+            className="
+              bg-transparent outline-none
+              border-b-2 border-th-accent/70 focus:border-th-accent
+              text-[12.5px] font-semibold tracking-[-0.01em] text-th-text-1
+              placeholder:text-th-text-4 placeholder:font-normal
+              w-[180px] min-w-[100px] py-px
+              transition-colors duration-150
+            "
+            autoFocus
+          />
+        ) : (
+          <motion.button
+            key="display"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.08 }}
+            onClick={() => setEditing(true)}
+            title="Click to rename workflow"
+            className="group flex items-center gap-1.5 max-w-[220px] min-w-[60px]"
+          >
+            <span className="
+              text-[12.5px] font-semibold tracking-[-0.01em] leading-none
+              text-th-text-1 truncate
+            ">
+              {workflowName
+                ? workflowName
+                : <span className="text-th-text-4 font-normal text-[12px]">Untitled Workflow</span>
+              }
+            </span>
+            <span className="
+              text-th-text-4 opacity-0 group-hover:opacity-80
+              transition-opacity duration-150 flex-shrink-0 flex items-center
+            ">
+              <PencilIcon />
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+// ─── WorkflowCanvas ───────────────────────────────────────────────────────────
 
 export function WorkflowCanvas() {
   const theme              = useThemeStore((s) => s.theme)
@@ -182,6 +315,11 @@ export function WorkflowCanvas() {
           }}
         />
       </ReactFlow>
+
+      {/* Workflow title chip - top-left of canvas, above React Flow layers */}
+      <div className="absolute top-3 left-3 z-10 pointer-events-auto">
+        <WorkflowTitleChip />
+      </div>
 
       {nodes.length === 0 && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">

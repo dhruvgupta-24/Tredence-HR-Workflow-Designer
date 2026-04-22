@@ -1,5 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useRef } from 'react'
 import { useWorkflowStore } from '../../store'
 import { ThemeToggle } from '../ui/ThemeToggle'
 import { exportWorkflow, importWorkflow } from '../../utils/serialization'
@@ -59,7 +58,7 @@ const ArrangeIcon = () => (
 )
 
 const SearchIcon = () => (
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="flex-shrink-0 text-th-text-4 group-hover:text-th-text-3 transition-colors">
     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
   </svg>
 )
@@ -90,121 +89,6 @@ const SpinnerIcon = () => (
     <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
   </svg>
 )
-
-const PencilIcon = () => (
-  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-  </svg>
-)
-
-// ─── Workflow Title Editor ────────────────────────────────────────────────────
-
-function WorkflowTitleEditor() {
-  const workflowName   = useWorkflowStore((s) => s.workflowName)
-  const setWorkflowName = useWorkflowStore((s) => s.setWorkflowName)
-
-  const [editing, setEditing] = useState(false)
-  const [draft,   setDraft]   = useState(workflowName)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  // Keep draft in sync when name changes externally (template load, import, reset)
-  useEffect(() => {
-    if (!editing) setDraft(workflowName)
-  }, [workflowName, editing])
-
-  const commit = () => {
-    const trimmed = draft.trim()
-    setWorkflowName(trimmed)
-    setDraft(trimmed)
-    setEditing(false)
-  }
-
-  const cancel = () => {
-    setDraft(workflowName)
-    setEditing(false)
-  }
-
-  const startEdit = () => {
-    setDraft(workflowName)
-    setEditing(true)
-  }
-
-  useEffect(() => {
-    if (editing) {
-      // small delay so the input is mounted before we select
-      const id = setTimeout(() => {
-        inputRef.current?.select()
-      }, 30)
-      return () => clearTimeout(id)
-    }
-  }, [editing])
-
-  return (
-    <div className="flex items-center justify-center flex-1 min-w-0 px-3">
-      <AnimatePresence mode="wait" initial={false}>
-        {editing ? (
-          <motion.input
-            key="input"
-            ref={inputRef}
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.1 }}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onBlur={commit}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter')  { e.preventDefault(); commit() }
-              if (e.key === 'Escape') { e.preventDefault(); cancel() }
-            }}
-            maxLength={80}
-            placeholder="Untitled Workflow"
-            className="
-              w-full max-w-[280px] min-w-[120px] text-center
-              bg-transparent outline-none
-              text-[13px] font-semibold tracking-[-0.015em] leading-none
-              text-th-text-1 placeholder:text-th-text-4
-              border-b-2 border-th-accent/70 focus:border-th-accent
-              py-0.5 transition-colors duration-150
-            "
-          />
-        ) : (
-          <motion.button
-            key="display"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.1 }}
-            onClick={startEdit}
-            title="Click to rename workflow"
-            className="
-              group flex items-center gap-1.5 px-2.5 py-1 rounded-md
-              hover:bg-th-bg-3 active:bg-th-bg-2
-              transition-all duration-150 max-w-[320px] min-w-[60px]
-              overflow-hidden
-            "
-          >
-            <span className="
-              text-[13px] font-semibold tracking-[-0.015em] leading-none
-              text-th-text-1 truncate
-            ">
-              {workflowName || (
-                <span className="text-th-text-4 font-normal text-[12px]">Untitled Workflow</span>
-              )}
-            </span>
-            <span className="
-              text-th-text-4 opacity-0 group-hover:opacity-100
-              transition-opacity duration-150 flex-shrink-0
-            ">
-              <PencilIcon />
-            </span>
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
 
 // ─── CanvasControls ───────────────────────────────────────────────────────────
 
@@ -261,7 +145,7 @@ export function CanvasControls({
   return (
     <div className="h-12 flex-shrink-0 border-b border-th-border bg-th-bg-nav flex items-center px-3 gap-1 overflow-hidden">
 
-      {/* Left actions */}
+      {/* Left actions group */}
       <div className="flex items-center gap-1 flex-shrink-0">
         {/* AI Copilot */}
         <button type="button" onClick={onCopilotOpen} disabled={isLocked}
@@ -362,26 +246,28 @@ export function CanvasControls({
         </button>
       </div>
 
-      {/* Center: Workflow title */}
-      <WorkflowTitleEditor />
-
-      {/* Right actions */}
-      <div className="flex items-center gap-1 flex-shrink-0">
-        {/* Command palette */}
+      {/* Command palette search bar - centred, flex-1 but with min-w */}
+      <div className="flex-1 min-w-0 flex justify-center px-2">
         <button type="button" onClick={onCommandOpen} title="Command Palette (Ctrl+K)"
           className="
-            flex items-center gap-1.5 px-2 py-1.5 rounded-lg
-            text-th-text-3 hover:text-th-text-1 hover:bg-th-bg-3
-            border border-transparent hover:border-th-border
-            transition-all duration-150
+            flex items-center gap-2 px-2.5 py-1 rounded-md w-full max-w-[200px] min-w-[36px]
+            bg-th-bg-2 border border-th-border shadow-[0_1px_2px_rgba(0,0,0,0.05)]
+            hover:border-th-accent/40 hover:bg-th-bg-3 hover:shadow-[0_2px_4px_rgba(0,0,0,0.08)]
+            active:bg-th-bg-1 active:shadow-inner active:scale-[0.99]
+            text-th-text-3 hover:text-th-text-2
+            transition-all duration-150 group overflow-hidden
           "
         >
           <SearchIcon />
-          <kbd className="text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded-[3px] px-1 py-[1px] font-mono hidden lg:inline leading-none">
+          <span className="text-[11px] font-medium flex-1 text-left tracking-tight truncate hidden sm:block">Search commands...</span>
+          <kbd className="text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded-[3px] px-1.5 py-[1px] font-mono group-hover:text-th-text-2 transition-colors hidden lg:inline leading-none flex-shrink-0">
             Ctrl+K
           </kbd>
         </button>
+      </div>
 
+      {/* Right actions group */}
+      <div className="flex items-center gap-1 flex-shrink-0">
         {/* Node/edge count */}
         {nodes.length > 0 && (
           <span className="text-[10px] text-th-text-4 font-mono tabular-nums hidden lg:inline">{nodes.length}N {edges.length}E</span>

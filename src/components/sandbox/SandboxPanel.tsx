@@ -37,6 +37,7 @@ export function SandboxPanel() {
           type="button"
           onClick={() => void runSimulation()}
           disabled={isSimulating}
+          title="Run Simulation (Ctrl+Enter)"
           data-demo-target="run-workflow"
           whileHover={isSimulating ? {} : { scale: 1.01, transition: { type: 'spring', stiffness: 500, damping: 30 } }}
           whileTap={isSimulating ? {} : { scale: 0.98 }}

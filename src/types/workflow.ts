@@ -83,4 +83,10 @@ export interface WorkflowState {
   // viewport reset - signals canvas to reset to known {x:0,y:0,zoom:0.82}
   viewportResetCount: number
   triggerViewportReset: () => void
+
+  // Layout metrics
+  sidebarWidth: number
+  sandboxWidth: number
+  setSidebarWidth: (width: number) => void
+  setSandboxWidth: (width: number) => void
 }

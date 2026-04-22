@@ -54,21 +54,21 @@ export function importWorkflow(
 
 // --- localStorage autosave ---
 
-export function saveToStorage(nodes: WorkflowNode[], edges: Edge[]): void {
+export function saveToStorage(nodes: WorkflowNode[], edges: Edge[], sidebarWidth?: number, sandboxWidth?: number): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ nodes, edges }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ nodes, edges, sidebarWidth, sandboxWidth }))
   } catch {
     // localStorage unavailable or quota exceeded - silently fail
   }
 }
 
-export function loadFromStorage(): { nodes: WorkflowNode[]; edges: Edge[] } | null {
+export function loadFromStorage(): { nodes: WorkflowNode[]; edges: Edge[]; sidebarWidth?: number; sandboxWidth?: number } | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as { nodes?: WorkflowNode[]; edges?: Edge[] }
+    const parsed = JSON.parse(raw) as { nodes?: WorkflowNode[]; edges?: Edge[]; sidebarWidth?: number; sandboxWidth?: number }
     if (!Array.isArray(parsed.nodes) || !Array.isArray(parsed.edges)) return null
-    return { nodes: parsed.nodes, edges: parsed.edges }
+    return { nodes: parsed.nodes, edges: parsed.edges, sidebarWidth: parsed.sidebarWidth, sandboxWidth: parsed.sandboxWidth }
   } catch {
     return null
   }

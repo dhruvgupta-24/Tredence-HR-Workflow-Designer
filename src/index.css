@@ -246,31 +246,39 @@
   right: 18px !important;
 }
 [data-theme="light"] .react-flow__controls {
-  background: #FFFFFF !important;
-  border: 1px solid #D1C9BE !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+  background: #FCFAF7 !important;
+  border: 1px solid #D6CEC3 !important;
+  box-shadow: 0 4px 12px rgba(26, 24, 21, 0.08), 0 2px 4px rgba(26, 24, 21, 0.04) !important;
 }
 
 .react-flow__controls-button {
   background: var(--bg-2) !important;
   border-bottom-color: var(--border-subtle) !important;
   fill: var(--text-3) !important;
-  transition: background 0.12s, fill 0.12s;
+  transition: background 0.12s, fill 0.12s, box-shadow 0.12s;
 }
 .react-flow__controls-button:hover {
   background: var(--bg-3) !important;
   fill: var(--text-1) !important;
 }
 [data-theme="light"] .react-flow__controls-button {
-  background: #FFFFFF !important;
+  background: #FCFAF7 !important;
   fill: #1A1815 !important;
   border-bottom: 1px solid #EBE4DA !important;
+}
+[data-theme="light"] .react-flow__controls-button svg {
+  fill: #1A1815 !important;
+  opacity: 1 !important;
 }
 [data-theme="light"] .react-flow__controls-button:last-child {
   border-bottom: none !important;
 }
 [data-theme="light"] .react-flow__controls-button:hover {
-  background: #F8F5F0 !important;
+  background: #F4EFE8 !important;
+  fill: #000000 !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03) !important;
+}
+[data-theme="light"] .react-flow__controls-button:hover svg {
   fill: #000000 !important;
 }
 [data-theme="light"] .react-flow__controls-button:active {

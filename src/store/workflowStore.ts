@@ -24,6 +24,11 @@ export const useWorkflowStore = create<WorkflowState>()((set) => ({
   fitViewCounter: 0,
   viewportResetCount: 0,
 
+  sidebarWidth: persisted?.sidebarWidth ?? 260,
+  sandboxWidth: persisted?.sandboxWidth ?? 320,
+  setSidebarWidth: (width) => set({ sidebarWidth: width }),
+  setSandboxWidth: (width) => set({ sandboxWidth: width }),
+
   // --- Node actions ---
   addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
   updateNodeData: (id, data) =>

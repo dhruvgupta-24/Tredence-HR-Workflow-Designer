@@ -9,9 +9,10 @@ import { useLiveDemo } from '../hooks/useLiveDemo'
 import { useTutorial } from '../hooks/useTutorial'
 import { Sidebar } from '../components/sidebar'
 import { WorkflowCanvas, CanvasControls, StatusBar } from '../components/canvas'
-import { Drawer, Modal } from '../components/ui'
+import { Drawer, Modal, ResizeHandle } from '../components/ui'
 import { ToastContainer } from '../components/ui/Toast'
 import { SandboxPanel } from '../components/sandbox'
+import { useResizablePanel } from '../hooks/useResizablePanel'
 import { AnalyticsBar } from '../components/analytics/AnalyticsBar'
 import { CopilotModal } from '../components/copilot/CopilotModal'
 import { CommandPalette } from '../components/command/CommandPalette'
@@ -78,6 +79,28 @@ export default function WorkflowBuilderPage() {
   const setNodes       = useWorkflowStore((s) => s.setNodes)
   const setEdges       = useWorkflowStore((s) => s.setEdges)
   const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
+  const sidebarWidth   = useWorkflowStore((s) => s.sidebarWidth)
+  const sandboxWidth   = useWorkflowStore((s) => s.sandboxWidth)
+  const setSidebarWidth = useWorkflowStore((s) => s.setSidebarWidth)
+  const setSandboxWidth = useWorkflowStore((s) => s.setSandboxWidth)
+
+  const leftPanel = useResizablePanel({
+    currentWidth: sidebarWidth,
+    minWidth: 260,
+    maxWidth: 520,
+    defaultWidth: 260,
+    onWidthChange: setSidebarWidth,
+    side: 'left',
+  })
+
+  const rightPanel = useResizablePanel({
+    currentWidth: sandboxWidth,
+    minWidth: 320,
+    maxWidth: 700,
+    defaultWidth: 320,
+    onWidthChange: setSandboxWidth,
+    side: 'right',
+  })
 
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [showCopilot,   setShowCopilot]   = useState(false)
@@ -132,12 +155,26 @@ export default function WorkflowBuilderPage() {
     <div className="app-root flex h-screen bg-gray-950 text-white overflow-hidden">
 
       {/* Left Sidebar */}
-      <div className="w-60 flex-shrink-0">
+      <div 
+        style={{ width: `${sidebarWidth}px` }} 
+        className="flex-shrink-0 relative hidden md:block"
+      >
+        <Sidebar />
+        <ResizeHandle 
+          side="left" 
+          label="Sidebar"
+          isDragging={leftPanel.isDragging}
+          tooltipWidth={leftPanel.tooltipWidth}
+          onPointerDown={leftPanel.onPointerDown}
+          onDoubleClick={leftPanel.onDoubleClick}
+        />
+      </div>
+      <div className="w-60 flex-shrink-0 md:hidden">
         <Sidebar />
       </div>
 
       {/* Center */}
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col relative">
         <CanvasControls
           onShortcutsOpen={() => setShowShortcuts(true)}
           onCopilotOpen={() => setShowCopilot(true)}
@@ -169,7 +206,21 @@ export default function WorkflowBuilderPage() {
       </div>
 
       {/* Right Panel */}
-      <div className="w-80 flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950">
+      <div 
+        style={{ width: `${sandboxWidth}px` }}
+        className="flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950 relative hidden lg:flex"
+      >
+        <ResizeHandle 
+          side="right" 
+          label="Sandbox"
+          isDragging={rightPanel.isDragging}
+          tooltipWidth={rightPanel.tooltipWidth}
+          onPointerDown={rightPanel.onPointerDown}
+          onDoubleClick={rightPanel.onDoubleClick}
+        />
+        <SandboxPanel />
+      </div>
+      <div className="w-80 flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950 lg:hidden">
         <SandboxPanel />
       </div>
 

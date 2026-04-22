@@ -54,7 +54,7 @@ Open the Copilot with one click and choose from pre-trained flows: Employee Onbo
 A cinematic 22-second autoplay that builds an entire workflow from scratch in real time. A scripted cursor visits the sidebar, drags each node type to the canvas, connects them, edits a node title with a typewriter effect, and runs the simulation - all timed to feel like a real person using the product.
 
 ### Guided Tutorial Mode
-A multi-step interactive tutorial with three tracks: Basic Workflow, Leave Approval, and Employee Onboarding. Each step shows a spotlight glow ring around the target UI element, a looping ghost cursor demonstrating the expected action (drag, connect, or click - each with a distinct animation), and a live progress bar. The system auto-advances when it detects you've completed the step by watching the Zustand store.
+A multi-step interactive tutorial with three tracks: Basic Workflow, Leave Approval, and Employee Onboarding. Each step shows a spotlight glow ring around the precise target element (resolved by CSS class selector for canvas nodes, or data-demo-target attribute for sidebar/toolbar elements), a looping ghost cursor demonstrating the expected action (drag, connect, or click), and an animated progress bar. The spotlight uses a requestAnimationFrame loop at 30fps plus a synchronous resize listener so the glow tracks the element without lag as panels resize. The system auto-advances when the Zustand store confirms the expected graph state change.
 
 ### Simulation Engine
 Click Run Workflow and watch your graph execute step by step. The engine validates the workflow structure first, then walks the graph, animating each node with an indigo glow pulse. Completed nodes turn green. The execution log updates live in the right panel.
@@ -104,6 +104,7 @@ A flawless, real-time theme architecture built with Tailwind CSS and CSS variabl
 | Styling | Tailwind CSS | Utility-first, consistent 8px grid, tree-shaken bundle |
 | Graph Engine | React Flow (@xyflow/react) | Production-grade node/edge canvas with built-in handles and zoom |
 | State Management | Zustand | Minimal boilerplate, computed selectors, localStorage persist |
+| Animation | Framer Motion | Spring-physics overlays, modals, drawers, and tutorial panels |
 | Layout Algorithm | Dagre | Directed acyclic graph layout for auto-arrange |
 | Fonts | Inter (Google Fonts) | Most legible UI typeface at small sizes |
 
@@ -218,7 +219,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 npm run build
 ```
 
-Output goes to `dist/`. Bundle: 415KB JS (129KB gzip), 56KB CSS (10KB gzip).
+Output goes to `dist/`. Bundle: 579KB JS (180KB gzip), 66KB CSS (12KB gzip).
 
 ### Type Check
 
@@ -236,7 +237,7 @@ FlowHR is a **product.** It has a real user problem, a real design system, produ
 
 **Product thinking:** The feature set mirrors real HR tools (Kissflow, Process Street) but reimagined as a visual-first, browser-native experience.
 
-**UX polish:** Every interaction has a hover state. Every async operation has a loading state. Errors are never silent. The toolbar looks like Linear or Vercel, not a student project.
+**UX polish:** Every interaction has a hover state. Every async operation has a loading state. Errors are never silent. All modals, drawers, toasts, and tutorial panels animate with framer-motion spring physics - not CSS keyframes. All UI chrome icons are SVG, not emoji. The toolbar looks like Linear or Vercel, not a student project.
 
 **Technical depth:** Zustand store with typed state, TypeScript strict mode throughout, Dagre graph layout, BFS validation, undo/redo snapshot history, and DOM-based responsive cursor positioning using real `getBoundingClientRect()` coordinates.
 

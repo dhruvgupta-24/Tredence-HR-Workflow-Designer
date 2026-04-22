@@ -2,150 +2,170 @@ import { useEffect, useState } from 'react'
 import { useWorkflowStore } from '../store'
 import { getDemoTarget, getCanvasRect, nodeCenter } from '../utils/demoPositions'
 
-// ── Tutorial step animation types ─────────────────────────────────────────────
 export type StepAnimType = 'drag' | 'connect' | 'click'
 
 export interface TutorialStep {
-  num:       number
-  title:     string
-  hint:      string
-  icon:      string
-  animType:  StepAnimType
-  fromTarget: string        // data-demo-target of source element
-  toTarget:  string | null  // data-demo-target of destination (null = canvas coord below)
-  toRF?: { x: number; y: number } // RF canvas position to point at when toTarget is null
+  num:             number
+  title:           string
+  hint:            string
+  icon:            string
+  animType:        StepAnimType
+  fromTarget:      string        // cursor start: data-demo-target name OR CSS selector
+  toTarget?:       string | null // cursor end: data-demo-target name OR CSS selector
+  toRF?:           { x: number; y: number } // RF canvas fallback for cursor end
+  spotlightTarget?: string       // which element gets the glow ring (defaults to fromTarget)
 }
 
-// ── Tutorial definitions ───────────────────────────────────────────────────────
-// BASIC WORKFLOW: Start -> Task -> Connect -> End -> Connect -> Run (6 steps)
+// ── BASIC WORKFLOW ─────────────────────────────────────────────────────────────
 const BASIC_STEPS: TutorialStep[] = [
   {
     num: 1, icon: '▶',
     title: 'Add a Start Node',
     hint: 'Drag the Start Node from the left panel onto the canvas to begin your workflow.',
-    animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 120 },
+    animType: 'drag', fromTarget: 'node-start', toRF: { x: 350, y: 120 },
   },
   {
     num: 2, icon: '☐',
     title: 'Add a Task Node',
     hint: 'Drag a Task node below the Start node to represent a step someone must complete.',
-    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 300 },
+    animType: 'drag', fromTarget: 'node-task', toRF: { x: 350, y: 300 },
   },
   {
     num: 3, icon: '→',
     title: 'Connect Start to Task',
     hint: 'Drag a connection from the bottom handle of Start to the top handle of Task.',
-    animType: 'connect', fromTarget: '.react-flow__node-start .react-flow__handle-bottom', toTarget: '.react-flow__node-task .react-flow__handle-top',
+    animType: 'connect',
+    fromTarget: '.react-flow__node-start .react-flow__handle-bottom',
+    toTarget:   '.react-flow__node-task  .react-flow__handle-top',
+    spotlightTarget: '.react-flow__node-start',
   },
   {
     num: 4, icon: '■',
     title: 'Add an End Node',
     hint: 'Drag an End node below the Task to mark where the workflow completes.',
-    animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 480 },
+    animType: 'drag', fromTarget: 'node-end', toRF: { x: 350, y: 480 },
   },
   {
     num: 5, icon: '→',
     title: 'Connect Task to End',
     hint: 'Drag a connection from the Task node down to the End node.',
-    animType: 'connect', fromTarget: '.react-flow__node-task .react-flow__handle-bottom', toTarget: '.react-flow__node-end .react-flow__handle-top',
+    animType: 'connect',
+    fromTarget: '.react-flow__node-task .react-flow__handle-bottom',
+    toTarget:   '.react-flow__node-end  .react-flow__handle-top',
+    spotlightTarget: '.react-flow__node-task',
   },
   {
     num: 6, icon: '⚡',
     title: 'Run simulation',
     hint: 'Click the "Run Workflow" button in the sandbox to simulate your process.',
-    animType: 'click', fromTarget: 'run-workflow', toTarget: null,
+    animType: 'click', fromTarget: 'run-workflow',
+    spotlightTarget: 'run-workflow',
   },
 ]
 
-// LEAVE APPROVAL: Start → Task → Approval → End (7 steps)
+// ── LEAVE APPROVAL ─────────────────────────────────────────────────────────────
 const LEAVE_STEPS: TutorialStep[] = [
   {
     num: 1, icon: '▶',
     title: 'Add a Start node',
     hint: 'Drag the Start Node onto the canvas. This represents the employee submitting a leave request.',
-    animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 80 },
+    animType: 'drag', fromTarget: 'node-start', toRF: { x: 350, y: 80 },
   },
   {
     num: 2, icon: '☐',
     title: 'Add a Task node - HR Review',
     hint: 'Drag a Task node to the canvas. This will represent the HR team reviewing the request.',
-    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
+    animType: 'drag', fromTarget: 'node-task', toRF: { x: 350, y: 260 },
   },
   {
     num: 3, icon: '⬡',
     title: 'Add an Approval gate',
     hint: 'Drag an Approval Gate for the manager to approve or reject the leave.',
-    animType: 'drag', fromTarget: 'node-approval', toTarget: null, toRF: { x: 350, y: 440 },
+    animType: 'drag', fromTarget: 'node-approval', toRF: { x: 350, y: 440 },
   },
   {
     num: 4, icon: '■',
     title: 'Add an End node',
     hint: 'Drag an End node to close the workflow once all approvals are done.',
-    animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 620 },
+    animType: 'drag', fromTarget: 'node-end', toRF: { x: 350, y: 620 },
   },
   {
     num: 5, icon: '→',
     title: 'Connect the chain',
     hint: 'Connect Start to Task to Approval to End by dragging between their handles.',
-    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 260 },
+    animType: 'connect',
+    fromTarget: '.react-flow__node-start    .react-flow__handle-bottom',
+    toTarget:   '.react-flow__node-task     .react-flow__handle-top',
+    spotlightTarget: '.react-flow__node-start',
   },
   {
     num: 6, icon: '✎',
     title: 'Customize approval settings',
-    hint: 'Click the Approval node and set the approver role - for example "Line Manager".',
-    animType: 'click', fromTarget: 'node-approval', toTarget: null, toRF: { x: 350, y: 440 },
+    hint: 'Click the Approval node to open its properties. Set the approver role to "Line Manager".',
+    animType: 'click',
+    fromTarget:      'run-workflow',
+    toRF:            { x: 350, y: 440 },
+    spotlightTarget: '.react-flow__node-approval',
   },
   {
     num: 7, icon: '⚡',
     title: 'Run the simulation',
     hint: 'Click Run Workflow to see the leave approval flow execute end to end.',
-    animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 440 },
+    animType: 'click', fromTarget: 'run-workflow',
+    spotlightTarget: 'run-workflow',
   },
 ]
 
-// ONBOARDING: Start → Task → Task → End (7 steps)
+// ── EMPLOYEE ONBOARDING ────────────────────────────────────────────────────────
 const ONBOARDING_STEPS: TutorialStep[] = [
   {
     num: 1, icon: '▶',
     title: 'Add a Start node',
-    hint: 'The Start node triggers when a new hire\'s offer is accepted.',
-    animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 80 },
+    hint: "The Start node triggers when a new hire's offer is accepted.",
+    animType: 'drag', fromTarget: 'node-start', toRF: { x: 350, y: 80 },
   },
   {
     num: 2, icon: '☐',
     title: 'Add: Document Collection',
     hint: 'Drag a Task node for collecting ID, bank, and education documents from the joiner.',
-    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
+    animType: 'drag', fromTarget: 'node-task', toRF: { x: 350, y: 260 },
   },
   {
     num: 3, icon: '☐',
     title: 'Add: IT Setup Task',
     hint: 'Add another Task for IT to provision laptop, email, and access credentials.',
-    animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 440 },
+    animType: 'drag', fromTarget: 'node-task', toRF: { x: 350, y: 440 },
   },
   {
     num: 4, icon: '■',
     title: 'Add an End node',
     hint: 'The End node marks the joiner as fully onboarded.',
-    animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 620 },
+    animType: 'drag', fromTarget: 'node-end', toRF: { x: 350, y: 620 },
   },
   {
     num: 5, icon: '→',
     title: 'Connect the flow',
     hint: 'Link Start through both Task nodes to the End by dragging handles in sequence.',
-    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 260 },
+    animType: 'connect',
+    fromTarget: '.react-flow__node-start .react-flow__handle-bottom',
+    toTarget:   '.react-flow__node-task  .react-flow__handle-top',
+    spotlightTarget: '.react-flow__node-start',
   },
   {
     num: 6, icon: '✎',
     title: 'Name each step',
     hint: 'Click each Task node and give them descriptive names and assignees.',
-    animType: 'click', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
+    animType: 'click',
+    fromTarget:      'run-workflow',
+    toRF:            { x: 350, y: 260 },
+    spotlightTarget: '.react-flow__node-task',
   },
   {
     num: 7, icon: '⚡',
     title: 'Simulate onboarding',
     hint: 'Click Run Workflow to validate and simulate the entire onboarding sequence.',
-    animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 260 },
+    animType: 'click', fromTarget: 'run-workflow',
+    spotlightTarget: 'run-workflow',
   },
 ]
 
@@ -161,7 +181,7 @@ export const TUTORIAL_CATALOG: {
   {
     id: 'basic',
     title: 'Basic Workflow',
-    description: 'Build your first Start → Task → End flow in 6 steps.',
+    description: 'Build your first Start to Task to End flow in 6 steps.',
     icon: '⬡',
     steps: BASIC_STEPS,
   },
@@ -225,7 +245,7 @@ function isStepComplete(
   return false
 }
 
-// ── Ghost cursor position for each step ───────────────────────────────────────
+// ── Ghost cursor config ────────────────────────────────────────────────────────
 export interface GhostCursorConfig {
   from: { x: number; y: number }
   to:   { x: number; y: number }
@@ -239,17 +259,19 @@ function computeGhostConfig(step: TutorialStep): GhostCursorConfig | null {
   let to: { x: number; y: number } | null = null
 
   if (step.toTarget) {
-    // Target is another DOM element (e.g. another node button)
     to = getDemoTarget(step.toTarget)
   }
 
   if (!to && step.toRF) {
-    // Target is a canvas position - convert RF to screen
     const cr = getCanvasRect()
     if (cr) {
-      // Use a reasonable zoom approximation for tutorial (we don't reset viewport)
       to = nodeCenter(step.toRF.x, step.toRF.y, 0.82, cr)
     }
+  }
+
+  // For click-in-place steps (e.g. "click run workflow"), click at the element itself
+  if (!to && step.animType === 'click') {
+    to = from
   }
 
   if (!to) return null
@@ -258,12 +280,12 @@ function computeGhostConfig(step: TutorialStep): GhostCursorConfig | null {
 
 // ── Main hook ─────────────────────────────────────────────────────────────────
 export function useTutorial() {
-  const [isActive,      setIsActive]      = useState(false)
-  const [isDone,        setIsDone]        = useState(false)
-  const [step,          setStep]          = useState(0)
-  const [tutorialType,  setTutorialType]  = useState<TutorialType>('basic')
-  const [ghost,         setGhost]         = useState<GhostCursorConfig | null>(null)
-  const [showPicker,    setShowPicker]    = useState(false)
+  const [isActive,     setIsActive]     = useState(false)
+  const [isDone,       setIsDone]       = useState(false)
+  const [step,         setStep]         = useState(0)
+  const [tutorialType, setTutorialType] = useState<TutorialType>('basic')
+  const [ghost,        setGhost]        = useState<GhostCursorConfig | null>(null)
+  const [showPicker,   setShowPicker]   = useState(false)
 
   const nodes          = useWorkflowStore((s) => s.nodes)
   const edges          = useWorkflowStore((s) => s.edges)
@@ -280,8 +302,12 @@ export function useTutorial() {
   // Recompute ghost config when step changes
   useEffect(() => {
     if (!isActive || isDone || !current) { setGhost(null); return }
-    const config = computeGhostConfig(current)
-    setGhost(config)
+    // Small delay to let the DOM settle after step change
+    const id = setTimeout(() => {
+      const config = computeGhostConfig(current)
+      setGhost(config)
+    }, 80)
+    return () => clearTimeout(id)
   }, [isActive, isDone, step, current])
 
   // Auto-advance on step completion
@@ -318,17 +344,18 @@ export function useTutorial() {
     setGhost(null)
   }
 
-  /** Manually advance to the next step (skips action requirement). */
   const nextStep = () => {
     if (isDone) return
     if (step < TOTAL - 1) setStep((s) => s + 1)
     else setIsDone(true)
   }
 
-  /** Go back to the previous step. */
   const prevStep = () => {
     if (step > 0) setStep((s) => s - 1)
   }
+
+  // Resolve spotlight: use explicit spotlightTarget if defined, else fromTarget
+  const spotlightTarget = current?.spotlightTarget ?? current?.fromTarget ?? ''
 
   return {
     isActive,
@@ -339,7 +366,7 @@ export function useTutorial() {
     stepTitle:       current?.title ?? '',
     stepHint:        current?.hint  ?? '',
     stepIcon:        current?.icon  ?? '',
-    spotlightTarget: current?.fromTarget ?? '',
+    spotlightTarget,
     ghost,
     tutorialType,
     openPicker,

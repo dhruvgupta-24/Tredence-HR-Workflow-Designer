@@ -132,7 +132,7 @@ Each node type is a React component registered with React Flow's `nodeTypes` map
 
 ### Simulation Engine
 
-`simulateWorkflow(nodes, edges)` performs: (1) validation via BFS reachability, (2) topological traversal from Start to End, (3) returns a typed `SimulationStep[]` array. The UI layer animates these steps with a timed loop, setting `highlightedNodeId` and accumulating `completedNodes` for the glow animation.
+`simulateWorkflow(nodes, edges)` performs a simulated async execution log. Before running, the graph is verified via `validateWorkflow()` which checks for structural integrity (no orphan nodes, correct connection rules) and uses **Depth-First Search (DFS)** for precise cycle detection. The simulation itself runs a **Breadth-First Search (BFS)** traversal from the Start node to the End node, building an ordered array of `SimulationStep` objects that the UI layer then animates with timed glowing states.
 
 ### Demo Cursor Alignment
 
@@ -141,6 +141,15 @@ The Live Demo uses a known viewport state (`{x:0, y:0, zoom:0.82}`) reset before
 ### Templates and Copilot
 
 Templates (`src/data/templates.ts`) and Copilot flows (`src/data/copilotFlows.ts`) are static arrays of nodes and edges with field names that exactly match each node component's `data` interface - a key lesson learned after the blank-screen bug.
+
+---
+
+## Design Decisions
+
+- **Zustand over Context/Redux:** In a graph application, many nodes render simultaneously. React Context triggers a re-render of the entire tree on every state update. Zustand allows us to use specific selectors (`useWorkflowStore(s => s.nodes)`) so that unrelated components don't waste render cycles. It also eliminates Redux boilerplate.
+- **Dagre for Auto-Layout:** Calculating an aesthetically pleasing directed acyclic graph layout from scratch is a massive undertaking involving complex edge-intersection math. We integrated `dagre` to compute the hierarchical layout coordinates instantly, mapping the result back into React Flow positions.
+- **BFS + DFS Graph Traversal:** Simple array mapping wasn't enough. We implemented DFS specifically to detect circular dependencies (cycles) to block invalid workflows, and BFS during simulation to ensure parallel tasks execute in the correct logical tier visually.
+- **Controlled Mock API:** `src/api` is kept entirely separate from UI components. The `automations.ts` stub acts exactly like a real `fetch` call, delaying and returning typed arrays so the `<AutomatedNodeForm>` can dynamically render fields without any hardcoding.
 
 ---
 

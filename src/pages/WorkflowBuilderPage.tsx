@@ -120,6 +120,14 @@ export default function WorkflowBuilderPage() {
   // Tutorial state
   const tutorial = useTutorial()
 
+  // When tutorial advances to the run-workflow step, close any open drawer
+  // so the spotlight is not visually obscured by the properties panel backdrop.
+  useEffect(() => {
+    if (tutorial.isActive && tutorial.spotlightTarget === 'run-workflow') {
+      setSelectedNode(null)
+    }
+  }, [tutorial.isActive, tutorial.spotlightTarget, setSelectedNode])
+
   // Seed template on first visit
   const seededRef = useRef(false)
   useEffect(() => {

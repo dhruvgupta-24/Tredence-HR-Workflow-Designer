@@ -129,163 +129,169 @@ export function CanvasControls({
   `
 
   return (
-    <div className="h-12 flex-shrink-0 border-b border-th-border bg-th-bg-nav flex items-center px-3 gap-1">
+    <div className="h-12 flex-shrink-0 border-b border-th-border bg-th-bg-nav flex items-center px-3 gap-1 overflow-hidden">
 
-      {/* AI Copilot */}
-      <button type="button" onClick={onCopilotOpen} disabled={isLocked}
-        title="AI Workflow Copilot"
-        className="
-          flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
-          bg-indigo-500/10 border border-indigo-500/25
-          hover:bg-indigo-500/18 hover:border-indigo-500/50
-          text-indigo-400 hover:text-indigo-300
-          disabled:opacity-30 disabled:pointer-events-none
-          transition-all duration-150
-        "
-      >
-        <SparkleIcon />
-        <span className="text-[11px] font-semibold">Copilot</span>
-      </button>
+      {/* Left actions group - never shrink */}
+      <div className="flex items-center gap-1 flex-shrink-0">
+        {/* AI Copilot */}
+        <button type="button" onClick={onCopilotOpen} disabled={isLocked}
+          title="AI Workflow Copilot"
+          className="
+            flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
+            bg-indigo-500/10 border border-indigo-500/25
+            hover:bg-indigo-500/18 hover:border-indigo-500/50
+            text-indigo-400 hover:text-indigo-300
+            disabled:opacity-30 disabled:pointer-events-none
+            transition-all duration-150 whitespace-nowrap
+          "
+        >
+          <SparkleIcon />
+          <span className="text-[11px] font-semibold hidden xl:inline">Copilot</span>
+        </button>
 
-      {/* Live Demo */}
-      <button type="button" onClick={onLiveDemoRun}
-        disabled={isLiveDemoRunning || isTutorialActive}
-        title="Live product demo (auto-plays)"
-        className="
-          flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
-          bg-violet-500/8 border border-violet-500/20
-          hover:bg-violet-500/15 hover:border-violet-500/35
-          text-violet-400 hover:text-violet-300
-          disabled:opacity-30 disabled:pointer-events-none
-          transition-all duration-150
-        "
-      >
-        {isLiveDemoRunning ? <SpinnerIcon /> : <PlayIcon />}
-        <span className="text-[11px] font-semibold">{isLiveDemoRunning ? 'Live Demo...' : 'Live Demo'}</span>
-      </button>
+        {/* Live Demo */}
+        <button type="button" onClick={onLiveDemoRun}
+          disabled={isLiveDemoRunning || isTutorialActive}
+          title="Live product demo (auto-plays)"
+          className="
+            flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
+            bg-violet-500/8 border border-violet-500/20
+            hover:bg-violet-500/15 hover:border-violet-500/35
+            text-violet-400 hover:text-violet-300
+            disabled:opacity-30 disabled:pointer-events-none
+            transition-all duration-150 whitespace-nowrap
+          "
+        >
+          {isLiveDemoRunning ? <SpinnerIcon /> : <PlayIcon />}
+          <span className="text-[11px] font-semibold hidden xl:inline">{isLiveDemoRunning ? 'Running...' : 'Live Demo'}</span>
+        </button>
 
-      {/* Tutorial */}
-      <button type="button" onClick={onTutorialStart} disabled={isLiveDemoRunning}
-        title="Guided interactive tutorial"
-        className={`
-          flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
-          border transition-all duration-150
-          disabled:opacity-30 disabled:pointer-events-none
-          ${isTutorialActive
-            ? 'bg-emerald-500/12 border-emerald-500/35 text-emerald-400'
-            : 'bg-th-bg-3/60 border-th-border text-th-text-3 hover:bg-th-bg-3 hover:border-th-border-strong hover:text-th-text-2'
-          }
-        `}
-      >
-        <TargetIcon />
-        <span className="text-[11px] font-semibold">{isTutorialActive ? 'Tutorial...' : 'Tutorial'}</span>
-      </button>
+        {/* Tutorial */}
+        <button type="button" onClick={onTutorialStart} disabled={isLiveDemoRunning}
+          title="Guided interactive tutorial"
+          className={`
+            flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
+            border transition-all duration-150 whitespace-nowrap
+            disabled:opacity-30 disabled:pointer-events-none
+            ${isTutorialActive
+              ? 'bg-emerald-500/12 border-emerald-500/35 text-emerald-400'
+              : 'bg-th-bg-3/60 border-th-border text-th-text-3 hover:bg-th-bg-3 hover:border-th-border-strong hover:text-th-text-2'
+            }
+          `}
+        >
+          <TargetIcon />
+          <span className="text-[11px] font-semibold hidden xl:inline">{isTutorialActive ? 'Tutorial...' : 'Tutorial'}</span>
+        </button>
 
-      <div className="w-px h-5 bg-th-border mx-1" />
+        <div className="w-px h-5 bg-th-border mx-0.5" />
 
-      {/* Undo */}
-      <button type="button" onClick={undo}
-        disabled={past.length === 0 || isLocked} title="Undo (Ctrl+Z)"
-        className={ghostBtn}
-      >
-        <UndoIcon />
-      </button>
-      {/* Redo */}
-      <button type="button" onClick={redo}
-        disabled={future.length === 0 || isLocked} title="Redo (Ctrl+Shift+Z)"
-        className={ghostBtn}
-      >
-        <RedoIcon />
-      </button>
+        {/* Undo */}
+        <button type="button" onClick={undo}
+          disabled={past.length === 0 || isLocked} title="Undo (Ctrl+Z)"
+          className={ghostBtn}
+        >
+          <UndoIcon />
+        </button>
+        {/* Redo */}
+        <button type="button" onClick={redo}
+          disabled={future.length === 0 || isLocked} title="Redo (Ctrl+Shift+Z)"
+          className={ghostBtn}
+        >
+          <RedoIcon />
+        </button>
 
-      <div className="w-px h-5 bg-th-border mx-1" />
+        <div className="w-px h-5 bg-th-border mx-0.5" />
 
-      {/* Auto Arrange */}
-      <button type="button"
-        onClick={() => {
-          if (nodes.length === 0) return
-          saveSnapshot()
-          const connected = new Set<string>()
-          edges.forEach((e) => { connected.add(e.source); connected.add(e.target) })
-          nodes.filter((n) => n.type === 'start' || n.type === 'end').forEach((n) => connected.add(n.id))
-          const removed = nodes.filter((n) => !connected.has(n.id))
-          const seen = new Set<string>()
-          const deduped = edges.filter((e) => {
-            const k = `${e.source}>${e.target}`
-            return seen.has(k) ? false : (seen.add(k), true)
-          })
-          setNodes(nodes.filter((n) => connected.has(n.id)))
-          setEdges(deduped)
-          setTimeout(autoArrange, 50)
-          toast.success(removed.length > 0
-            ? `Arranged - removed ${removed.length} isolated node${removed.length > 1 ? 's' : ''}`
-            : 'Layout arranged')
-        }}
-        disabled={nodes.length === 0 || isLocked}
-        title="Auto Arrange layout"
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-th-text-3 hover:text-th-text-1 hover:bg-th-bg-3 border border-transparent hover:border-th-border transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none"
-      >
-        <ArrangeIcon />
-        <span className="text-[11px] font-medium">Arrange</span>
-      </button>
+        {/* Auto Arrange */}
+        <button type="button"
+          onClick={() => {
+            if (nodes.length === 0) return
+            saveSnapshot()
+            const connected = new Set<string>()
+            edges.forEach((e) => { connected.add(e.source); connected.add(e.target) })
+            nodes.filter((n) => n.type === 'start' || n.type === 'end').forEach((n) => connected.add(n.id))
+            const removed = nodes.filter((n) => !connected.has(n.id))
+            const seen = new Set<string>()
+            const deduped = edges.filter((e) => {
+              const k = `${e.source}>${e.target}`
+              return seen.has(k) ? false : (seen.add(k), true)
+            })
+            setNodes(nodes.filter((n) => connected.has(n.id)))
+            setEdges(deduped)
+            setTimeout(autoArrange, 50)
+            toast.success(removed.length > 0
+              ? `Arranged - removed ${removed.length} isolated node${removed.length > 1 ? 's' : ''}`
+              : 'Layout arranged')
+          }}
+          disabled={nodes.length === 0 || isLocked}
+          title="Auto Arrange layout"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-th-text-3 hover:text-th-text-1 hover:bg-th-bg-3 border border-transparent hover:border-th-border transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none whitespace-nowrap"
+        >
+          <ArrangeIcon />
+          <span className="text-[11px] font-medium hidden 2xl:inline">Arrange</span>
+        </button>
+      </div>
 
-      {/* Command palette search bar - centred */}
-      <div className="flex-1 flex justify-center">
+      {/* Command palette search bar - centred, flex-1 but with min-w */}
+      <div className="flex-1 min-w-0 flex justify-center px-2">
         <button type="button" onClick={onCommandOpen} title="Command Palette (Ctrl+K)"
           className="
-            flex items-center gap-2 px-2.5 py-1 rounded-md w-48
+            flex items-center gap-2 px-2.5 py-1 rounded-md w-full max-w-[200px] min-w-[36px]
             bg-th-bg-2 border border-th-border shadow-[0_1px_2px_rgba(0,0,0,0.05)]
             hover:border-th-accent/40 hover:bg-th-bg-3 hover:shadow-[0_2px_4px_rgba(0,0,0,0.08)]
             active:bg-th-bg-1 active:shadow-inner active:scale-[0.99]
             text-th-text-3 hover:text-th-text-2
-            transition-all duration-150 group
+            transition-all duration-150 group overflow-hidden
           "
         >
           <SearchIcon />
-          <span className="text-[11px] font-medium flex-1 text-left tracking-tight">Search commands...</span>
-          <kbd className="text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded-[3px] px-1.5 py-[1px] font-mono group-hover:text-th-text-2 transition-colors hidden sm:inline leading-none">
+          <span className="text-[11px] font-medium flex-1 text-left tracking-tight truncate hidden sm:block">Search commands...</span>
+          <kbd className="text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded-[3px] px-1.5 py-[1px] font-mono group-hover:text-th-text-2 transition-colors hidden lg:inline leading-none flex-shrink-0">
             Ctrl+K
           </kbd>
         </button>
       </div>
 
-      {/* Node/edge count */}
-      {nodes.length > 0 && (
-        <span className="text-[10px] text-th-text-4 font-mono tabular-nums">{nodes.length}N {edges.length}E</span>
-      )}
-      <div className="w-px h-5 bg-th-border mx-1" />
+      {/* Right actions group - never shrink */}
+      <div className="flex items-center gap-1 flex-shrink-0">
+        {/* Node/edge count */}
+        {nodes.length > 0 && (
+          <span className="text-[10px] text-th-text-4 font-mono tabular-nums hidden lg:inline">{nodes.length}N {edges.length}E</span>
+        )}
+        <div className="w-px h-5 bg-th-border mx-0.5 hidden lg:block" />
 
-      {/* Export */}
-      <button type="button"
-        onClick={() => exportWorkflow(nodes, edges)}
-        title="Export workflow as JSON"
-        className={`${ghostBtn} flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium`}
-      >
-        <ExportIcon />
-        <span className="hidden sm:inline">Export</span>
-      </button>
+        {/* Export */}
+        <button type="button"
+          onClick={() => exportWorkflow(nodes, edges)}
+          title="Export workflow as JSON"
+          className={`${ghostBtn} flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium`}
+        >
+          <ExportIcon />
+          <span className="hidden xl:inline">Export</span>
+        </button>
 
-      {/* Import */}
-      <button type="button"
-        onClick={() => fileRef.current?.click()}
-        title="Import workflow from JSON"
-        className={`${ghostBtn} flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium`}
-      >
-        <ImportIcon />
-        <span className="hidden sm:inline">Import</span>
-      </button>
+        {/* Import */}
+        <button type="button"
+          onClick={() => fileRef.current?.click()}
+          title="Import workflow from JSON"
+          className={`${ghostBtn} flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium`}
+        >
+          <ImportIcon />
+          <span className="hidden xl:inline">Import</span>
+        </button>
 
-      <div className="w-px h-5 bg-th-border mx-1" />
+        <div className="w-px h-5 bg-th-border mx-0.5" />
 
-      {/* Theme Toggle */}
-      <ThemeToggle />
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
-      {/* Keyboard shortcuts */}
-      <button type="button" onClick={onShortcutsOpen} title="Keyboard shortcuts"
-        className={ghostBtn}
-      >
-        <HelpIcon />
-      </button>
+        {/* Keyboard shortcuts */}
+        <button type="button" onClick={onShortcutsOpen} title="Keyboard shortcuts"
+          className={ghostBtn}
+        >
+          <HelpIcon />
+        </button>
+      </div>
 
       <input ref={fileRef} type="file" accept=".json" onChange={handleImport} className="hidden" aria-label="Import workflow" />
     </div>

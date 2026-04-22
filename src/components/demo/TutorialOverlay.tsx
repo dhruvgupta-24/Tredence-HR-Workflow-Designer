@@ -117,7 +117,6 @@ function resolveElement(target: string): Element | null {
 function SpotlightGlow({ targetName }: { targetName: string }) {
   const [rect, setRect] = useState<SpotlightRect | null>(null)
   const rafRef   = useRef<number>(0)
-  const lastTime = useRef(0)
   const prevRect = useRef<SpotlightRect | null>(null)
 
   const update = useCallback(() => {
@@ -126,29 +125,23 @@ function SpotlightGlow({ targetName }: { targetName: string }) {
     const r = el.getBoundingClientRect()
     const next: SpotlightRect = { left: r.left, top: r.top, width: r.width, height: r.height }
     const p = prevRect.current
-    // Only update state when position actually changed (avoids flood of renders)
-    if (!p || Math.abs(p.left - next.left) > 0.5 || Math.abs(p.top - next.top) > 0.5 ||
-        Math.abs(p.width - next.width) > 0.5 || Math.abs(p.height - next.height) > 0.5) {
+    if (!p || Math.abs(p.left - next.left) > 0.3 || Math.abs(p.top - next.top) > 0.3 ||
+        Math.abs(p.width - next.width) > 0.3 || Math.abs(p.height - next.height) > 0.3) {
       prevRect.current = next
       setRect(next)
     }
   }, [targetName])
 
   useEffect(() => {
-    // Immediate first read
     update()
 
-    // RAF loop at ~30fps for smooth continuous tracking
-    const loop = (time: number) => {
-      if (time - lastTime.current > 33) {
-        update()
-        lastTime.current = time
-      }
+    // Full-speed RAF - position change detection prevents state flood
+    const loop = () => {
+      update()
       rafRef.current = requestAnimationFrame(loop)
     }
     rafRef.current = requestAnimationFrame(loop)
 
-    // Instant update on window resize so spotlight snaps immediately
     window.addEventListener('resize', update, { passive: true })
 
     return () => {
@@ -169,8 +162,7 @@ function SpotlightGlow({ targetName }: { targetName: string }) {
         width:   rect.width  + p * 2,
         height:  rect.height + p * 2,
         borderRadius: 14,
-        // Smooth interpolation as the panel resizes
-        transition: 'left 80ms ease, top 80ms ease, width 80ms ease, height 80ms ease',
+        transition: 'left 40ms linear, top 40ms linear, width 40ms linear, height 40ms linear',
         animation: 'spotlight-pulse 2s ease infinite',
         willChange: 'left, top, width, height',
       }}

@@ -510,3 +510,36 @@ button, a, input, select, textarea {
   transition-duration: 150ms;
   transition-timing-function: ease;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   NODE ACCENT STRIPS - thicker, more vivid in light mode
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="light"] .react-flow__node > div > div.absolute.top-0 {
+  opacity: 1 !important;
+  height: 3px !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EDGE IMPROVEMENTS
+   ══════════════════════════════════════════════════════════════ */
+.react-flow__edge-path {
+  stroke: var(--accent);
+  stroke-width: 2;
+  transition: stroke 0.3s ease, stroke-width 0.2s ease, opacity 0.2s ease;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: var(--accent-hover);
+  stroke-width: 2.5;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FRAMER MOTION - disable for reduced-motion users
+   ══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

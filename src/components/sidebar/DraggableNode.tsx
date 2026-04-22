@@ -1,27 +1,24 @@
+import type { ReactNode } from 'react'
+
 interface DraggableNodeProps {
   type: string
   label: string
-  icon: string
+  icon: ReactNode
   color: string
+  description?: string
 }
 
-const colorBorderMap: Record<string, string> = {
-  green: 'border-green-500/40 hover:border-green-400 bg-green-500/5 hover:bg-green-500/10',
-  blue: 'border-blue-500/40 hover:border-blue-400 bg-blue-500/5 hover:bg-blue-500/10',
-  orange: 'border-orange-500/40 hover:border-orange-400 bg-orange-500/5 hover:bg-orange-500/10',
-  purple: 'border-purple-500/40 hover:border-purple-400 bg-purple-500/5 hover:bg-purple-500/10',
-  red: 'border-red-500/40 hover:border-red-400 bg-red-500/5 hover:bg-red-500/10',
+const colorMap: Record<string, { border: string; bg: string; hoverBorder: string; hoverBg: string; iconBg: string; dot: string }> = {
+  green:  { border: 'border-green-500/30',  bg: 'bg-green-500/5',  hoverBorder: 'hover:border-green-400/60',  hoverBg: 'hover:bg-green-500/10',  iconBg: 'bg-green-500/12  text-green-400',  dot: 'bg-green-400' },
+  blue:   { border: 'border-blue-500/30',   bg: 'bg-blue-500/5',   hoverBorder: 'hover:border-blue-400/60',   hoverBg: 'hover:bg-blue-500/10',   iconBg: 'bg-blue-500/12   text-blue-400',   dot: 'bg-blue-400' },
+  orange: { border: 'border-orange-500/30', bg: 'bg-orange-500/5', hoverBorder: 'hover:border-orange-400/60', hoverBg: 'hover:bg-orange-500/10', iconBg: 'bg-orange-500/12 text-orange-400', dot: 'bg-orange-400' },
+  purple: { border: 'border-purple-500/30', bg: 'bg-purple-500/5', hoverBorder: 'hover:border-purple-400/60', hoverBg: 'hover:bg-purple-500/10', iconBg: 'bg-purple-500/12 text-purple-400', dot: 'bg-purple-400' },
+  red:    { border: 'border-red-500/30',    bg: 'bg-red-500/5',    hoverBorder: 'hover:border-red-400/60',    hoverBg: 'hover:bg-red-500/10',    iconBg: 'bg-red-500/12    text-red-400',    dot: 'bg-red-400' },
 }
 
-const colorIconMap: Record<string, string> = {
-  green: 'text-green-400',
-  blue: 'text-blue-400',
-  orange: 'text-orange-400',
-  purple: 'text-purple-400',
-  red: 'text-red-400',
-}
+export function DraggableNode({ type, label, icon, color, description }: DraggableNodeProps) {
+  const c = colorMap[color] ?? colorMap['blue']!
 
-export function DraggableNode({ type, label, icon, color }: DraggableNodeProps) {
   const onDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('application/reactflow', type)
     e.dataTransfer.effectAllowed = 'move'
@@ -33,16 +30,21 @@ export function DraggableNode({ type, label, icon, color }: DraggableNodeProps) 
       onDragStart={onDragStart}
       data-demo-target={`node-${type}`}
       className={[
-        'flex items-center gap-3 px-3 py-2.5 border rounded-lg cursor-grab active:cursor-grabbing',
+        'flex items-center gap-2.5 px-3 py-2.5 border rounded-xl',
+        'cursor-grab active:cursor-grabbing active:scale-[0.98]',
         'transition-all duration-150 select-none',
-        'hover:shadow-md hover:-translate-y-px',
-        colorBorderMap[color] ?? colorBorderMap['blue'],
+        'hover:-translate-y-px hover:shadow-md',
+        c.border, c.bg, c.hoverBorder, c.hoverBg,
       ].join(' ')}
     >
-      <span className={['text-base', colorIconMap[color] ?? 'text-gray-400'].join(' ')}>
+      <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 ${c.iconBg}`}>
         {icon}
-      </span>
-      <span className="text-sm text-gray-200 font-medium">{label}</span>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[12px] font-semibold text-th-text-1 leading-none">{label}</p>
+        {description && <p className="text-[10px] text-th-text-3 mt-0.5 leading-none truncate">{description}</p>}
+      </div>
+      <div className={`w-1.5 h-1.5 rounded-full opacity-40 flex-shrink-0 ${c.dot}`} />
     </div>
   )
 }

@@ -27,6 +27,8 @@ export default {
         'th-text-3':        'var(--text-3)',
         'th-text-4':        'var(--text-4)',
         'th-accent':        'var(--accent)',
+        'th-accent-hover':  'var(--accent-hover)',
+        'th-accent-muted':  'var(--accent-muted)',
       },
       // ── Animations ───────────────────────────────────────────────────────
       animation: {

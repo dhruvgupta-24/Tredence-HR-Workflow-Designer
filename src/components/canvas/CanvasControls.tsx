@@ -17,6 +17,78 @@ interface Props {
   isTutorialActive:  boolean
 }
 
+// Icon components
+const SparkleIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3l1.88 5.76a2 2 0 0 0 1.27 1.27L21 12l-5.76 1.88a2 2 0 0 0-1.27 1.27L12 21l-1.88-5.76a2 2 0 0 0-1.27-1.27L3 12l5.76-1.88a2 2 0 0 0 1.27-1.27z"/>
+  </svg>
+)
+
+const PlayIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <polygon points="5,3 19,12 5,21"/>
+  </svg>
+)
+
+const TargetIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+  </svg>
+)
+
+const UndoIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 7v6h6"/><path d="M3 13C5.2 7.4 10.3 4 16 4a9 9 0 0 1 6 2.5"/>
+  </svg>
+)
+
+const RedoIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 7v6h-6"/><path d="M21 13a9 9 0 0 0-9-9 9 9 0 0 0-7 3.5"/>
+  </svg>
+)
+
+const ArrangeIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
+    <rect x="9" y="16" width="6" height="5" rx="1"/>
+    <path d="M5.5 8v4a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8M12 14v2"/>
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="flex-shrink-0 text-th-text-4 group-hover:text-th-text-3 transition-colors">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+  </svg>
+)
+
+const ExportIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+)
+
+const ImportIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+  </svg>
+)
+
+const HelpIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+    <circle cx="12" cy="17" r=".5" fill="currentColor"/>
+  </svg>
+)
+
+const SpinnerIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="animate-spin">
+    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+  </svg>
+)
+
 export function CanvasControls({
   onShortcutsOpen, onCopilotOpen, onCommandOpen,
   onLiveDemoRun, onTutorialStart,
@@ -50,7 +122,6 @@ export function CanvasControls({
 
   const isLocked = isLiveDemoRunning || isTutorialActive
 
-  // Shared button style base
   const ghostBtn = `
     p-2 rounded-lg text-th-text-3 hover:text-th-text-1 hover:bg-th-bg-3
     border border-transparent hover:border-th-border
@@ -58,12 +129,9 @@ export function CanvasControls({
   `
 
   return (
-    <div className="
-      h-12 flex-shrink-0 border-b border-th-border
-      bg-th-bg-nav flex items-center px-3 gap-1
-    ">
+    <div className="h-12 flex-shrink-0 border-b border-th-border bg-th-bg-nav flex items-center px-3 gap-1">
 
-      {/* ── Primary: AI Copilot ────────────────────────────────── */}
+      {/* AI Copilot */}
       <button type="button" onClick={onCopilotOpen} disabled={isLocked}
         title="AI Workflow Copilot"
         className="
@@ -75,11 +143,11 @@ export function CanvasControls({
           transition-all duration-150
         "
       >
-        <span className="text-sm leading-none">✦</span>
+        <SparkleIcon />
         <span className="text-[11px] font-semibold">Copilot</span>
       </button>
 
-      {/* ── Live Demo ─────────────────────────────────────────── */}
+      {/* Live Demo */}
       <button type="button" onClick={onLiveDemoRun}
         disabled={isLiveDemoRunning || isTutorialActive}
         title="Live product demo (auto-plays)"
@@ -92,11 +160,11 @@ export function CanvasControls({
           transition-all duration-150
         "
       >
-        <span className="text-[11px] leading-none">{isLiveDemoRunning ? '⏳' : '▶'}</span>
+        {isLiveDemoRunning ? <SpinnerIcon /> : <PlayIcon />}
         <span className="text-[11px] font-semibold">{isLiveDemoRunning ? 'Live Demo...' : 'Live Demo'}</span>
       </button>
 
-      {/* ── Tutorial ──────────────────────────────────────────── */}
+      {/* Tutorial */}
       <button type="button" onClick={onTutorialStart} disabled={isLiveDemoRunning}
         title="Guided interactive tutorial"
         className={`
@@ -109,33 +177,30 @@ export function CanvasControls({
           }
         `}
       >
-        <span className="text-[11px] leading-none">◎</span>
+        <TargetIcon />
         <span className="text-[11px] font-semibold">{isTutorialActive ? 'Tutorial...' : 'Tutorial'}</span>
       </button>
 
       <div className="w-px h-5 bg-th-border mx-1" />
 
-      {/* ── Undo / Redo ───────────────────────────────────────── */}
+      {/* Undo */}
       <button type="button" onClick={undo}
         disabled={past.length === 0 || isLocked} title="Undo (Ctrl+Z)"
         className={ghostBtn}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 7v6h6"/><path d="M3 13C5.2 7.4 10.3 4 16 4a9 9 0 0 1 6 2.5"/>
-        </svg>
+        <UndoIcon />
       </button>
+      {/* Redo */}
       <button type="button" onClick={redo}
         disabled={future.length === 0 || isLocked} title="Redo (Ctrl+Shift+Z)"
         className={ghostBtn}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 7v6h-6"/><path d="M21 13a9 9 0 0 0-9-9 9 9 0 0 0-7 3.5"/>
-        </svg>
+        <RedoIcon />
       </button>
 
       <div className="w-px h-5 bg-th-border mx-1" />
 
-      {/* ── Auto Arrange (merges arrange + optimize) ────────── */}
+      {/* Auto Arrange */}
       <button type="button"
         onClick={() => {
           if (nodes.length === 0) return
@@ -158,17 +223,13 @@ export function CanvasControls({
         }}
         disabled={nodes.length === 0 || isLocked}
         title="Auto Arrange layout"
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-th-text-3 hover:text-th-text-1 hover:bg-th-bg-3 border border-transparent hover:border-th-border transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none`}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-th-text-3 hover:text-th-text-1 hover:bg-th-bg-3 border border-transparent hover:border-th-border transition-all duration-150 disabled:opacity-20 disabled:pointer-events-none"
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
-          <rect x="9" y="16" width="6" height="5" rx="1"/>
-          <path d="M5.5 8v4a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8M12 14v2"/>
-        </svg>
-        <span className="text-[11px] font-medium">Auto Arrange</span>
+        <ArrangeIcon />
+        <span className="text-[11px] font-medium">Arrange</span>
       </button>
 
-      {/* ── Command palette - centred search bar ────────────── */}
+      {/* Command palette search bar - centred */}
       <div className="flex-1 flex justify-center">
         <button type="button" onClick={onCommandOpen} title="Command Palette (Ctrl+K)"
           className="
@@ -180,9 +241,7 @@ export function CanvasControls({
             transition-all duration-150 group
           "
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="flex-shrink-0 text-th-text-4 group-hover:text-th-text-3 transition-colors">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
+          <SearchIcon />
           <span className="text-[11px] font-medium flex-1 text-left tracking-tight">Search commands...</span>
           <kbd className="text-[9px] text-th-text-4 bg-th-bg-1 border border-th-border rounded-[3px] px-1.5 py-[1px] font-mono group-hover:text-th-text-2 transition-colors hidden sm:inline leading-none">
             Ctrl+K
@@ -190,40 +249,42 @@ export function CanvasControls({
         </button>
       </div>
 
-      {/* ── Right group ───────────────────────────────────────── */}
+      {/* Node/edge count */}
       {nodes.length > 0 && (
         <span className="text-[10px] text-th-text-4 font-mono tabular-nums">{nodes.length}N {edges.length}E</span>
       )}
       <div className="w-px h-5 bg-th-border mx-1" />
 
+      {/* Export */}
       <button type="button"
         onClick={() => exportWorkflow(nodes, edges)}
         title="Export workflow as JSON"
-        className={`${ghostBtn} px-2.5 py-1.5 text-[11px] font-medium`}
+        className={`${ghostBtn} flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium`}
       >
-        Export
+        <ExportIcon />
+        <span className="hidden sm:inline">Export</span>
       </button>
+
+      {/* Import */}
       <button type="button"
         onClick={() => fileRef.current?.click()}
         title="Import workflow from JSON"
-        className={`${ghostBtn} px-2.5 py-1.5 text-[11px] font-medium`}
+        className={`${ghostBtn} flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium`}
       >
-        Import
+        <ImportIcon />
+        <span className="hidden sm:inline">Import</span>
       </button>
 
       <div className="w-px h-5 bg-th-border mx-1" />
 
-      {/* ── Theme Toggle ────────────────────────────────────── */}
+      {/* Theme Toggle */}
       <ThemeToggle />
 
-      {/* ── Keyboard shortcuts ─────────────────────────────── */}
+      {/* Keyboard shortcuts */}
       <button type="button" onClick={onShortcutsOpen} title="Keyboard shortcuts"
         className={ghostBtn}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-          <circle cx="12" cy="17" r=".5" fill="currentColor"/>
-        </svg>
+        <HelpIcon />
       </button>
 
       <input ref={fileRef} type="file" accept=".json" onChange={handleImport} className="hidden" aria-label="Import workflow" />

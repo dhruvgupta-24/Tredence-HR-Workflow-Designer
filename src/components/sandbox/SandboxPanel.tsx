@@ -1,11 +1,12 @@
+import { motion } from 'framer-motion'
 import { useSimulate } from '../../hooks/useSimulate'
 import { useWorkflowStore } from '../../store'
 import { ExecutionLog } from './ExecutionLog'
 
 const STEPS_GUIDE = [
-  'Drag node types onto the canvas',
-  'Connect nodes by pulling from handles',
-  'Click Run Workflow to simulate',
+  { label: 'Drag nodes to canvas', detail: 'From the left sidebar' },
+  { label: 'Connect nodes',        detail: 'Pull from node handles' },
+  { label: 'Run the simulation',   detail: 'Click the button above' },
 ]
 
 export function SandboxPanel() {
@@ -31,28 +32,30 @@ export function SandboxPanel() {
           Simulation Sandbox
         </p>
 
-        {/* Run Workflow button - premium primary CTA */}
-        <button
+        {/* Run Workflow CTA */}
+        <motion.button
           type="button"
           onClick={() => void runSimulation()}
           disabled={isSimulating}
           data-demo-target="run-workflow"
+          whileHover={isSimulating ? {} : { scale: 1.01, transition: { type: 'spring', stiffness: 500, damping: 30 } }}
+          whileTap={isSimulating ? {} : { scale: 0.98 }}
           className="
             w-full flex items-center justify-center gap-2
             px-4 py-2.5 rounded-xl
             bg-th-accent text-white font-semibold text-[12px]
-            border border-black/10 dark:border-white/15
-            hover:opacity-90 hover:dark:border-white/25
-            active:scale-[0.98]
+            border border-black/10
+            shadow-[0_2px_8px_rgba(0,0,0,0.1)]
+            hover:shadow-[0_4px_20px_rgba(99,102,241,0.35)]
             disabled:opacity-50 disabled:pointer-events-none
-            shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_16px_rgba(99,102,241,0.25)]
-            hover:dark:shadow-[0_4px_24px_rgba(99,102,241,0.4)]
-            transition-all duration-150
+            transition-shadow duration-200
           "
         >
           {isSimulating ? (
             <>
-              <span className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="animate-spin">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
               Simulating...
             </>
           ) : (
@@ -63,7 +66,7 @@ export function SandboxPanel() {
               Run Workflow
             </>
           )}
-        </button>
+        </motion.button>
 
         {hasResults && (
           <button
@@ -90,7 +93,9 @@ export function SandboxPanel() {
                 key={i}
                 className="flex items-start gap-2 text-[11px] text-rose-300 bg-rose-500/8 border border-rose-500/20 rounded-xl px-3 py-2.5"
               >
-                <span className="flex-shrink-0 mt-0.5 text-rose-400">✕</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5 text-rose-400">
+                  <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
                 <span className="leading-relaxed">{err}</span>
               </div>
             ))}
@@ -103,34 +108,38 @@ export function SandboxPanel() {
         {/* Empty state */}
         {!hasResults && !isSimulating && (
           <div className="h-full flex flex-col items-center justify-center py-8">
-            <div className="w-12 h-12 rounded-2xl bg-th-bg-2 border border-th-border flex items-center justify-center mb-4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="var(--text-3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+            <div className="w-14 h-14 rounded-2xl bg-th-bg-2 border border-th-border flex items-center justify-center mb-4 shadow-sm">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+                className="text-th-text-3"
               >
                 <circle cx="12" cy="12" r="10"/>
-                <polygon points="10,8 16,12 10,16" fill="var(--text-3)" stroke="none"/>
+                <polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none" className="opacity-60"/>
               </svg>
             </div>
 
             <p className="text-[13px] font-semibold text-th-text-2 mb-1">Ready to simulate</p>
-            <p className="text-[11px] text-th-text-3 mb-5 text-center leading-relaxed max-w-[200px]">
+            <p className="text-[11px] text-th-text-3 mb-6 text-center leading-relaxed max-w-[200px]">
               Build or load a workflow, then run it to see step-by-step execution.
             </p>
 
-            <div className="space-y-2.5 w-full max-w-[200px]">
+            <div className="space-y-3 w-full max-w-[220px]">
               {STEPS_GUIDE.map((step, i) => (
-                <div key={i} className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 rounded-full bg-th-bg-2 border border-th-border flex items-center justify-center flex-shrink-0">
-                    <span className="text-[9px] font-mono text-th-text-3">{i + 1}</span>
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-th-bg-2 border border-th-border flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-[9px] font-bold font-mono text-th-text-3">{i + 1}</span>
                   </div>
-                  <span className="text-[11px] text-th-text-3 leading-tight">{step}</span>
+                  <div>
+                    <p className="text-[11px] font-medium text-th-text-2 leading-tight">{step.label}</p>
+                    <p className="text-[10px] text-th-text-3 mt-0.5 leading-tight">{step.detail}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Simulating spinner */}
+        {/* Simulating state */}
         {isSimulating && (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">

@@ -40,7 +40,7 @@
 
   /* Canvas */
   --canvas-bg:   #0C101C;
-  --canvas-dots: #1C2238;
+  --canvas-dots: #1E2744;
 
   /* Overlay */
   --overlay-bg:   rgba(3, 7, 18, 0.78);
@@ -79,7 +79,7 @@
 
   /* Canvas */
   --canvas-bg:   #F4EFE8;
-  --canvas-dots: #D8D0C4;
+  --canvas-dots: #C2B8AC;
 
   /* Overlay */
   --overlay-bg:   rgba(20, 18, 14, 0.20);
@@ -172,14 +172,11 @@
   transition: background 0.25s ease;
 }
 
-/* Background dots - the SVG pattern circle fill */
-[data-theme="light"] .react-flow__background pattern circle,
-[data-theme="light"] .react-flow__background pattern rect {
+/* Canvas dot color - driven by CSS token, applies to both themes */
+.react-flow__background pattern circle,
+.react-flow__background pattern rect {
   fill: var(--canvas-dots) !important;
-}
-[data-theme="dark"] .react-flow__background pattern circle,
-[data-theme="dark"] .react-flow__background pattern rect {
-  fill: var(--canvas-dots) !important;
+  transition: fill 0.25s ease;
 }
 
 /* Edges */

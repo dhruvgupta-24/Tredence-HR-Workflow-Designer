@@ -15,6 +15,7 @@ import {
   type Edge,
 } from '@xyflow/react'
 import { useWorkflowStore } from '../../store'
+import { useThemeStore } from '../../store/themeStore'
 import { nodeTypes } from '../nodes'
 import { onDragOver, useDropHandler } from '../../hooks/useDragDrop'
 import type { WorkflowNode } from '../../types'
@@ -36,6 +37,7 @@ const minimapNodeColor = (node: { type?: string }) => {
 }
 
 export function WorkflowCanvas() {
+  const theme              = useThemeStore((s) => s.theme)
   const nodes              = useWorkflowStore((s) => s.nodes)
   const edges              = useWorkflowStore((s) => s.edges)
   const highlightedNodeId  = useWorkflowStore((s) => s.highlightedNodeId)
@@ -156,11 +158,16 @@ export function WorkflowCanvas() {
         nodeTypes={nodeTypes}
         snapGrid={[16, 16]}
         snapToGrid
-        colorMode="dark"
+        colorMode={theme}
         className="bg-gray-900"
         proOptions={{ hideAttribution: true }}
       >
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#1f2937" />
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={24}
+          size={1.5}
+          color="#1C2238"
+        />
         <Controls position="bottom-right" />
         <MiniMap
           nodeColor={minimapNodeColor}

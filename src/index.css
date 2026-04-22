@@ -1,183 +1,377 @@
-/* React Flow base styles - must precede @tailwind directives */
+/* React Flow base styles – must precede @tailwind directives */
 @import '@xyflow/react/dist/style.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Base / Reset ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKEN SYSTEM
+   CSS custom properties per theme. Applied via data-theme
+   attribute on <html>, set synchronously by themeStore.ts.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Dark Mode (Default / Premium Charcoal-Navy) ── */
+:root,
+[data-theme="dark"] {
+  /* Surfaces – layered depth */
+  --bg-0: #090D18;      /* page / body */
+  --bg-1: #0E1320;      /* sidebar, right panel */
+  --bg-2: #141A2A;      /* node cards, form panels */
+  --bg-3: #1B2235;      /* hover states, popovers */
+  --bg-4: #232C44;      /* deeply elevated, active */
+
+  /* Borders */
+  --border-base:   rgba(255, 255, 255, 0.068);
+  --border-subtle: rgba(255, 255, 255, 0.036);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Typography */
+  --text-1: #EEF0FC;  /* primary — warm white */
+  --text-2: #8B8DAB;  /* secondary */
+  --text-3: #4E5070;  /* muted */
+  --text-4: #2C2E52;  /* very muted / placeholder */
+
+  /* Accent */
+  --accent:       #6366f1;
+  --accent-hover: #818cf8;
+  --accent-muted: rgba(99, 102, 241, 0.15);
+
+  /* Canvas */
+  --canvas-bg:   #0C101C;
+  --canvas-dots: #1C2238;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #1E2540;
+  --scrollbar-hover: #2A3458;
+}
+
+/* ── Light Mode (Premium Warm-White) ── */
+[data-theme="light"] {
+  /* Surfaces */
+  --bg-0: #FCFAF7;      /* page / body — warm off-white */
+  --bg-1: #F7F3ED;      /* sidebar, right panel — warm parchment */
+  --bg-2: #FFFFFF;      /* node cards — pure white */
+  --bg-3: #F0EBE3;      /* hover states — warm cream */
+  --bg-4: #E8E1D8;      /* active / deeply elevated */
+
+  /* Borders */
+  --border-base:   #E8E1D8;
+  --border-subtle: #EDE7DF;
+  --border-strong: #D8CFC6;
+
+  /* Typography */
+  --text-1: #1E1B16;  /* primary — deep warm black */
+  --text-2: #6B6258;  /* secondary */
+  --text-3: #9B8E84;  /* muted */
+  --text-4: #C4B8AE;  /* very muted */
+
+  /* Accent */
+  --accent:       #5558D9;
+  --accent-hover: #6366f1;
+  --accent-muted: rgba(85, 88, 217, 0.1);
+
+  /* Canvas */
+  --canvas-bg:   #F4EFE8;
+  --canvas-dots: #DDD4C6;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #D8CFC6;
+  --scrollbar-hover: #C4B8AE;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BASE / RESET
+   ══════════════════════════════════════════════════════════════ */
 @layer base {
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
+  *, *::before, *::after { box-sizing: border-box; }
 
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* CSS vars for the theme-reveal animation origin */
+    --theme-x: 50%;
+    --theme-y: 50%;
   }
 
   body {
-    @apply font-sans bg-gray-950 text-gray-100;
+    @apply font-sans;
+    background-color: var(--bg-0);
+    color: var(--text-1);
     overflow: hidden;
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
 
-  /* Thin custom scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-gray-700 rounded-full; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-500; }
+  /* ── Thin premium scrollbar ── */
+  ::-webkit-scrollbar        { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
-  /* Remove default focus outlines */
-  [type='text']:focus, [type='date']:focus, textarea:focus, select:focus {
-    outline: none;
+  /* Remove browser focus rings from inputs */
+  [type='text']:focus, [type='date']:focus, textarea:focus, select:focus { outline: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VIEW TRANSITIONS API — Cinematic circular reveal
+   When the user toggles the theme, a circle expands from the
+   toggle button's center, revealing the new theme beneath it.
+   ══════════════════════════════════════════════════════════════ */
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: vt-theme-reveal 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+  mix-blend-mode: normal;
+}
+
+@keyframes vt-theme-reveal {
+  from {
+    clip-path: circle(0px at var(--theme-x, 50%) var(--theme-y, 50%));
+    opacity: 0.6;
+  }
+  to {
+    clip-path: circle(200% at var(--theme-x, 50%) var(--theme-y, 50%));
+    opacity: 1;
   }
 }
 
-/* ── Cinematic page load ─────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   PAGE LOAD ANIMATION
+   ══════════════════════════════════════════════════════════════ */
 .app-root {
   animation: page-reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes page-reveal {
-  from { opacity: 0; transform: translateY(6px) scale(0.995); filter: blur(2px); }
-  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  from { opacity: 0; transform: translateY(6px) scale(0.997); filter: blur(1px); }
+  to   { opacity: 1; transform: translateY(0) scale(1);       filter: blur(0); }
 }
 
-/* ── React Flow canvas overrides ─────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   REACT FLOW — Canvas & Controls
+   Adapts to both themes via CSS vars.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Canvas background */
 .react-flow__renderer {
-  @apply bg-gray-900;
+  background: var(--canvas-bg) !important;
+  transition: background 0.25s ease;
 }
 
-/* Default edge */
+/* Background dots — the SVG pattern circle fill */
+[data-theme="light"] .react-flow__background pattern circle,
+[data-theme="light"] .react-flow__background pattern rect {
+  fill: var(--canvas-dots) !important;
+}
+[data-theme="dark"] .react-flow__background pattern circle,
+[data-theme="dark"] .react-flow__background pattern rect {
+  fill: var(--canvas-dots) !important;
+}
+
+/* Edges */
 .react-flow__edge-path {
-  stroke: #6366f1;
+  stroke: var(--accent);
   stroke-width: 2;
   transition: stroke 0.3s ease, stroke-width 0.2s ease;
 }
-
 .react-flow__edge.selected .react-flow__edge-path {
-  stroke: #818cf8;
+  stroke: var(--accent-hover);
   stroke-width: 2.5;
 }
 
-/* ── Edge simulation states ───────────────────────────────────── */
-
-/* Active edge - travels along like a pulse */
+/* Active edge — animated dash */
 .edge-active .react-flow__edge-path {
-  stroke: #818cf8 !important;
+  stroke: var(--accent-hover) !important;
   stroke-width: 2.5px !important;
   stroke-dasharray: 10 5;
   animation: edge-flow 0.45s linear infinite;
 }
-
 @keyframes edge-flow {
   from { stroke-dashoffset: 15; }
   to   { stroke-dashoffset: 0; }
 }
 
-/* Completed edge - green, stays static */
+/* Completed edge — green tint */
 .edge-completed .react-flow__edge-path {
   stroke: #22c55e !important;
   stroke-width: 2px !important;
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
-/* ── Node handle dots ─────────────────────────────────────────── */
+/* Handles */
 .react-flow__handle {
-  width: 10px !important;
-  height: 10px !important;
+  width: 11px !important;
+  height: 11px !important;
   border-width: 2px !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-
 .react-flow__handle:hover {
-  transform: scale(1.4);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+  transform: scale(1.5);
+  box-shadow: 0 0 0 4px var(--accent-muted);
 }
 
 /* Connection line while dragging */
 .react-flow__connection-path {
-  stroke: #818cf8;
+  stroke: var(--accent-hover);
   stroke-width: 2;
   stroke-dasharray: 6 4;
 }
 
-/* ── Controls panel ───────────────────────────────────────────── */
+/* Controls panel */
 .react-flow__controls {
-  @apply bg-gray-900 border border-gray-800 rounded-xl shadow-xl overflow-hidden;
-  bottom: 20px !important;
-  right: 20px !important;
+  background: var(--bg-2) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18) !important;
+  overflow: hidden;
+  bottom: 18px !important;
+  right: 18px !important;
 }
-
 .react-flow__controls-button {
-  @apply bg-gray-900 border-gray-800 text-gray-400;
-  fill: #9ca3af;
-  transition: background-color 0.15s, fill 0.15s;
+  background: var(--bg-2) !important;
+  border-bottom-color: var(--border-subtle) !important;
+  fill: var(--text-3) !important;
+  transition: background 0.12s, fill 0.12s;
 }
-
 .react-flow__controls-button:hover {
-  @apply bg-gray-800;
-  fill: #f9fafb;
+  background: var(--bg-3) !important;
+  fill: var(--text-1) !important;
 }
 
-/* ── MiniMap ──────────────────────────────────────────────────── */
+/* Minimap */
 .react-flow__minimap {
-  @apply rounded-xl shadow-xl border border-gray-800 overflow-hidden;
-  bottom: 20px !important;
-  left: 20px !important;
+  border: 1px solid var(--border-base) !important;
+  background: var(--bg-1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18) !important;
+  overflow: hidden;
+  bottom: 18px !important;
+  left: 18px !important;
 }
 
-/* ── Selection box ────────────────────────────────────────────── */
+/* Selection box */
 .react-flow__selection {
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  border-radius: 4px;
+  background: var(--accent-muted);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
 }
 
-/* ── Highlighted node glow (simulation active) ────────────────── */
+/* Node cursor */
+.react-flow__node         { cursor: grab; }
+.react-flow__node:active  { cursor: grabbing; }
+
+/* ══════════════════════════════════════════════════════════════
+   NODE SIMULATION STATES
+   ══════════════════════════════════════════════════════════════ */
 .node-highlighted {
-  animation: nodeGlow 1.2s ease-in-out infinite;
+  animation: nodeGlow 1.3s ease-in-out infinite;
 }
-
 @keyframes nodeGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-  50%       { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.35), 0 0 24px rgba(99, 102, 241, 0.2); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+  50%       { box-shadow: 0 0 0 5px rgba(99,102,241,0.3), 0 0 28px rgba(99,102,241,0.18); }
 }
 
-/* ── Completed node ring ──────────────────────────────────────── */
 .node-completed {
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.45);
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.4), 0 4px 16px rgba(34,197,94,0.08);
   transition: box-shadow 0.4s ease;
 }
 
-/* ── Node cursor ──────────────────────────────────────────────── */
-.react-flow__node { cursor: grab; }
-.react-flow__node:active { cursor: grabbing; }
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL LIGHT-MODE OVERRIDES
+   For components that still use hardcoded Tailwind gray classes.
+   Uses CSS specificity to override without touching every file.
+   ══════════════════════════════════════════════════════════════ */
 
-/* ── Modal backdrop ───────────────────────────────────────────── */
+/* Backgrounds */
+[data-theme="light"] .bg-gray-950 { background-color: var(--bg-0) !important; }
+[data-theme="light"] .bg-gray-900 { background-color: var(--bg-1) !important; }
+[data-theme="light"] .bg-gray-800 { background-color: var(--bg-3) !important; }
+[data-theme="light"] .bg-gray-700 { background-color: var(--bg-4) !important; }
+
+/* Opacity variants */
+[data-theme="light"] .bg-gray-950\/90 { background-color: rgba(252,250,247,0.92) !important; }
+[data-theme="light"] .bg-gray-900\/60 { background-color: rgba(247,243,237,0.7) !important; }
+[data-theme="light"] .bg-gray-900\/50 { background-color: rgba(247,243,237,0.6) !important; }
+[data-theme="light"] .bg-gray-800\/50 { background-color: rgba(240,235,227,0.6) !important; }
+[data-theme="light"] .bg-gray-800\/40 { background-color: rgba(240,235,227,0.5) !important; }
+
+/* Borders */
+[data-theme="light"] .border-gray-800    { border-color: var(--border-base)   !important; }
+[data-theme="light"] .border-gray-800\/80{ border-color: var(--border-base)   !important; }
+[data-theme="light"] .border-gray-800\/60{ border-color: var(--border-subtle) !important; }
+[data-theme="light"] .border-gray-800\/50{ border-color: var(--border-subtle) !important; }
+[data-theme="light"] .border-gray-700    { border-color: var(--border-base)   !important; }
+[data-theme="light"] .border-gray-700\/80{ border-color: var(--border-base)   !important; }
+[data-theme="light"] .border-gray-700\/60{ border-color: var(--border-subtle) !important; }
+[data-theme="light"] .border-gray-600    { border-color: var(--border-strong)  !important; }
+[data-theme="light"] .divide-gray-800    { border-color: var(--border-base)   !important; }
+
+/* Typography */
+[data-theme="light"] .text-white      { color: var(--text-1) !important; }
+[data-theme="light"] .text-gray-100   { color: var(--text-1) !important; }
+[data-theme="light"] .text-gray-200   { color: var(--text-1) !important; }
+[data-theme="light"] .text-gray-300   { color: var(--text-2) !important; }
+[data-theme="light"] .text-gray-400   { color: var(--text-2) !important; }
+[data-theme="light"] .text-gray-500   { color: var(--text-3) !important; }
+[data-theme="light"] .text-gray-600   { color: var(--text-3) !important; }
+[data-theme="light"] .text-gray-700   { color: var(--text-4) !important; }
+[data-theme="light"] .text-gray-800   { color: var(--text-4) !important; }
+
+/* Interactive hover states */
+[data-theme="light"] .hover\:bg-gray-800:hover { background-color: var(--bg-3) !important; }
+[data-theme="light"] .hover\:bg-gray-700:hover { background-color: var(--bg-4) !important; }
+[data-theme="light"] .hover\:text-white:hover  { color: var(--text-1) !important; }
+[data-theme="light"] .hover\:text-gray-300:hover { color: var(--text-2) !important; }
+
+/* Input & form elements */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background-color: var(--bg-2) !important;
+  color: var(--text-1) !important;
+  border-color: var(--border-base) !important;
+}
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder { color: var(--text-4) !important; }
+
+/* Modal / Overlay backdrops */
+[data-theme="light"] .modal-backdrop {
+  background: rgba(100, 90, 80, 0.45) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE UPGRADES (deeper colors over Tailwind defaults)
+   ══════════════════════════════════════════════════════════════ */
+[data-theme="dark"] .bg-gray-950 { background-color: var(--bg-0) !important; }
+[data-theme="dark"] .bg-gray-900 { background-color: var(--bg-1) !important; }
+[data-theme="dark"] .bg-gray-800 { background-color: var(--bg-3) !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL BACKDROP
+   ══════════════════════════════════════════════════════════════ */
 .modal-backdrop {
-  background: rgba(3, 7, 18, 0.75);
-  backdrop-filter: blur(4px);
+  background: rgba(3, 7, 18, 0.78);
+  backdrop-filter: blur(5px);
 }
 
-/* ── Demo Overlay Animations ─────────────────────────────────── */
-
-/* Intro background */
-.demo-intro-bg {
-  animation: demo-bg-in 0.4s ease forwards;
-}
+/* ══════════════════════════════════════════════════════════════
+   DEMO OVERLAY ANIMATIONS
+   ══════════════════════════════════════════════════════════════ */
+.demo-intro-bg   { animation: demo-bg-in 0.4s ease forwards; }
+.demo-success-bg { animation: demo-bg-in 0.35s ease forwards; }
 
 @keyframes demo-bg-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* Intro card: slide up, hold, fade out - total 2.6s */
 .demo-intro-card {
   animation: demo-intro-card 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
 @keyframes demo-intro-card {
   0%   { opacity: 0; transform: translateY(18px) scale(0.96); }
   15%  { opacity: 1; transform: translateY(0) scale(1); }
@@ -185,60 +379,75 @@
   100% { opacity: 0; transform: translateY(-10px) scale(0.98); }
 }
 
-/* Step caption: slides down from top edge */
 .demo-caption {
   animation: demo-caption-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
 @keyframes demo-caption-in {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Success background */
-.demo-success-bg {
-  animation: demo-bg-in 0.35s ease forwards;
-}
-
-/* Success card: scale up from slightly small */
 .demo-success-card {
   animation: demo-success-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
 @keyframes demo-success-in {
-  from { opacity: 0; transform: scale(0.91) translateY(12px); }
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* ── Fake Cursor ─────────────────────────────────────────────── */
-
+/* ══════════════════════════════════════════════════════════════
+   FAKE CURSOR
+   ══════════════════════════════════════════════════════════════ */
 @keyframes cursor-ripple {
   from { transform: scale(0); opacity: 1; }
   to   { transform: scale(3.5); opacity: 0; }
 }
 
-/* ── Tutorial card ───────────────────────────────────────────── */
-
+/* ══════════════════════════════════════════════════════════════
+   TUTORIAL CARD
+   ══════════════════════════════════════════════════════════════ */
 .tutorial-card {
-  background: rgba(17, 24, 39, 0.97);
-  border: 1px solid rgba(75, 85, 99, 0.5);
+  background: var(--bg-2);
+  border: 1px solid var(--border-base);
   border-radius: 16px;
   padding: 20px;
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.03),
-    0 20px 60px rgba(0,0,0,0.6),
-    0 0 40px rgba(99,102,241,0.06);
+    0 0 0 1px var(--border-subtle),
+    0 24px 64px rgba(0,0,0,0.5),
+    0 0 40px var(--accent-muted);
   animation: tutorial-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes tutorial-in {
   from { opacity: 0; transform: translateY(12px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)   scale(1); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── Tutorial spotlight glow ring ────────────────────────────── */
+@keyframes tutorial-picker-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
 
+/* Tutorial picker uses this class */
+.tutorial-picker-card {
+  animation: tutorial-picker-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TUTORIAL SPOTLIGHT GLOW RING
+   ══════════════════════════════════════════════════════════════ */
 @keyframes spotlight-pulse {
-  0%,  100% { box-shadow: 0 0 0 2px rgba(99,102,241,0.7), 0 0 16px 3px rgba(99,102,241,0.2); }
-  50%        { box-shadow: 0 0 0 3px rgba(99,102,241,0.9), 0 0 28px 8px rgba(99,102,241,0.35); }
+  0%,  100% { box-shadow: 0 0 0 2px rgba(99,102,241,0.6), 0 0 16px 2px rgba(99,102,241,0.18); }
+  50%        { box-shadow: 0 0 0 3px rgba(99,102,241,0.85),0 0 28px 8px rgba(99,102,241,0.3); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PREMIUM MICRO-INTERACTIONS
+   ══════════════════════════════════════════════════════════════ */
+
+/* Smooth color transitions on all interactive elements */
+button, a, input, select, textarea {
+  transition-property: background-color, border-color, color, box-shadow, opacity, transform;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
 }

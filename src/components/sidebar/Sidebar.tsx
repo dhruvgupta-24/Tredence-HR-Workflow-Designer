@@ -22,16 +22,25 @@ export function Sidebar() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gray-950 border-r border-gray-800/80">
-      {/* Logo */}
-      <div className="px-5 py-[18px] border-b border-gray-800/80 flex-shrink-0 bg-gray-950/50">
-        <div className="flex items-center gap-3.5">
-          <div className="w-14 h-14 shrink-0 flex items-center justify-center">
-            <img src="/flowhr-navbar.png" alt="FlowHR Logo" className="w-full h-full object-contain drop-shadow-[0_0_6px_rgba(99,102,241,0.25)]" />
+    <div className="h-full flex flex-col bg-th-bg-1 border-r border-th-border">
+
+      {/* Logo / Brand */}
+      <div className="px-5 py-[17px] border-b border-th-border flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 shrink-0 flex items-center justify-center">
+            <img
+              src="/flowhr-navbar.png"
+              alt="FlowHR"
+              className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(99,102,241,0.3)]"
+            />
           </div>
           <div className="flex flex-col justify-center min-w-0">
-            <p className="text-[26px] font-bold text-white leading-none tracking-tight drop-shadow-sm truncate">FlowHR</p>
-            <p className="text-[13px] text-indigo-400 font-medium mt-1 whitespace-nowrap">Workflow Designer</p>
+            <p className="text-[22px] font-bold text-th-text-1 leading-none tracking-tight truncate">
+              FlowHR
+            </p>
+            <p className="text-[11.5px] text-th-accent font-semibold mt-0.5 whitespace-nowrap">
+              Workflow Designer
+            </p>
           </div>
         </div>
       </div>
@@ -39,17 +48,17 @@ export function Sidebar() {
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
 
-        {/* Node Toolbox */}
-        <div className="px-4 pt-5 pb-4 border-b border-gray-800/50">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-600 mb-2.5">
+        {/* Node toolbox */}
+        <div className="px-4 pt-5 pb-4 border-b border-th-border-subtle">
+          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-th-text-3 mb-3">
             Node Types
           </p>
           <NodeToolbox />
         </div>
 
         {/* Templates */}
-        <div className="px-4 pt-4 pb-4">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-600 mb-2.5">
+        <div className="px-4 pt-5 pb-4">
+          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-th-text-3 mb-3">
             Templates
           </p>
           <div className="space-y-1.5">
@@ -58,15 +67,20 @@ export function Sidebar() {
                 key={t.id}
                 type="button"
                 onClick={() => loadTemplate(t)}
-                className="w-full text-left px-3 py-2.5 rounded-lg bg-gray-900/60 border border-gray-800/80 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all duration-150 group"
+                className="
+                  w-full text-left px-3 py-2.5 rounded-xl
+                  bg-th-bg-2 border border-th-border-subtle
+                  hover:border-th-accent/40 hover:bg-th-bg-3
+                  transition-all duration-150 group
+                "
               >
                 <div className="flex items-start gap-2.5">
                   <span className="text-base leading-none mt-px flex-shrink-0">{t.icon}</span>
                   <div className="min-w-0">
-                    <p className="text-[12px] font-semibold text-gray-300 group-hover:text-white transition-colors leading-snug">
+                    <p className="text-[12px] font-semibold text-th-text-1 group-hover:text-th-accent transition-colors leading-snug">
                       {t.name}
                     </p>
-                    <p className="text-[10px] text-gray-600 mt-0.5 leading-tight">
+                    <p className="text-[10px] text-th-text-3 mt-0.5 leading-tight">
                       {t.description}
                     </p>
                   </div>
@@ -78,9 +92,9 @@ export function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-gray-800/80 flex-shrink-0">
+      <div className="px-4 py-4 border-t border-th-border flex-shrink-0">
         {nodes.length > 0 && (
-          <div className="flex items-center justify-between text-[10px] text-gray-600 font-mono mb-2.5">
+          <div className="flex items-center justify-between text-[10px] text-th-text-3 font-mono mb-2.5">
             <span>{nodes.length} nodes</span>
             <span>{edges.length} edges</span>
           </div>
@@ -88,11 +102,17 @@ export function Sidebar() {
         <button
           type="button"
           onClick={resetWorkflow}
-          className="w-full px-3 py-2 text-xs text-gray-600 hover:text-red-400 border border-gray-800/80 hover:border-red-900/50 rounded-lg transition-all duration-150 font-medium"
+          className="
+            w-full px-3 py-2 text-[11px] font-medium rounded-xl
+            text-th-text-3 hover:text-rose-400
+            border border-th-border-subtle hover:border-rose-500/30
+            hover:bg-rose-500/5
+            transition-all duration-150
+          "
         >
           Reset Canvas
         </button>
-        <p className="text-center text-[9px] text-gray-700 font-mono mt-2.5">
+        <p className="text-center text-[9px] text-th-text-4 font-mono mt-2.5">
           Tredence Assessment · v1.0
         </p>
       </div>

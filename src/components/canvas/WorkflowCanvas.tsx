@@ -132,7 +132,7 @@ export function WorkflowCanvas() {
         snapToGrid
         colorMode="dark"
         className="bg-gray-900"
-        proOptions={{ hideAttribution: false }}
+        proOptions={{ hideAttribution: true }}
       >
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#1f2937" />
         <Controls position="bottom-right" />

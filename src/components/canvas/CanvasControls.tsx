@@ -60,7 +60,7 @@ export function CanvasControls({
   return (
     <div className="
       h-12 flex-shrink-0 border-b border-th-border
-      bg-th-bg-1 flex items-center px-3 gap-1
+      bg-th-bg-nav flex items-center px-3 gap-1
     ">
 
       {/* ── Primary: AI Copilot ────────────────────────────────── */}

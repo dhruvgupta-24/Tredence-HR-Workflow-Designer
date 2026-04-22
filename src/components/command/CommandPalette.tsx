@@ -135,13 +135,13 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
   return (
     <div
       className="fixed inset-0 z-[200] flex items-start justify-center pt-[18vh]"
-      style={{ background: 'rgba(3,7,18,0.7)', backdropFilter: 'blur(6px)' }}
+      style={{ background: 'var(--overlay-bg)', backdropFilter: 'var(--overlay-blur)' }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-[540px] mx-4 bg-gray-900 border border-gray-700/60 rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
+      <div className="w-full max-w-[540px] mx-4 bg-th-bg-2 border border-th-border rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
         {/* Search input */}
-        <div className="flex items-center gap-3 px-4 border-b border-gray-800/80">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" className="flex-shrink-0">
+        <div className="flex items-center gap-3 px-4 border-b border-th-border">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2" className="flex-shrink-0">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input
@@ -150,19 +150,19 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search commands…"
-            className="flex-1 bg-transparent py-4 text-[14px] text-gray-100 placeholder-gray-600 outline-none"
+            className="flex-1 bg-transparent py-4 text-[14px] text-th-text-1 placeholder:text-th-text-4 outline-none"
           />
-          <kbd className="text-[10px] text-gray-600 bg-gray-800 border border-gray-700 rounded px-1.5 py-0.5">ESC</kbd>
+          <kbd className="text-[10px] text-th-text-3 bg-th-bg-1 border border-th-border rounded px-1.5 py-0.5">ESC</kbd>
         </div>
 
         {/* Results */}
         <div ref={listRef} className="overflow-y-auto max-h-[360px] py-2">
           {flat.length === 0 && (
-            <p className="text-center text-xs text-gray-600 py-8">No commands found</p>
+            <p className="text-center text-xs text-th-text-3 py-8">No commands found</p>
           )}
           {Object.entries(grouped).map(([group, cmds]) => (
             <div key={group}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-600 px-4 pt-3 pb-1.5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-th-text-3 px-4 pt-3 pb-1.5">
                 {group}
               </p>
               {cmds.map((cmd) => {
@@ -178,22 +178,22 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
                     onMouseEnter={() => setActiveIdx(idx)}
                     className={[
                       'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-75',
-                      isActive ? 'bg-indigo-600/15' : 'hover:bg-gray-800/40',
+                      isActive ? 'bg-indigo-500/12' : 'hover:bg-th-bg-3',
                     ].join(' ')}
                   >
-                    <span className="w-7 h-7 rounded-lg bg-gray-800 border border-gray-700/60 flex items-center justify-center text-sm flex-shrink-0">
+                    <span className="w-7 h-7 rounded-lg bg-th-bg-1 border border-th-border flex items-center justify-center text-sm flex-shrink-0">
                       {cmd.icon}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-[13px] font-medium ${isActive ? 'text-white' : 'text-gray-300'}`}>
+                      <p className={`text-[13px] font-medium ${isActive ? 'text-th-accent' : 'text-th-text-1'}`}>
                         {cmd.label}
                       </p>
                       {cmd.description && (
-                        <p className="text-[11px] text-gray-600 truncate">{cmd.description}</p>
+                        <p className="text-[11px] text-th-text-3 truncate">{cmd.description}</p>
                       )}
                     </div>
                     {isActive && (
-                      <kbd className="text-[10px] text-gray-600 bg-gray-800 border border-gray-700 rounded px-1.5 py-0.5">↵</kbd>
+                      <kbd className="text-[10px] text-th-text-3 bg-th-bg-1 border border-th-border rounded px-1.5 py-0.5">↵</kbd>
                     )}
                   </button>
                 )
@@ -202,10 +202,10 @@ export function CommandPalette({ isOpen, onClose, onRunSimulation, onOpenCopilot
           ))}
         </div>
 
-        <div className="px-4 py-2.5 border-t border-gray-800/60 flex items-center gap-3 text-[10px] text-gray-600">
-          <span><kbd className="bg-gray-800 border border-gray-700 rounded px-1">↑↓</kbd> navigate</span>
-          <span><kbd className="bg-gray-800 border border-gray-700 rounded px-1">↵</kbd> execute</span>
-          <span><kbd className="bg-gray-800 border border-gray-700 rounded px-1">esc</kbd> close</span>
+        <div className="px-4 py-2.5 border-t border-th-border flex items-center gap-3 text-[10px] text-th-text-3">
+          <span><kbd className="bg-th-bg-1 border border-th-border rounded px-1">↑↓</kbd> navigate</span>
+          <span><kbd className="bg-th-bg-1 border border-th-border rounded px-1">↵</kbd> execute</span>
+          <span><kbd className="bg-th-bg-1 border border-th-border rounded px-1">esc</kbd> close</span>
         </div>
       </div>
     </div>

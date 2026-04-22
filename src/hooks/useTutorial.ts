@@ -318,6 +318,18 @@ export function useTutorial() {
     setGhost(null)
   }
 
+  /** Manually advance to the next step (skips action requirement). */
+  const nextStep = () => {
+    if (isDone) return
+    if (step < TOTAL - 1) setStep((s) => s + 1)
+    else setIsDone(true)
+  }
+
+  /** Go back to the previous step. */
+  const prevStep = () => {
+    if (step > 0) setStep((s) => s - 1)
+  }
+
   return {
     isActive,
     isDone,
@@ -333,5 +345,7 @@ export function useTutorial() {
     openPicker,
     startTutorial,
     cancelTutorial,
+    nextStep,
+    prevStep,
   }
 }

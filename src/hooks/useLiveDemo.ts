@@ -6,8 +6,8 @@ import {
   getDemoTarget,
   getCanvasRect,
   nodeCenter,
-  nodeBottomHandle,
-  nodeTopHandle,
+  getCanvasNodeTarget,
+  getCanvasHandleTarget,
 } from '../utils/demoPositions'
 import type { CursorState, CursorMode } from '../components/demo/FakeCursor'
 import type { LiveDemoPhase } from '../components/demo/DemoOverlay'
@@ -154,19 +154,11 @@ export function useLiveDemo(cbs: DemoCallbacks) {
       const sbApproval = getDemoTarget('node-approval') ?? { x: 120, y: 270 }
       const sbEnd      = getDemoTarget('node-end')      ?? { x: 120, y: 360 }
 
-      // Canvas drop targets — exact RF-to-screen, center of each node
+      // Canvas drop targets — exact RF-to-screen, center of each node (for dropping)
       const drop1 = nodeCenter(N1!.x, N1!.y, Z, cr)
       const drop2 = nodeCenter(N2!.x, N2!.y, Z, cr)
       const drop3 = nodeCenter(N3!.x, N3!.y, Z, cr)
       const drop4 = nodeCenter(N4!.x, N4!.y, Z, cr)
-
-      // Handle positions for edge connections
-      const h1Bot = nodeBottomHandle(N1!.x, N1!.y, Z, cr)
-      const h2Top = nodeTopHandle(N2!.x, N2!.y, Z, cr)
-      const h2Bot = nodeBottomHandle(N2!.x, N2!.y, Z, cr)
-      const h3Top = nodeTopHandle(N3!.x, N3!.y, Z, cr)
-      const h3Bot = nodeBottomHandle(N3!.x, N3!.y, Z, cr)
-      const h4Top = nodeTopHandle(N4!.x, N4!.y, Z, cr)
 
       // Cursor appears at sidebar
       setCursor({ x: sbStart.x, y: sbStart.y - 30, duration: 0, visible: true, mode: 'normal' })
@@ -215,29 +207,36 @@ export function useLiveDemo(cbs: DemoCallbacks) {
 
       // ── Connect edges ──────────────────────────────────────────────────────
       cbs.onPhaseChange('connecting')
+      await wait(300) // Ensure DOM allows ReactFlow to mount handles
 
       cbs.onStepLabel('Connecting Start to Task...')
-      await move(h1Bot.x, h1Bot.y, 700)
+      let hSource = getCanvasHandleTarget('ld-1', 'bottom') || { x: drop1.x, y: drop1.y + 40 }
+      let hTarget = getCanvasHandleTarget('ld-2', 'top') || { x: drop2.x, y: drop2.y - 40 }
+      await move(hSource.x, hSource.y, 700)
       await wait(280)
-      await move(h2Top.x, h2Top.y, 800, 'drag')
+      await move(hTarget.x, hTarget.y, 800, 'drag')
       await click()
       setEdges([DEMO_EDGES[0]!])
       await wait(450)
       if (cancelRef.current) return
 
       cbs.onStepLabel('Connecting Task to Approval...')
-      await move(h2Bot.x, h2Bot.y, 700)
+      hSource = getCanvasHandleTarget('ld-2', 'bottom') || { x: drop2.x, y: drop2.y + 40 }
+      hTarget = getCanvasHandleTarget('ld-3', 'top') || { x: drop3.x, y: drop3.y - 40 }
+      await move(hSource.x, hSource.y, 700)
       await wait(250)
-      await move(h3Top.x, h3Top.y, 800, 'drag')
+      await move(hTarget.x, hTarget.y, 800, 'drag')
       await click()
       setEdges([DEMO_EDGES[0]!, DEMO_EDGES[1]!])
       await wait(450)
       if (cancelRef.current) return
 
       cbs.onStepLabel('Connecting Approval to End...')
-      await move(h3Bot.x, h3Bot.y, 700)
+      hSource = getCanvasHandleTarget('ld-3', 'bottom') || { x: drop3.x, y: drop3.y + 40 }
+      hTarget = getCanvasHandleTarget('ld-4', 'top') || { x: drop4.x, y: drop4.y - 40 }
+      await move(hSource.x, hSource.y, 700)
       await wait(250)
-      await move(h4Top.x, h4Top.y, 800, 'drag')
+      await move(hTarget.x, hTarget.y, 800, 'drag')
       await click()
       setEdges([...DEMO_EDGES])
       await wait(600)
@@ -246,7 +245,8 @@ export function useLiveDemo(cbs: DemoCallbacks) {
       // ── Edit Task title ────────────────────────────────────────────────────
       cbs.onPhaseChange('editing')
       cbs.onStepLabel('Clicking task node to edit...')
-      await move(drop2.x, drop2.y, 700)
+      const exactTaskPos = getCanvasNodeTarget('ld-2') || drop2
+      await move(exactTaskPos.x, exactTaskPos.y, 700)
       await wait(280)
       await click()
       setSelectedNode('ld-2')

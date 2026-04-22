@@ -15,6 +15,7 @@ export default {
       colors: {
         'th-bg-0':          'var(--bg-0)',
         'th-bg-1':          'var(--bg-1)',
+        'th-bg-nav':        'var(--bg-nav)',
         'th-bg-2':          'var(--bg-2)',
         'th-bg-3':          'var(--bg-3)',
         'th-bg-4':          'var(--bg-4)',

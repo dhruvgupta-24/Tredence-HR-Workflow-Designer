@@ -168,11 +168,9 @@ export default function WorkflowBuilderPage() {
         className="flex-shrink-0 relative hidden md:block"
       >
         <Sidebar />
-        <ResizeHandle 
-          side="left" 
-          label="Sidebar"
+        <ResizeHandle
+          side="left"
           isDragging={leftPanel.isDragging}
-          tooltipWidth={leftPanel.tooltipWidth}
           onPointerDown={leftPanel.onPointerDown}
           onDoubleClick={leftPanel.onDoubleClick}
         />
@@ -218,11 +216,9 @@ export default function WorkflowBuilderPage() {
         style={{ width: `${sandboxWidth}px` }}
         className="flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950 relative hidden lg:flex"
       >
-        <ResizeHandle 
-          side="right" 
-          label="Sandbox"
+        <ResizeHandle
+          side="right"
           isDragging={rightPanel.isDragging}
-          tooltipWidth={rightPanel.tooltipWidth}
           onPointerDown={rightPanel.onPointerDown}
           onDoubleClick={rightPanel.onDoubleClick}
         />

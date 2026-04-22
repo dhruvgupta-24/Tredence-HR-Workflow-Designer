@@ -315,7 +315,7 @@ MIT - free to use, fork, and build upon.
 ---
 
 <div align="center">
-  <p>Built for the Tredence hackathon. Open to feedback.</p>
+  <p>Built for the Tredence Engineering Internship assessment. Open to feedback.</p>
   <p>
     <a href="https://flowhr-demo.vercel.app">Live Demo</a> ·
     <a href="https://github.com/dhruvgupta-24/Tredence-HR-Workflow-Designer">GitHub</a>

@@ -19,27 +19,21 @@ export function useResizablePanel({
   side,
 }: UseResizablePanelProps) {
   const [isDragging, setIsDragging] = useState(false)
-  const [tooltipWidth, setTooltipWidth] = useState<number | null>(null)
   const triggerFitView = useWorkflowStore((s) => s.triggerFitView)
   const startXRef = useRef(0)
   const startWidthRef = useRef(0)
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
-      // Ignore right clicks
       if (e.button !== 0) return
-      
       e.preventDefault()
       setIsDragging(true)
       startXRef.current = e.clientX
       startWidthRef.current = currentWidth
-      setTooltipWidth(currentWidth)
-      
-      // Setup global capture styling if needed
       document.body.style.cursor = 'col-resize'
       document.body.style.userSelect = 'none'
     },
-    [currentWidth]
+    [currentWidth],
   )
 
   const onDoubleClick = useCallback(() => {
@@ -53,22 +47,15 @@ export function useResizablePanel({
 
     const handlePointerMove = (e: PointerEvent) => {
       const deltaX = e.clientX - startXRef.current
-      // If we are resizing the left panel (drag handle on its right side), deltaX > 0 increases width.
-      // If we are resizing the right panel (drag handle on its left side), deltaX < 0 increases width.
       const directionalDelta = side === 'left' ? deltaX : -deltaX
-      
       let newWidth = startWidthRef.current + directionalDelta
       if (newWidth < minWidth) newWidth = minWidth
       if (newWidth > maxWidth) newWidth = maxWidth
-
-      // Only update local UI state string format to prevent heavy React rewrites if needed
-      setTooltipWidth(newWidth)
       onWidthChange(newWidth)
     }
 
     const handlePointerUp = () => {
       setIsDragging(false)
-      setTooltipWidth(null)
       document.body.style.cursor = ''
       document.body.style.userSelect = ''
       setTimeout(triggerFitView, 50)
@@ -86,7 +73,6 @@ export function useResizablePanel({
 
   return {
     isDragging,
-    tooltipWidth,
     onPointerDown,
     onDoubleClick,
   }

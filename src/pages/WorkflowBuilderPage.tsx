@@ -184,7 +184,7 @@ export default function WorkflowBuilderPage() {
           onDoubleClick={leftPanel.onDoubleClick}
         />
       </div>
-      <div className="w-60 flex-shrink-0 md:hidden">
+      <div className="w-60 flex-shrink-0 hidden sm:block md:hidden">
         <Sidebar />
       </div>
 
@@ -233,7 +233,7 @@ export default function WorkflowBuilderPage() {
         />
         <SandboxPanel />
       </div>
-      <div className="w-80 flex-shrink-0 border-l border-gray-800/80 flex flex-col bg-gray-950 lg:hidden">
+      <div className="w-80 flex-shrink-0 border-l border-gray-800/80 flex-col bg-gray-950 hidden sm:flex lg:hidden">
         <SandboxPanel />
       </div>
 

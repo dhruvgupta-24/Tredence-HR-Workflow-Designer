@@ -18,6 +18,7 @@ import { useWorkflowStore } from '../../store'
 import { nodeTypes } from '../nodes'
 import { onDragOver, useDropHandler } from '../../hooks/useDragDrop'
 import type { WorkflowNode } from '../../types'
+import { toast } from '../../store/toastStore'
 
 const DEFAULT_EDGE_STYLE = { strokeWidth: 2, stroke: '#6366f1' }
 const ACTIVE_EDGE_STYLE  = { strokeWidth: 2.5, stroke: '#818cf8' }
@@ -106,10 +107,35 @@ export function WorkflowCanvas() {
 
   const onConnect = useCallback(
     (connection: Connection) => {
+      const { source, target } = connection
+      if (!source || !target) return
+
+      if (source === target) {
+        toast.error('A node cannot connect to itself.')
+        return
+      }
+
+      if (edges.some((e) => e.source === source && e.target === target)) {
+        toast.error('This connection already exists.')
+        return
+      }
+
+      const sourceNode = nodes.find((n) => n.id === source)
+      if (sourceNode?.type === 'end') {
+        toast.error('End node cannot have outgoing connections.')
+        return
+      }
+
+      const targetNode = nodes.find((n) => n.id === target)
+      if (targetNode?.type === 'start') {
+        toast.error('Start node cannot have incoming connections.')
+        return
+      }
+
       saveSnapshot()
       setEdges(rfAddEdge(connection, edges))
     },
-    [edges, setEdges, saveSnapshot],
+    [edges, nodes, setEdges, saveSnapshot],
   )
 
   const onNodeDragStart = useCallback(() => saveSnapshot(), [saveSnapshot])

@@ -140,7 +140,7 @@ export function useLiveDemo(cbs: DemoCallbacks) {
       // Get the canvas container rect NOW (after viewport settled)
       const cr = getCanvasRect()
       if (!cr) {
-        toast.error('Canvas not ready — please try again')
+        toast.error('Canvas not ready - please try again')
         cbs.onPhaseChange('idle')
         return
       }
@@ -154,7 +154,7 @@ export function useLiveDemo(cbs: DemoCallbacks) {
       const sbApproval = getDemoTarget('node-approval') ?? { x: 120, y: 270 }
       const sbEnd      = getDemoTarget('node-end')      ?? { x: 120, y: 360 }
 
-      // Canvas drop targets — exact RF-to-screen, center of each node (for dropping)
+      // Canvas drop targets - exact RF-to-screen, center of each node (for dropping)
       const drop1 = nodeCenter(N1!.x, N1!.y, Z, cr)
       const drop2 = nodeCenter(N2!.x, N2!.y, Z, cr)
       const drop3 = nodeCenter(N3!.x, N3!.y, Z, cr)

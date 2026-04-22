@@ -1,4 +1,4 @@
-# Project Progress — FlowHR
+# Project Progress - FlowHR
 
 ## Status: ✅ COMPLETE
 
@@ -27,7 +27,7 @@
 | P16 | Seed data (Employee Onboarding loads on first visit) | ✅ Done |
 | P17 | fitView on load, template switch, import | ✅ Done |
 | P18 | Visual polish (Inter font, CSS glow, minimap, spacing) | ✅ Done |
-| P19 | Final QA — tsc zero errors, production build passes | ✅ Done |
+| P19 | Final QA - tsc zero errors, production build passes | ✅ Done |
 | P20 | Documentation (README + docs) | ✅ Done |
 
 ---
@@ -35,10 +35,10 @@
 ## Key Technical Decisions
 
 - **State**: Zustand store with snapshot-based undo/redo (30 steps, O(1) undo)
-- **fitView**: `fitViewCounter` in store — incremented to trigger canvas fitView from outside provider context
+- **fitView**: `fitViewCounter` in store - incremented to trigger canvas fitView from outside provider context
 - **Simulation**: BFS traversal with 650ms animated step reveal + per-node glow via efficient Zustand selector
 - **Auto-arrange**: Kahn's topological sort assigns levels (longest path), centres nodes vertically per column
-- **Node highlight**: `s.highlightedNodeId === id` selector — only 2 nodes re-render per step change
+- **Node highlight**: `s.highlightedNodeId === id` selector - only 2 nodes re-render per step change
 
 ---
 
@@ -47,7 +47,7 @@
 - **tsc --noEmit**: ✅ Zero errors
 - **npm run build**: ✅ Passes
 - **Features completed**: 20 phases / all planned features
-- **Commit**: `feat: final polish — fitView, minimap, sandbox, spacing, README, docs`
+- **Commit**: `feat: final polish - fitView, minimap, sandbox, spacing, README, docs`
 
 ---
 

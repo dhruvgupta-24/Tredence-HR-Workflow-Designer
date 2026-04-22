@@ -22,7 +22,7 @@ export const TaskNode = memo(function TaskNode({ id, data, selected }: NodeProps
   return (
     <div
       className={clsx(
-        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing',
+        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative',
         'bg-th-bg-2 shadow-node',
         isHighlighted && 'node-highlighted border-blue-400/60 ring-2 ring-blue-400/25 shadow-lg shadow-blue-500/15',
         isCompleted && !isHighlighted && 'node-completed border-green-500/40',
@@ -31,7 +31,7 @@ export const TaskNode = memo(function TaskNode({ id, data, selected }: NodeProps
       )}
     >
       {/* Blue accent strip */}
-      <div className="h-[3px] w-full rounded-t-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 opacity-80" />
+      <div className="absolute top-[1px] left-[1px] right-[1px] h-[3px] rounded-t-[14px] bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 opacity-80" />
 
       <Handle type="target" position={Position.Top}
         className="!bg-blue-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"

@@ -17,42 +17,48 @@ export interface TutorialStep {
 }
 
 // ── Tutorial definitions ───────────────────────────────────────────────────────
-// BASIC WORKFLOW: Start → Task → End (6 steps)
+// BASIC WORKFLOW: Start -> Task -> Connect -> End -> Connect -> Edit -> Run (7 steps + success)
 const BASIC_STEPS: TutorialStep[] = [
   {
     num: 1, icon: '▶',
-    title: 'Add a Start node',
+    title: 'Add a Start Node',
     hint: 'Drag the Start Node from the left panel onto the canvas to begin your workflow.',
     animType: 'drag', fromTarget: 'node-start', toTarget: null, toRF: { x: 350, y: 120 },
   },
   {
     num: 2, icon: '☐',
-    title: 'Add a Task node',
+    title: 'Add a Task Node',
     hint: 'Drag a Task node below the Start node to represent a step someone must complete.',
     animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 300 },
   },
   {
-    num: 3, icon: '■',
-    title: 'Add an End node',
+    num: 3, icon: '→',
+    title: 'Connect Start to Task',
+    hint: 'Drag a connection from the bottom handle of Start to the top handle of Task.',
+    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 300 },
+  },
+  {
+    num: 4, icon: '■',
+    title: 'Add an End Node',
     hint: 'Drag an End node below the Task to mark where the workflow completes.',
     animType: 'drag', fromTarget: 'node-end', toTarget: null, toRF: { x: 350, y: 480 },
   },
   {
-    num: 4, icon: '→',
-    title: 'Connect the nodes',
-    hint: 'Drag from the bottom handle of each node to the top handle of the next to create connections.',
-    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 300 },
+    num: 5, icon: '→',
+    title: 'Connect Task to End',
+    hint: 'Drag a connection from the Task node down to the End node.',
+    animType: 'connect', fromTarget: 'node-task', toTarget: 'node-end', toRF: { x: 350, y: 480 },
   },
   {
-    num: 5, icon: '✎',
-    title: 'Open a node\'s properties',
-    hint: 'Click any node on the canvas to open its property panel and set a name or assignee.',
+    num: 6, icon: '✎',
+    title: 'Edit details',
+    hint: 'Click the Task Node to select it, then rename the task to "Review Documents".',
     animType: 'click', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 300 },
   },
   {
-    num: 6, icon: '⚡',
-    title: 'Run your workflow',
-    hint: 'Click the "Run Workflow" button to simulate your process step by step.',
+    num: 7, icon: '⚡',
+    title: 'Run simulation',
+    hint: 'Click the "Run Workflow" button in the sandbox to simulate your process.',
     animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 300 },
   },
 ]
@@ -67,7 +73,7 @@ const LEAVE_STEPS: TutorialStep[] = [
   },
   {
     num: 2, icon: '☐',
-    title: 'Add a Task node — HR Review',
+    title: 'Add a Task node - HR Review',
     hint: 'Drag a Task node to the canvas. This will represent the HR team reviewing the request.',
     animType: 'drag', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 260 },
   },
@@ -92,7 +98,7 @@ const LEAVE_STEPS: TutorialStep[] = [
   {
     num: 6, icon: '✎',
     title: 'Customize approval settings',
-    hint: 'Click the Approval node and set the approver role — for example "Line Manager".',
+    hint: 'Click the Approval node and set the approver role - for example "Line Manager".',
     animType: 'click', fromTarget: 'node-approval', toTarget: null, toRF: { x: 350, y: 440 },
   },
   {
@@ -194,10 +200,11 @@ function isStepComplete(
     switch (stepIdx) {
       case 0: return nodeTypes.includes('start')
       case 1: return nodeTypes.includes('task')
-      case 2: return nodeTypes.includes('end')
-      case 3: return edgeCount >= 2
-      case 4: return !!selectedId
-      case 5: return simLogLen > 0
+      case 2: return edgeCount >= 1
+      case 3: return nodeTypes.includes('end')
+      case 4: return edgeCount >= 2
+      case 5: return !!selectedId
+      case 6: return simLogLen > 0
     }
   }
   if (tutorialType === 'leave') {
@@ -244,7 +251,7 @@ function computeGhostConfig(step: TutorialStep): GhostCursorConfig | null {
   }
 
   if (!to && step.toRF) {
-    // Target is a canvas position — convert RF to screen
+    // Target is a canvas position - convert RF to screen
     const cr = getCanvasRect()
     if (cr) {
       // Use a reasonable zoom approximation for tutorial (we don't reset viewport)

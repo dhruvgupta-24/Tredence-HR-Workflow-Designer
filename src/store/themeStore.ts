@@ -1,5 +1,5 @@
 /**
- * Theme store — manages light/dark mode via Zustand.
+ * Theme store - manages light/dark mode via Zustand.
  * Applies `data-theme` attribute to <html> synchronously on import,
  * so there is zero flash-of-wrong-theme on page load.
  */
@@ -22,7 +22,7 @@ function applyTheme(theme: Theme): void {
   document.documentElement.setAttribute('data-theme', theme)
 }
 
-// Apply immediately before React renders — prevents any FOUC
+// Apply immediately before React renders - prevents any FOUC
 const initialTheme = getPersistedTheme()
 applyTheme(initialTheme)
 

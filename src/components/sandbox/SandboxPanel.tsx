@@ -31,7 +31,7 @@ export function SandboxPanel() {
           Simulation Sandbox
         </p>
 
-        {/* Run Workflow button — premium primary CTA */}
+        {/* Run Workflow button - premium primary CTA */}
         <button
           type="button"
           onClick={() => void runSimulation()}

@@ -17,7 +17,7 @@
   /* Surfaces – layered depth */
   --bg-0: #090D18;      /* page / body */
   --bg-1: #0E1320;      /* sidebar, right panel */
-  --bg-nav: #0E1320;    /* top toolbar — same as sidebar in dark */
+  --bg-nav: #0E1320;    /* top toolbar - same as sidebar in dark */
   --bg-2: #141A2A;      /* node cards, form panels */
   --bg-3: #1B2235;      /* hover states, popovers */
   --bg-4: #232C44;      /* deeply elevated, active */
@@ -28,7 +28,7 @@
   --border-strong: rgba(255, 255, 255, 0.12);
 
   /* Typography */
-  --text-1: #EEF0FC;  /* primary — warm white */
+  --text-1: #EEF0FC;  /* primary - warm white */
   --text-2: #8B8DAB;  /* secondary */
   --text-3: #4E5070;  /* muted */
   --text-4: #2C2E52;  /* very muted / placeholder */
@@ -53,12 +53,12 @@
 
 /* ── Light Mode (Premium Warm-White) ── */
 [data-theme="light"] {
-  /* Surfaces — warm parchment hierarchy */
+  /* Surfaces - warm parchment hierarchy */
   --bg-0:   #FCFAF7;      /* page / body */
   --bg-1:   #F8F5F0;      /* sidebar, right panel */
-  --bg-nav: #FBF8F3;      /* top toolbar — slightly lighter */
-  --bg-2:   #FFFFFF;      /* node cards — pure white */
-  --bg-3:   #F0EBE3;      /* hover states — warm cream */
+  --bg-nav: #FBF8F3;      /* top toolbar - slightly lighter */
+  --bg-2:   #FFFFFF;      /* node cards - pure white */
+  --bg-3:   #F0EBE3;      /* hover states - warm cream */
   --bg-4:   #E8E1D8;      /* active / deeply elevated */
 
   /* Borders */
@@ -124,7 +124,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   VIEW TRANSITIONS API — Cinematic circular reveal
+   VIEW TRANSITIONS API - Cinematic circular reveal
    When the user toggles the theme, a circle expands from the
    toggle button's center, revealing the new theme beneath it.
    ══════════════════════════════════════════════════════════════ */
@@ -162,7 +162,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
-   REACT FLOW — Canvas & Controls
+   REACT FLOW - Canvas & Controls
    Adapts to both themes via CSS vars.
    ══════════════════════════════════════════════════════════════ */
 
@@ -172,7 +172,7 @@
   transition: background 0.25s ease;
 }
 
-/* Background dots — the SVG pattern circle fill */
+/* Background dots - the SVG pattern circle fill */
 [data-theme="light"] .react-flow__background pattern circle,
 [data-theme="light"] .react-flow__background pattern rect {
   fill: var(--canvas-dots) !important;
@@ -193,7 +193,7 @@
   stroke-width: 2.5;
 }
 
-/* Active edge — animated dash */
+/* Active edge - animated dash */
 .edge-active .react-flow__edge-path {
   stroke: var(--accent-hover) !important;
   stroke-width: 2.5px !important;
@@ -205,7 +205,7 @@
   to   { stroke-dashoffset: 0; }
 }
 
-/* Completed edge — green tint */
+/* Completed edge - green tint */
 .edge-completed .react-flow__edge-path {
   stroke: #22c55e !important;
   stroke-width: 2px !important;
@@ -245,6 +245,12 @@
   bottom: 18px !important;
   right: 18px !important;
 }
+[data-theme="light"] .react-flow__controls {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--border-strong) !important;
+  box-shadow: 0 8px 32px rgba(20, 15, 10, 0.12) !important;
+}
+
 .react-flow__controls-button {
   background: var(--bg-2) !important;
   border-bottom-color: var(--border-subtle) !important;
@@ -254,6 +260,17 @@
 .react-flow__controls-button:hover {
   background: var(--bg-3) !important;
   fill: var(--text-1) !important;
+}
+[data-theme="light"] .react-flow__controls-button {
+  background: #FFFFFF !important;
+  fill: var(--text-2) !important; /* darker icons */
+}
+[data-theme="light"] .react-flow__controls-button:hover {
+  background: #F4EFE8 !important; /* warm hover state */
+  fill: var(--text-1) !important;
+}
+[data-theme="light"] .react-flow__controls-button:active {
+  background: #E8E1D8 !important; /* tactile press */
 }
 
 /* Minimap */
@@ -382,7 +399,7 @@
   backdrop-filter: var(--overlay-blur);
 }
 
-/* Light mode — warm overlay tint (slightly warm dark, not cold blue-black) */
+/* Light mode - warm overlay tint (slightly warm dark, not cold blue-black) */
 [data-theme="light"] .modal-backdrop {
   background: rgba(30, 25, 20, 0.22);
   backdrop-filter: blur(5px);

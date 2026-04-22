@@ -54,7 +54,7 @@ export function CopilotModal({ isOpen, onClose }: Props) {
       if (!flow) {
         setStatusText('No matching workflow found. Try a more specific HR process.')
         setStage('idle')
-        toast.warning('No matching workflow — try different keywords')
+        toast.warning('No matching workflow - try different keywords')
         return
       }
       setMatchedFlow(flow.name)
@@ -71,7 +71,7 @@ export function CopilotModal({ isOpen, onClose }: Props) {
       triggerFitView()
 
       setStage('done')
-      setStatusText(`Generated ${flow.name} — ${flow.nodes.length} nodes, ${flow.edges.length} connections`)
+      setStatusText(`Generated ${flow.name} - ${flow.nodes.length} nodes, ${flow.edges.length} connections`)
       toast.success(`AI generated: ${flow.name}`)
       setTimeout(onClose, 1400)
     } catch (err) {

@@ -6,7 +6,7 @@ import { TUTORIAL_CATALOG, type TutorialType } from '../../hooks/useTutorial'
 interface GhostProps { config: GhostCursorConfig }
 
 function GhostCursor({ config }: GhostProps) {
-  type Phase = 'idle' | 'moving' | 'clicking' | 'holding' | 'returning'
+  type Phase = 'idle' | 'moving' | 'clicking' | 'holding' | 'returning' | 'vanished'
   const [phase, setPhase] = useState<Phase>('idle')
   const [pos,   setPos]   = useState(config.from)
   const cancelRef         = useRef(false)
@@ -17,48 +17,46 @@ function GhostCursor({ config }: GhostProps) {
     setPos(config.from)
     setPhase('idle')
 
-    const loop = async () => {
+    const sequence = async () => {
       await sleep(300)
-      while (!cancelRef.current) {
-        if (animType === 'drag') {
-          setPhase('moving'); setPos(config.from); await sleep(200)
-          if (cancelRef.current) break
-          setPhase('holding'); await sleep(150)
-          if (cancelRef.current) break
-          setPhase('moving'); setPos(config.to); await sleep(1000)
-          if (cancelRef.current) break
-          setPhase('clicking'); await sleep(350)
-          if (cancelRef.current) break
-          setPhase('idle'); await sleep(500)
-          if (cancelRef.current) break
-          setPhase('returning'); setPos(config.from); await sleep(100)
+      
+      if (animType === 'drag') {
+        setPhase('moving'); setPos(config.from); await sleep(200)
+        if (cancelRef.current) return
+        setPhase('holding'); await sleep(150)
+        if (cancelRef.current) return
+        setPhase('moving'); setPos(config.to); await sleep(1000)
+        if (cancelRef.current) return
+        setPhase('clicking'); await sleep(350) // represents the drop
+        if (cancelRef.current) return
+        setPhase('idle'); await sleep(500)
 
-        } else if (animType === 'connect') {
-          setPhase('moving'); setPos({ x: config.from.x, y: config.from.y + 20 }); await sleep(800)
-          if (cancelRef.current) break
-          setPhase('holding'); await sleep(150)
-          if (cancelRef.current) break
-          setPhase('moving'); setPos({ x: config.to.x, y: config.to.y - 20 }); await sleep(900)
-          if (cancelRef.current) break
-          setPhase('clicking'); await sleep(350)
-          if (cancelRef.current) break
-          setPhase('idle'); await sleep(500)
-          if (cancelRef.current) break
-          setPhase('returning'); setPos(config.from); await sleep(100)
+      } else if (animType === 'connect') {
+        setPhase('moving'); setPos({ x: config.from.x + 8, y: config.from.y + 12 }); await sleep(800)
+        if (cancelRef.current) return
+        setPhase('holding'); await sleep(150)
+        if (cancelRef.current) return
+        setPhase('moving'); setPos({ x: config.to.x + 8, y: config.to.y - 12 }); await sleep(900)
+        if (cancelRef.current) return
+        setPhase('clicking'); await sleep(350)
+        if (cancelRef.current) return
+        setPhase('idle'); await sleep(500)
 
-        } else {
-          setPhase('moving'); setPos(config.to); await sleep(900)
-          if (cancelRef.current) break
-          setPhase('clicking'); await sleep(400)
-          if (cancelRef.current) break
-          setPhase('idle'); await sleep(600)
-          if (cancelRef.current) break
-          setPhase('returning'); setPos(config.from); await sleep(100)
-        }
+      } else {
+        // click
+        setPhase('moving'); setPos(config.to); await sleep(900)
+        if (cancelRef.current) return
+        setPhase('clicking'); await sleep(400)
+        if (cancelRef.current) return
+        setPhase('idle'); await sleep(500)
+      }
+      
+      if (!cancelRef.current) {
+        setPhase('vanished')
       }
     }
 
-    void loop()
+    void sequence()
     return () => { cancelRef.current = true }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.from.x, config.from.y, config.to.x, config.to.y, animType])
@@ -77,7 +75,7 @@ function GhostCursor({ config }: GhostProps) {
         transition: isReturning
           ? 'none'
           : `transform ${phase === 'moving' ? (animType !== 'click' ? 950 : 900) : 150}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`,
-        opacity: isReturning ? 0 : 0.78,
+        opacity: (isReturning || phase === 'vanished') ? 0 : 0.78,
       }}
     >
       <svg width="20" height="23" viewBox="0 0 22 26" fill="none"

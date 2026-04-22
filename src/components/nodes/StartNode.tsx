@@ -19,7 +19,7 @@ export const StartNode = memo(function StartNode({ id, data, selected }: NodePro
   return (
     <div
       className={clsx(
-        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing',
+        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative',
         'bg-th-bg-2 shadow-node',
         isHighlighted && 'node-highlighted border-green-400/60 ring-2 ring-green-400/25 shadow-lg shadow-green-500/15',
         isCompleted && !isHighlighted && 'node-completed border-green-500/40',
@@ -28,7 +28,7 @@ export const StartNode = memo(function StartNode({ id, data, selected }: NodePro
       )}
     >
       {/* Coloured accent strip */}
-      <div className="h-[3px] w-full rounded-t-2xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600 opacity-80" />
+      <div className="absolute top-[1px] left-[1px] right-[1px] h-[3px] rounded-t-[14px] bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600 opacity-80" />
 
       <div className="px-4 pt-3 pb-4">
         {/* Type header row */}

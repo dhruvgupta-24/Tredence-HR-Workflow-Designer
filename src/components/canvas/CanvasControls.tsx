@@ -168,7 +168,7 @@ export function CanvasControls({
         <span className="text-[11px] font-medium">Auto Arrange</span>
       </button>
 
-      {/* ── Command palette — centred search bar ────────────── */}
+      {/* ── Command palette - centred search bar ────────────── */}
       <div className="flex-1 flex justify-center">
         <button type="button" onClick={onCommandOpen} title="Command Palette (Ctrl+K)"
           className="

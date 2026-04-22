@@ -159,14 +159,14 @@ export function WorkflowCanvas() {
         snapGrid={[16, 16]}
         snapToGrid
         colorMode={theme}
-        className="bg-gray-900"
+        className="transition-colors duration-200"
         proOptions={{ hideAttribution: true }}
       >
         <Background
           variant={BackgroundVariant.Dots}
-          gap={24}
-          size={1.5}
-          color="#1C2238"
+          gap={20}
+          size={2}
+          color="var(--canvas-dots)"
         />
         <Controls position="bottom-right" />
         <MiniMap

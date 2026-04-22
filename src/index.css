@@ -39,8 +39,8 @@
   --accent-muted: rgba(99, 102, 241, 0.15);
 
   /* Canvas */
-  --canvas-bg:   #0C101C;
-  --canvas-dots: #1E2744;
+  --canvas-bg:   #0B0E17;
+  --canvas-dots: #2A314A;
 
   /* Overlay */
   --overlay-bg:   rgba(3, 7, 18, 0.78);
@@ -79,7 +79,7 @@
 
   /* Canvas */
   --canvas-bg:   #F4EFE8;
-  --canvas-dots: #C2B8AC;
+  --canvas-dots: #B8AE9D;
 
   /* Overlay */
   --overlay-bg:   rgba(20, 18, 14, 0.20);
@@ -176,7 +176,8 @@
 .react-flow__background pattern circle,
 .react-flow__background pattern rect {
   fill: var(--canvas-dots) !important;
-  transition: fill 0.25s ease;
+  opacity: 0.8 !important;
+  transition: fill 0.3s ease;
 }
 
 /* Edges */

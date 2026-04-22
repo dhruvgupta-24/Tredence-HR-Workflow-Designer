@@ -17,7 +17,7 @@ export interface TutorialStep {
 }
 
 // ── Tutorial definitions ───────────────────────────────────────────────────────
-// BASIC WORKFLOW: Start -> Task -> Connect -> End -> Connect -> Edit -> Run (7 steps + success)
+// BASIC WORKFLOW: Start -> Task -> Connect -> End -> Connect -> Run (6 steps)
 const BASIC_STEPS: TutorialStep[] = [
   {
     num: 1, icon: '▶',
@@ -35,7 +35,7 @@ const BASIC_STEPS: TutorialStep[] = [
     num: 3, icon: '→',
     title: 'Connect Start to Task',
     hint: 'Drag a connection from the bottom handle of Start to the top handle of Task.',
-    animType: 'connect', fromTarget: 'node-start', toTarget: 'node-task', toRF: { x: 350, y: 300 },
+    animType: 'connect', fromTarget: '.react-flow__node-start .react-flow__handle-bottom', toTarget: '.react-flow__node-task .react-flow__handle-top',
   },
   {
     num: 4, icon: '■',
@@ -47,19 +47,13 @@ const BASIC_STEPS: TutorialStep[] = [
     num: 5, icon: '→',
     title: 'Connect Task to End',
     hint: 'Drag a connection from the Task node down to the End node.',
-    animType: 'connect', fromTarget: 'node-task', toTarget: 'node-end', toRF: { x: 350, y: 480 },
+    animType: 'connect', fromTarget: '.react-flow__node-task .react-flow__handle-bottom', toTarget: '.react-flow__node-end .react-flow__handle-top',
   },
   {
-    num: 6, icon: '✎',
-    title: 'Edit details',
-    hint: 'Click the Task Node to select it, then rename the task to "Review Documents".',
-    animType: 'click', fromTarget: 'node-task', toTarget: null, toRF: { x: 350, y: 300 },
-  },
-  {
-    num: 7, icon: '⚡',
+    num: 6, icon: '⚡',
     title: 'Run simulation',
     hint: 'Click the "Run Workflow" button in the sandbox to simulate your process.',
-    animType: 'click', fromTarget: 'run-workflow', toTarget: null, toRF: { x: 350, y: 300 },
+    animType: 'click', fromTarget: 'run-workflow', toTarget: null,
   },
 ]
 
@@ -203,8 +197,7 @@ function isStepComplete(
       case 2: return edgeCount >= 1
       case 3: return nodeTypes.includes('end')
       case 4: return edgeCount >= 2
-      case 5: return !!selectedId
-      case 6: return simLogLen > 0
+      case 5: return simLogLen > 0
     }
   }
   if (tutorialType === 'leave') {

@@ -83,8 +83,8 @@ Four professionally designed workflow templates ship out of the box: Employee On
 ### Validation System
 Before simulation runs, the engine checks: Has a Start node? Has an End node? Are all nodes reachable? Are there orphan nodes? Errors surface as clear, dismissible banners.
 
-### Premium Dark UI
-Dark-mode design system built with Tailwind CSS - glassmorphism cards, indigo accent, Inter typeface, smooth micro-animations on every hover and transition, and a toolbar that looks like a real SaaS product.
+### Premium Theme System (Light & Dark Modes)
+A flawless, real-time theme architecture built with Tailwind CSS and CSS variables. Features a deep, structured Dark Mode and a highly refined warm Light Mode. Includes cinematic circular-reveal transition animations and smooth micro-animations on every hover to replicate a true top-tier SaaS interface without layout shift.
 
 ---
 

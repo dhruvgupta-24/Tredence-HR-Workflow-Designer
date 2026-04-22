@@ -17,10 +17,11 @@ export const StartNode = memo(function StartNode({ id, data, selected }: NodePro
   const isCompleted   = useWorkflowStore((s) => s.completedNodeIds?.includes(id) ?? false)
 
   return (
-    <div
-      className={clsx(
-        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative',
-        'bg-th-bg-2 shadow-node',
+    <>
+      <div
+        className={clsx(
+          'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative overflow-hidden',
+          'bg-th-bg-2 shadow-node',
         isHighlighted && 'node-highlighted border-green-400/60 ring-2 ring-green-400/25 shadow-lg shadow-green-500/15',
         isCompleted && !isHighlighted && 'node-completed border-green-500/40',
         !isHighlighted && !isCompleted && selected  && 'border-green-500/50 ring-2 ring-green-500/20 shadow-md shadow-green-500/10',
@@ -28,7 +29,7 @@ export const StartNode = memo(function StartNode({ id, data, selected }: NodePro
       )}
     >
       {/* Coloured accent strip */}
-      <div className="absolute top-[1px] left-[1px] right-[1px] h-[3px] rounded-t-[14px] bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600 opacity-80" />
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600 opacity-80" />
 
       <div className="px-4 pt-3 pb-4">
         {/* Type header row */}
@@ -52,11 +53,13 @@ export const StartNode = memo(function StartNode({ id, data, selected }: NodePro
         </p>
       </div>
 
+      </div>
+
       <Handle
         type="source"
         position={Position.Bottom}
         className="!bg-green-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"
       />
-    </div>
+    </>
   )
 })

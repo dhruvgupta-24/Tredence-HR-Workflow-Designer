@@ -23,10 +23,11 @@ export const EndNode = memo(function EndNode({ id, data, selected }: NodeProps<E
     : data.endMessage
 
   return (
-    <div
-      className={clsx(
-        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative',
-        'bg-th-bg-2 shadow-node',
+    <>
+      <div
+        className={clsx(
+          'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative overflow-hidden',
+          'bg-th-bg-2 shadow-node',
         isHighlighted && 'node-highlighted border-rose-400/60 ring-2 ring-rose-400/25 shadow-lg shadow-rose-500/15',
         isCompleted && !isHighlighted && 'node-completed border-green-500/40',
         !isHighlighted && !isCompleted && selected  && 'border-rose-500/50 ring-2 ring-rose-500/20 shadow-md shadow-rose-500/10',
@@ -34,11 +35,9 @@ export const EndNode = memo(function EndNode({ id, data, selected }: NodeProps<E
       )}
     >
       {/* Red-rose accent strip */}
-      <div className="absolute top-[1px] left-[1px] right-[1px] h-[3px] rounded-t-[14px] bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 opacity-80" />
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 opacity-80" />
 
-      <Handle type="target" position={Position.Top}
-        className="!bg-rose-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"
-      />
+
 
       <div className="px-4 pt-3 pb-4">
         {/* Type header */}
@@ -59,6 +58,11 @@ export const EndNode = memo(function EndNode({ id, data, selected }: NodeProps<E
           <p className="text-[11px] text-th-text-3 leading-relaxed line-clamp-2">{preview}</p>
         )}
       </div>
-    </div>
+      </div>
+
+      <Handle type="target" position={Position.Top}
+        className="!bg-rose-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"
+      />
+    </>
   )
 })

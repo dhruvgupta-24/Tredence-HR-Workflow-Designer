@@ -19,22 +19,20 @@ export const ApprovalNode = memo(function ApprovalNode({ id, data, selected }: N
   const isCompleted   = useWorkflowStore((s) => s.completedNodeIds?.includes(id) ?? false)
 
   return (
-    <div
-      className={clsx(
-        'w-[240px] rounded-2xl border transition-all duration-200 cursor-grab active:cursor-grabbing relative',
-        'bg-th-bg-2 shadow-node',
-        isHighlighted && 'node-highlighted border-orange-400/60 ring-2 ring-orange-400/25 shadow-lg shadow-orange-500/15',
-        isCompleted && !isHighlighted && 'node-completed border-green-500/40',
-        !isHighlighted && !isCompleted && selected  && 'border-orange-500/50 ring-2 ring-orange-500/20 shadow-md shadow-orange-500/10',
-        !isHighlighted && !isCompleted && !selected && 'border-th-border hover:border-orange-500/35 hover:shadow-node-hover hover:-translate-y-px',
-      )}
-    >
-      {/* Orange accent strip */}
-      <div className="absolute top-[1px] left-[1px] right-[1px] h-[3px] rounded-t-[14px] bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-600 opacity-80" />
+    <>
+      <div
+        className={clsx(
+          'w-[240px] rounded-[15px] border transition-all duration-200 cursor-grab active:cursor-grabbing relative overflow-hidden',
+          'bg-th-bg-2 shadow-node',
+          isHighlighted && 'node-highlighted border-orange-400/60 ring-2 ring-orange-400/25 shadow-lg shadow-orange-500/15',
+          isCompleted && !isHighlighted && 'node-completed border-green-500/40',
+          !isHighlighted && !isCompleted && selected  && 'border-orange-500/50 ring-2 ring-orange-500/20 shadow-md shadow-orange-500/10',
+          !isHighlighted && !isCompleted && !selected && 'border-th-border hover:border-orange-500/35 hover:shadow-node-hover hover:-translate-y-px',
+        )}
+      >
+        {/* Orange accent strip */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-600 opacity-80" />
 
-      <Handle type="target" position={Position.Top}
-        className="!bg-orange-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"
-      />
 
       <div className="px-4 pt-3 pb-4">
         {/* Type header */}
@@ -64,9 +62,14 @@ export const ApprovalNode = memo(function ApprovalNode({ id, data, selected }: N
         </p>
       </div>
 
+      </div>
+
+      <Handle type="target" position={Position.Top}
+        className="!bg-orange-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"
+      />
       <Handle type="source" position={Position.Bottom}
         className="!bg-orange-500 !border-2 !border-th-bg-2 !w-3.5 !h-3.5"
       />
-    </div>
+    </>
   )
 })

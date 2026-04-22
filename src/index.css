@@ -247,8 +247,8 @@
 }
 [data-theme="light"] .react-flow__controls {
   background: #FFFFFF !important;
-  border: 1.5px solid var(--border-strong) !important;
-  box-shadow: 0 8px 32px rgba(20, 15, 10, 0.12) !important;
+  border: 1px solid #D1C9BE !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 10px rgba(0, 0, 0, 0.05) !important;
 }
 
 .react-flow__controls-button {
@@ -263,14 +263,18 @@
 }
 [data-theme="light"] .react-flow__controls-button {
   background: #FFFFFF !important;
-  fill: var(--text-2) !important; /* darker icons */
+  fill: #1A1815 !important;
+  border-bottom: 1px solid #EBE4DA !important;
+}
+[data-theme="light"] .react-flow__controls-button:last-child {
+  border-bottom: none !important;
 }
 [data-theme="light"] .react-flow__controls-button:hover {
-  background: #F4EFE8 !important; /* warm hover state */
-  fill: var(--text-1) !important;
+  background: #F8F5F0 !important;
+  fill: #000000 !important;
 }
 [data-theme="light"] .react-flow__controls-button:active {
-  background: #E8E1D8 !important; /* tactile press */
+  background: #EBE4DA !important;
 }
 
 /* Minimap */

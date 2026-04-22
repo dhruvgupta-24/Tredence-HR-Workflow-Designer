@@ -16,7 +16,9 @@ export async function waitForDemoTarget(name: string, maxWait = 2000): Promise<E
 
 /** Center of a [data-demo-target="X"] element. */
 export function getDemoTarget(name: string): { x: number; y: number } | null {
-  const el = document.querySelector(`[data-demo-target="${name}"]`)
+  const el = name.startsWith('.') || name.startsWith('#')
+    ? document.querySelector(name)
+    : document.querySelector(`[data-demo-target="${name}"]`)
   if (!el) return null
   const r = el.getBoundingClientRect()
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 }

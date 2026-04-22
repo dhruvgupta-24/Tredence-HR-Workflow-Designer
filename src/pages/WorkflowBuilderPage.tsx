@@ -28,15 +28,16 @@ import type { WorkflowNode } from '../types'
 import type { Edge } from '@xyflow/react'
 
 const SHORTCUTS = [
-  { keys: ['Ctrl', 'K'],           action: 'Open command palette' },
-  { keys: ['Ctrl', 'Z'],           action: 'Undo' },
-  { keys: ['Ctrl', 'Shift', 'Z'],  action: 'Redo' },
-  { keys: ['Del', '⌫'],            action: 'Delete selected node' },
-  { keys: ['Esc'],                  action: 'Deselect or close' },
-  { keys: ['?'],                    action: 'Open this panel' },
-  { keys: ['Drag'],                 action: 'Pan canvas' },
-  { keys: ['Scroll'],               action: 'Zoom in/out' },
-  { keys: ['Click node'],           action: 'Open properties panel' },
+  { keys: ['Ctrl', 'Enter'],        action: 'Run simulation' },
+  { keys: ['Ctrl', 'K'],            action: 'Open command palette' },
+  { keys: ['Ctrl', 'Z'],            action: 'Undo' },
+  { keys: ['Ctrl', 'Shift', 'Z'],   action: 'Redo' },
+  { keys: ['Del', '⌫'],             action: 'Delete selected node' },
+  { keys: ['Esc'],                   action: 'Deselect or close' },
+  { keys: ['?'],                     action: 'Open this panel' },
+  { keys: ['Drag'],                  action: 'Pan canvas' },
+  { keys: ['Scroll'],                action: 'Zoom in/out' },
+  { keys: ['Click node'],            action: 'Open properties panel' },
 ]
 
 function ShortcutsContent() {
@@ -155,10 +156,14 @@ export default function WorkflowBuilderPage() {
         e.preventDefault()
         setShowCommand((v) => !v)
       }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault()
+        void runSimulation()
+      }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [runSimulation])
 
   const selectedNode = selectedNodeId ? nodes.find((n) => n.id === selectedNodeId) : undefined
   const drawerTitle  = selectedNode ? String(selectedNode.data.title || selectedNode.type || 'Node') : ''
